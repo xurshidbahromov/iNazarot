@@ -3,7 +3,7 @@ import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Users, Package, Settings, ShoppingCart,
   DollarSign, RefreshCw, Layers, Bell, LogOut, ChevronDown, ChevronUp,
-  Search, Command, User, Shield, ChevronRight, Menu, PackageCheck
+  Search, Command, User, Shield, ChevronRight, Menu
 } from 'lucide-react';
 import { cn } from '../utils/cn';
 import { useAuthStore } from '../store/useAuthStore';
@@ -149,23 +149,42 @@ export default function DashboardLayout() {
       )}>
         {/* Logo */}
         <div className={cn(
-          "flex items-center gap-3 px-1.5 mb-8 justify-between",
-          isCollapsed && "justify-center"
+          "flex items-center px-1.5 mb-8 overflow-hidden transition-all duration-300 ease-in-out",
+          isCollapsed ? "justify-center" : "gap-3 justify-between"
         )}>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/30 flex-shrink-0">
-              <PackageCheck className="h-6 w-6 text-white" strokeWidth={2} />
-            </div>
-            {!isCollapsed && (
-              <div className="flex flex-col justify-center">
-                <span className="text-[22px] font-bold tracking-tight text-slate-900 leading-none mb-1">
-                  <span className="text-primary-600">i</span>Nazorat
-                </span>
-                <span className="text-[10px] font-bold text-slate-500 tracking-[0.2em] uppercase leading-none">
-                  ERP PLATFORMA
-                </span>
-              </div>
-            )}
+          <div className={cn(
+            "relative flex items-center transition-all duration-300 ease-in-out",
+            isCollapsed ? "pr-1.5" : "pr-2"
+          )}>
+            <span className={cn(
+              "font-bold tracking-tight text-slate-800 leading-none transition-all duration-300 ease-in-out",
+              isCollapsed ? "text-[32px]" : "text-[40px]"
+            )} style={{ fontFamily: "'Quicksand', sans-serif" }}>
+              i
+              <span className={cn(
+                "inline-flex transition-all duration-300 ease-in-out overflow-hidden whitespace-nowrap align-baseline",
+                isCollapsed ? "max-w-0 opacity-0" : "max-w-[200px] opacity-100"
+              )}>
+                Nazorat
+              </span>
+            </span>
+            
+            {/* Double Chevron Growth Arrow (Elevate logo style representing scale & automation) */}
+            <svg 
+              className={cn(
+                "text-[#20c997] absolute transition-all duration-300 ease-in-out drop-shadow-sm",
+                isCollapsed ? "w-[16px] h-[16px] top-[2px] -right-[6px]" : "w-[22px] h-[22px] top-[9px] -right-[12px]"
+              )} 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="3.5" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            >
+              <path d="M11 5 H 19 V 13" />
+              <path d="M5 11 H 13 V 19" />
+            </svg>
           </div>
         </div>
 

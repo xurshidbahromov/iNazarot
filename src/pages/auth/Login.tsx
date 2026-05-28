@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, ArrowRight, LayoutDashboard, ShoppingCart, Users, Wallet, PackageCheck } from 'lucide-react';
+import { Eye, EyeOff, ArrowRight, LayoutDashboard, ShoppingCart, Users, Wallet } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
 
 const features = [
@@ -44,17 +44,25 @@ export default function Login() {
       <div className="flex-1 flex flex-col justify-center px-4 sm:px-10 lg:px-16 xl:px-24">
         <div className="mx-auto w-full max-w-sm">
 
-          <div className="flex items-center gap-3 mb-10">
-            <div className="w-10 h-10 bg-primary-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/30 flex-shrink-0">
-              <PackageCheck className="h-6 w-6 text-white" strokeWidth={2} />
-            </div>
-            <div className="flex flex-col justify-center">
-              <span className="text-[22px] font-bold tracking-tight text-slate-900 leading-none mb-1">
-                <span className="text-primary-600">i</span>Nazorat
+          <div className="flex items-center mb-10">
+            <div className="relative flex items-center pr-3">
+              <span className="text-[40px] font-bold tracking-tight text-slate-800 leading-none" style={{ fontFamily: "'Quicksand', sans-serif" }}>
+                iNazorat
               </span>
-              <span className="text-[10px] font-bold text-slate-500 tracking-[0.2em] uppercase leading-none">
-                ERP PLATFORMA
-              </span>
+              
+              {/* Double Chevron Growth Arrow (Elevate logo style representing scale & automation) */}
+              <svg 
+                className="w-[22px] h-[22px] text-[#20c997] absolute top-[-1px] -right-[10px] drop-shadow-sm" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="3.5" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              >
+                <path d="M11 5 H 19 V 13" />
+                <path d="M5 11 H 13 V 19" />
+              </svg>
             </div>
           </div>
 
