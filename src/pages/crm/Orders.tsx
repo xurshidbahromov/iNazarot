@@ -215,7 +215,7 @@ export default function Orders() {
             <Wallet className="w-6 h-6 text-red-500" strokeWidth={1.6} />
           </div>
           <div>
-            <p className="text-[13px] font-medium text-slate-500 mb-0.5">Nasiya Summasi (Debitorlik)</p>
+            <p className="text-[13px] font-medium text-slate-500 mb-0.5">Nasiya Summasi</p>
             <h4 className="text-xl font-bold text-slate-900">{totalDebt.toLocaleString()} UZS</h4>
           </div>
         </div>
