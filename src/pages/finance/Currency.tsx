@@ -190,8 +190,8 @@ export default function Currency() {
                     <span className={`flex items-center gap-0.5 text-xs font-semibold px-2 py-0.5 rounded-full ${
                       isUp ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'
                     }`}>
-                      {isUp ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-                      {Math.abs(diff)} UZS
+                      {isUp ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />}
+                      {parseFloat(Math.abs(diff).toFixed(4))} UZS
                     </span>
                   ) : (
                     <span className="text-xs font-semibold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-full">
@@ -259,11 +259,11 @@ export default function Currency() {
                 <td className="whitespace-nowrap px-3 py-4 text-[14px]">
                   {diff > 0 ? (
                     <span className="text-emerald-600 font-semibold flex items-center gap-1">
-                      <TrendingUp className="w-3.5 h-3.5" /> +{diff}
+                      <TrendingUp className="w-3.5 h-3.5" /> +{parseFloat(Math.abs(diff).toFixed(4))}
                     </span>
                   ) : diff < 0 ? (
                     <span className="text-rose-600 font-semibold flex items-center gap-1">
-                      <TrendingDown className="w-3.5 h-3.5" /> {diff}
+                      <TrendingDown className="w-3.5 h-3.5" /> -{parseFloat(Math.abs(diff).toFixed(4))}
                     </span>
                   ) : (
                     <span className="text-slate-400 font-medium">—</span>
