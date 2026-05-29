@@ -102,7 +102,23 @@ function App() {
       </BrowserRouter>
 
     </QueryClientProvider>
-    <Toaster position="top-right" richColors />
+    <Toaster 
+      position="top-right" 
+      toastOptions={{
+        style: {
+          borderRadius: '16px',
+        },
+        classNames: {
+          toast: '!backdrop-blur-2xl !shadow-[0_8px_30px_rgba(0,0,0,0.05)] !rounded-2xl',
+          success: '!bg-emerald-50/90 !border !border-emerald-200/80 !text-emerald-900',
+          error: '!bg-red-50/90 !border !border-red-200/80 !text-red-900',
+          warning: '!bg-amber-50/90 !border !border-amber-200/80 !text-amber-900',
+          info: '!bg-blue-50/90 !border !border-blue-200/80 !text-blue-900',
+          title: '!font-semibold !text-[14px] !text-inherit',
+          description: '!text-[13px] opacity-80',
+        }
+      }}
+    />
     </>
   );
 }
