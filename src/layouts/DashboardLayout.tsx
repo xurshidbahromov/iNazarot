@@ -2,8 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Users, Package, Settings, ShoppingCart,
-  DollarSign, RefreshCw, Layers, Bell, LogOut, ChevronDown, ChevronUp,
-  Search, Command, User, Shield, ChevronRight, Menu
+  DollarSign, RefreshCw, Layers, Bell, LogOut, ChevronDown,
+  Search, Command, User, Shield, ChevronRight
 } from 'lucide-react';
 import { cn } from '../utils/cn';
 import { useAuthStore } from '../store/useAuthStore';
@@ -222,37 +222,50 @@ export default function DashboardLayout() {
                         {!isCollapsed && <span>{item.name}</span>}
                       </div>
                       {!isCollapsed && (
-                        isOpen ? <ChevronUp className="w-4 h-4 stroke-[1.6]" /> : <ChevronDown className="w-4 h-4 stroke-[1.6]" />
+                        <ChevronDown 
+                          className={cn(
+                            "w-4 h-4 stroke-[1.6] transition-transform duration-300 ease-in-out",
+                            isOpen && "rotate-180"
+                          )} 
+                        />
                       )}
                     </button>
 
-                    {/* Expanded: normal accordion sub-menu */}
-                    {isOpen && (
-                      <div className="mt-1 ml-6 border-l-2 border-slate-200/60 pl-4 space-y-1 relative">
-                        {item.children!.map((child) => {
-                          const isChildLinkActive = location.pathname === child.href;
-                          return (
-                            <div key={child.name} className="relative flex items-center">
-                              <div className="absolute -left-4 w-3 h-0.5 bg-slate-200/60 top-1/2 -translate-y-1/2"></div>
-                              <Link
-                                to={child.href}
-                                className={cn(
-                                  'flex-1 flex items-center justify-between px-3 py-2.5 text-[14px] font-medium rounded-2xl transition-all',
-                                  isChildLinkActive
-                                    ? 'bg-white text-slate-900 shadow-sm'
-                                    : 'text-slate-500 hover:text-slate-800 hover:bg-white/60'
-                                )}
-                              >
-                                <span>{child.name}</span>
-                                {child.badge && (
-                                  <span className={cn('text-[11px] font-bold px-2 py-0.5 rounded-md', child.badge.color)}>
-                                    {child.badge.value}
-                                  </span>
-                                )}
-                              </Link>
-                            </div>
-                          );
-                        })}
+                    {/* Expanded: normal accordion sub-menu with smooth slide transition */}
+                    {!isCollapsed && (
+                      <div 
+                        className={cn(
+                          "grid transition-all duration-300 ease-in-out ml-6 border-l-2 border-slate-200/60 pl-4",
+                          isOpen ? "opacity-100 mt-1 py-1" : "opacity-0 pointer-events-none"
+                        )}
+                        style={{ gridTemplateRows: isOpen ? '1fr' : '0fr' }}
+                      >
+                        <div className="overflow-hidden space-y-1 relative">
+                          {item.children!.map((child) => {
+                            const isChildLinkActive = location.pathname === child.href;
+                            return (
+                              <div key={child.name} className="relative flex items-center">
+                                <div className="absolute -left-4 w-3 h-0.5 bg-slate-200/60 top-1/2 -translate-y-1/2"></div>
+                                <Link
+                                  to={child.href}
+                                  className={cn(
+                                    'flex-1 flex items-center justify-between px-3 py-2.5 text-[14px] font-medium rounded-2xl transition-all',
+                                    isChildLinkActive
+                                      ? 'bg-white text-slate-900 shadow-sm'
+                                      : 'text-slate-500 hover:text-slate-800 hover:bg-white/60'
+                                  )}
+                                >
+                                  <span>{child.name}</span>
+                                  {child.badge && (
+                                    <span className={cn('text-[11px] font-bold px-2 py-0.5 rounded-md', child.badge.color)}>
+                                      {child.badge.value}
+                                    </span>
+                                  )}
+                                </Link>
+                              </div>
+                            );
+                          })}
+                        </div>
                       </div>
                     )}
 
@@ -263,7 +276,7 @@ export default function DashboardLayout() {
                         onMouseEnter={() => handleMenuHoverEnter(item.name)}
                         onMouseLeave={() => handleMenuHoverLeave()}
                       >
-                        <div className="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-slate-200/80 py-2.5 px-2.5 ml-1">
+                        <div className="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-slate-200/80 py-2.5 px-2.5 ml-1 animate-fade-in-scale">
                           <div className="px-3 py-1.5 mb-1 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
                             {item.name}
                           </div>
@@ -327,10 +340,44 @@ export default function DashboardLayout() {
           <div className="flex items-center gap-4">
             <button
               onClick={() => setIsCollapsed(!isCollapsed)}
-              className="p-2 rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+              className="group p-2 rounded-xl text-slate-500 hover:bg-slate-100/80 hover:text-slate-800 transition-all duration-300 active:scale-95 flex items-center justify-center relative overflow-hidden"
               title={isCollapsed ? "Menyuni yozish" : "Menyuni yig'ish"}
             >
-              <Menu className="w-5 h-5 stroke-[1.6]" />
+              <svg 
+                className="w-5 h-5 transition-colors duration-300"
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="1.8" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              >
+                {/* Outlined browser card frame */}
+                <rect 
+                  x="3" 
+                  y="3" 
+                  width="18" 
+                  height="18" 
+                  rx="2.5" 
+                  className="stroke-slate-400 group-hover:stroke-slate-600 transition-colors duration-300" 
+                />
+                
+                {/* Vertical panel separator that slides left/right based on collapsed state */}
+                <line 
+                  x1={isCollapsed ? "7" : "9"} 
+                  y1="3" 
+                  x2={isCollapsed ? "7" : "9"} 
+                  y2="21" 
+                  className="stroke-slate-400 group-hover:stroke-slate-600 transition-all duration-300 ease-in-out" 
+                />
+                
+                {/* Micro-chevron arrow indicating toggle direction, bouncing on hover */}
+                <path 
+                  d={isCollapsed ? "M11 9l3 3-3 3" : "M14 9l-3 3 3 3"} 
+                  className="stroke-[#797a7a] transition-all duration-300 ease-in-out transform group-hover:translate-x-0.5"
+                  strokeWidth="2.2"
+                />
+              </svg>
             </button>
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1.5 text-sm">
