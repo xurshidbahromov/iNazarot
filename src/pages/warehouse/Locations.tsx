@@ -1,16 +1,16 @@
-import { useState } from 'react';
-import { Plus, Search, MapPin, User } from 'lucide-react';
-import { Button } from '../../components/ui/Button';
-import { Input } from '../../components/ui/Input';
-import { Table } from '../../components/ui/Table';
-import { Modal } from '../../components/ui/Modal';
-import { useWarehouseStore } from '../../store/useWarehouseStore';
+import { useState} from'react';
+import { Plus, Search, MapPin, User} from'lucide-react';
+import { Button} from'../../components/ui/Button';
+import { Input} from'../../components/ui/Input';
+import { Table} from'../../components/ui/Table';
+import { Modal} from'../../components/ui/Modal';
+import { useWarehouseStore} from'../../store/useWarehouseStore';
 
 export default function Locations() {
-  const { locations, addLocation } = useWarehouseStore();
+  const { locations, addLocation} = useWarehouseStore();
   const [search, setSearch] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [form, setForm] = useState({ name: '', address: '', manager: '', status: 'faol' as 'faol' | 'nofaol' });
+  const [form, setForm] = useState({ name:'', address:'', manager:'', status:'faol' as'faol' |'nofaol'});
 
   const filtered = locations.filter(l =>
     l.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -20,23 +20,25 @@ export default function Locations() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     addLocation(form);
-    setForm({ name: '', address: '', manager: '', status: 'faol' });
-    setIsModalOpen(false);
-  };
+    setForm({ name:'', address:'', manager:'', status:'faol'});
+    setIsModalOpen(false);};
 
   return (
     <div className="space-y-6 pb-8">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h3 className="text-2xl font-bold tracking-tight text-slate-900">Omborlar ro'yxati</h3>
+          <h3 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
+            <MapPin className="w-6 h-6 text-primary-600" />
+            Omborlar ro'yxati
+          </h3>
           <p className="mt-1.5 text-sm text-slate-500">
             Kompaniyaning barcha omborlarini boshqarish va nazorat qilish.
           </p>
         </div>
         <div className="flex flex-wrap gap-2.5">
           <Button 
-            className="rounded-xl h-10 px-4 bg-primary-600 hover:bg-primary-700 shadow-sm transition-all"
+            className="rounded-xl h-10 px-4 bg-primary-600 hover:bg-primary-700 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] transition-all"
             onClick={() => setIsModalOpen(true)}
           >
             <Plus className="w-4 h-4 mr-2" strokeWidth={2} /> Ombor yaratish
@@ -45,7 +47,7 @@ export default function Locations() {
       </div>
 
       {/* Search and Table Area */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
         <div className="p-5 border-b border-slate-200 bg-slate-50/50">
           <div className="max-w-md relative">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
@@ -63,10 +65,10 @@ export default function Locations() {
         <Table
           variant="nested"
           columns={[
-            { key: 'name', label: 'Ombor nomi' },
-            { key: 'address', label: 'Manzil' },
-            { key: 'manager', label: "Mas'ul xodim" },
-            { key: 'status', label: 'Holati' },
+            { key:'name', label:'Ombor nomi'},
+            { key:'address', label:'Manzil'},
+            { key:'manager', label:"Mas'ul xodim"},
+            { key:'status', label:'Holati'},
           ]}
           data={filtered}
           renderRow={(location) => (
@@ -90,14 +92,12 @@ export default function Locations() {
               </td>
               <td className="whitespace-nowrap px-3 py-4 text-sm text-slate-500">
                 <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[12px] font-semibold border ${
-                  location.status === 'faol' 
-                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                    : 'bg-slate-50 text-slate-700 border-slate-200'
-                }`}>
+                  location.status ==='faol' 
+                    ?'bg-emerald-50 text-emerald-700 border-emerald-200'
+                    :'bg-slate-50 text-slate-700 border-slate-200'}`}>
                   <span className={`w-1.5 h-1.5 rounded-full ${
-                    location.status === 'faol' ? 'bg-emerald-500' : 'bg-slate-500'
-                  }`} />
-                  {location.status === 'faol' ? 'Faol' : 'Nofaol'}
+                    location.status ==='faol' ?'bg-emerald-500' :'bg-slate-500'}`} />
+                  {location.status ==='faol' ?'Faol' :'Nofaol'}
                 </span>
               </td>
             </>
@@ -111,7 +111,7 @@ export default function Locations() {
             label="Ombor nomi *"
             placeholder="Masalan: Asosiy ombor"
             value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            onChange={(e) => setForm({ ...form, name: e.target.value})}
             className="rounded-xl"
             required
           />
@@ -119,14 +119,14 @@ export default function Locations() {
             label="Manzil"
             placeholder="Shahar/viloyat; tuman; ko'cha..."
             value={form.address}
-            onChange={(e) => setForm({ ...form, address: e.target.value })}
+            onChange={(e) => setForm({ ...form, address: e.target.value})}
             className="rounded-xl"
           />
           <Input
             label="Mas'ul xodim *"
             placeholder="Xodim FISH"
             value={form.manager}
-            onChange={(e) => setForm({ ...form, manager: e.target.value })}
+            onChange={(e) => setForm({ ...form, manager: e.target.value})}
             className="rounded-xl"
             required
           />
@@ -136,8 +136,8 @@ export default function Locations() {
             </label>
             <select
               value={form.status}
-              onChange={(e) => setForm({ ...form, status: e.target.value as 'faol' | 'nofaol' })}
-              className="w-full h-10 px-3 py-2 bg-white border border-slate-300 rounded-xl text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-colors"
+              onChange={(e) => setForm({ ...form, status: e.target.value as'faol' |'nofaol'})}
+              className="w-full h-10 px-3 py-2 bg-white/80 backdrop-blur-md border border-slate-300 rounded-xl text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-colors"
             >
               <option value="faol">Faol</option>
               <option value="nofaol">Nofaol</option>
@@ -155,5 +155,4 @@ export default function Locations() {
         </form>
       </Modal>
     </div>
-  );
-}
+  );}

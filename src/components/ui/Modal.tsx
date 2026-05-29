@@ -1,4 +1,5 @@
-import type { ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { cn } from '../../utils/cn';
 
@@ -7,14 +8,19 @@ interface ModalProps {
   onClose: () => void;
   title: string;
   children: ReactNode;
-  className?: string;
-}
+  className?: string;}
 
 export function Modal({ isOpen, onClose, title, children, className }: ModalProps) {
-  if (!isOpen) return null;
+  const [mounted, setMounted] = useState(false);
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!isOpen || !mounted) return null;
+
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex items-center justify-center">
       {/* Backdrop */}
       <div 
         className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm transition-opacity" 
@@ -23,8 +29,7 @@ export function Modal({ isOpen, onClose, title, children, className }: ModalProp
       
       {/* Modal content */}
       <div 
-        className={cn(
-          "relative z-50 w-full max-w-lg rounded-3xl bg-white p-6 shadow-xl border border-slate-100 transition-all",
+        className={cn("relative z-50 w-full max-w-lg rounded-3xl bg-white/80 backdrop-blur-2xl p-6 shadow-2xl transition-all",
           className
         )}
       >
@@ -41,6 +46,7 @@ export function Modal({ isOpen, onClose, title, children, className }: ModalProp
           {children}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

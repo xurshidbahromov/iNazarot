@@ -1,24 +1,23 @@
-import { useState } from 'react';
-import { Plus, Search, Percent, Trophy, Users, Trash2 } from 'lucide-react';
-import { Button } from '../../components/ui/Button';
-import { Input } from '../../components/ui/Input';
-import { Table } from '../../components/ui/Table';
-import { Modal } from '../../components/ui/Modal';
-import { useCRMStore } from '../../store/useCRMStore';
+import { useState} from'react';
+import { Plus, Search, Percent, Trophy, Users, Trash2} from'lucide-react';
+import { Button} from'../../components/ui/Button';
+import { Input} from'../../components/ui/Input';
+import { Table} from'../../components/ui/Table';
+import { Modal} from'../../components/ui/Modal';
+import { useCRMStore} from'../../store/useCRMStore';
 
 export default function Categories() {
-  const { categories, addCategory, deleteCategory, clients } = useCRMStore();
+  const { categories, addCategory, deleteCategory, clients} = useCRMStore();
   const [search, setSearch] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Form State
   const [form, setForm] = useState({
-    name: '',
-    description: '',
+    name:'',
+    description:'',
     discount: 0,
     minPurchase: 0,
-    color: 'bg-blue-100 text-blue-700 border-blue-200'
-  });
+    color:'bg-blue-100 text-blue-700 border-blue-200'});
 
   const filtered = categories.filter(c =>
     c.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -32,28 +31,21 @@ export default function Categories() {
       description: form.description,
       discount: Number(form.discount),
       minPurchase: Number(form.minPurchase),
-      color: form.color
-    });
+      color: form.color});
     setForm({
-      name: '',
-      description: '',
+      name:'',
+      description:'',
       discount: 0,
       minPurchase: 0,
-      color: 'bg-blue-100 text-blue-700 border-blue-200'
-    });
-    setIsModalOpen(false);
-  };
+      color:'bg-blue-100 text-blue-700 border-blue-200'});
+    setIsModalOpen(false);};
 
   const getClientCountByCategory = (categoryName: string) => {
     // Mocking customer categorization logic based on status or name (for visual representation)
     if (categoryName.toLowerCase().includes('vip')) {
-      return clients.filter(c => c.balance === 0 && c.status === 'Faol').length;
-    } else if (categoryName.toLowerCase().includes('doimiy')) {
-      return clients.filter(c => c.balance < 0 && c.status === 'Faol').length;
-    } else {
-      return clients.filter(c => c.status !== 'Faol').length;
-    }
-  };
+      return clients.filter(c => c.balance === 0 && c.status ==='Faol').length;} else if (categoryName.toLowerCase().includes('doimiy')) {
+      return clients.filter(c => c.balance < 0 && c.status ==='Faol').length;} else {
+      return clients.filter(c => c.status !=='Faol').length;}};
 
   return (
     <div className="space-y-6 pb-8">
@@ -66,7 +58,7 @@ export default function Categories() {
           </h3>
           <p className="mt-1.5 text-sm text-slate-500">Mijozlarni xarid hajmiga qarab toifalash, chegirmalar va bonuslar tizimini sozlash.</p>
         </div>
-        <Button className="rounded-xl h-10 px-4 bg-primary-600 hover:bg-primary-700 shadow-sm" onClick={() => setIsModalOpen(true)}>
+        <Button className="rounded-xl h-10 px-4 bg-primary-600 hover:bg-primary-700 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]" onClick={() => setIsModalOpen(true)}>
           <Plus className="w-4 h-4 mr-2" strokeWidth={2} /> Toifa qo'shish
         </Button>
       </div>
@@ -75,7 +67,7 @@ export default function Categories() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         <div className="bg-indigo-50 border border-indigo-200 p-5 rounded-2xl flex flex-col justify-between">
           <div>
-            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm mb-3">
+            <div className="w-10 h-10 bg-white/80 backdrop-blur-md rounded-xl flex items-center justify-center shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] mb-3">
               <Trophy className="w-5 h-5 text-indigo-600" />
             </div>
             <p className="text-xs text-indigo-600 font-semibold mb-1">Eng yuqori toifa chegirmasi</p>
@@ -88,7 +80,7 @@ export default function Categories() {
 
         <div className="bg-emerald-50 border border-emerald-200 p-5 rounded-2xl flex flex-col justify-between">
           <div>
-            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm mb-3">
+            <div className="w-10 h-10 bg-white/80 backdrop-blur-md rounded-xl flex items-center justify-center shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] mb-3">
               <Percent className="w-5 h-5 text-emerald-600" />
             </div>
             <p className="text-xs text-emerald-600 font-semibold mb-1">Faol toifalar</p>
@@ -101,7 +93,7 @@ export default function Categories() {
 
         <div className="bg-blue-50 border border-blue-200 p-5 rounded-2xl flex flex-col justify-between">
           <div>
-            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm mb-3">
+            <div className="w-10 h-10 bg-white/80 backdrop-blur-md rounded-xl flex items-center justify-center shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] mb-3">
               <Users className="w-5 h-5 text-blue-600" />
             </div>
             <p className="text-xs text-blue-600 font-semibold mb-1">Saralangan mijozlar</p>
@@ -114,7 +106,7 @@ export default function Categories() {
       </div>
 
       {/* Table & Filter */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
         <div className="p-5 border-b border-slate-200 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="max-w-md relative flex-1">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
@@ -128,12 +120,12 @@ export default function Categories() {
         <Table
           variant="nested"
           columns={[
-            { key: 'name', label: 'Toifa nomi' },
-            { key: 'description', label: 'Tavsif / Izoh' },
-            { key: 'discount', label: 'Chegirma foizi' },
-            { key: 'minPurchase', label: 'Kirish ostonasi (Min. Xarid)' },
-            { key: 'clientsCount', label: 'Mijozlar soni' },
-            { key: 'actions', label: 'Amallar', className: 'text-right' },
+            { key:'name', label:'Toifa nomi'},
+            { key:'description', label:'Tavsif / Izoh'},
+            { key:'discount', label:'Chegirma foizi'},
+            { key:'minPurchase', label:'Kirish ostonasi (Min. Xarid)'},
+            { key:'clientsCount', label:'Mijozlar soni'},
+            { key:'actions', label:'Amallar', className:'text-right'},
           ]}
           data={filtered}
           renderRow={(category) => {
@@ -152,7 +144,7 @@ export default function Categories() {
                   </span>
                 </td>
                 <td className="whitespace-nowrap px-3 py-4 text-[14px] font-bold text-slate-700">
-                  {category.minPurchase > 0 ? `${category.minPurchase.toLocaleString()} UZS` : 'Cheklovsiz'}
+                  {category.minPurchase > 0 ?`${category.minPurchase.toLocaleString()} UZS` :'Cheklovsiz'}
                 </td>
                 <td className="whitespace-nowrap px-3 py-4 text-[14px] font-semibold text-slate-600">
                   <span className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md text-xs">{count} ta mijoz</span>
@@ -161,15 +153,12 @@ export default function Categories() {
                   <Button variant="outline" size="sm" className="h-8 px-2 rounded-lg text-rose-500 border-slate-200 hover:bg-rose-50 hover:border-rose-300"
                     onClick={() => {
                       if (confirm(`${category.name} toifasini o'chirishni xohlaysizmi?`)) {
-                        deleteCategory(category.id);
-                      }
-                    }}>
+                        deleteCategory(category.id);}}}>
                     <Trash2 className="w-3.5 h-3.5 mr-1" /> O'chirish
                   </Button>
                 </td>
               </>
-            );
-          }}
+            );}}
         />
       </div>
 
@@ -177,36 +166,35 @@ export default function Categories() {
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Yangi toifa qo'shish">
         <form onSubmit={handleSubmit} className="space-y-4 p-1">
           <Input label="Toifa nomi *" placeholder="Masalan: VIP xaridorlar" value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })} className="rounded-xl" required />
+            onChange={(e) => setForm({ ...form, name: e.target.value})} className="rounded-xl" required />
           
           <div>
             <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">Tavsif / Izoh *</label>
-            <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })}
+            <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value})}
               placeholder="Qanday mijozlar ushbu toifaga kirishi haqida qisqacha izoh..."
-              className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-[14px] focus:outline-none resize-none" rows={3} required />
+              className="w-full px-3 py-2 bg-white/80 backdrop-blur-md border border-slate-300 rounded-xl text-[14px] focus:outline-none resize-none" rows={3} required />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <Input label="Chegirma foizi (%)" type="number" min={0} max={100} value={form.discount || ''}
-              onChange={(e) => setForm({ ...form, discount: Number(e.target.value) })} className="rounded-xl font-bold" />
-            <Input label="Minimal xarid summasi (UZS)" type="number" min={0} value={form.minPurchase || ''}
-              onChange={(e) => setForm({ ...form, minPurchase: Number(e.target.value) })} className="rounded-xl font-bold" />
+            <Input label="Chegirma foizi (%)" type="number" min={0} max={100} value={form.discount ||''}
+              onChange={(e) => setForm({ ...form, discount: Number(e.target.value)})} className="rounded-xl font-bold" />
+            <Input label="Minimal xarid summasi (UZS)" type="number" min={0} value={form.minPurchase ||''}
+              onChange={(e) => setForm({ ...form, minPurchase: Number(e.target.value)})} className="rounded-xl font-bold" />
           </div>
 
           <div>
             <label className="block text-[13px] font-semibold text-slate-700 mb-2">Vizual ko'rinishi (Badge rangi)</label>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {[
-                { name: 'Indigo / Binafsha', val: 'bg-indigo-100 text-indigo-700 border-indigo-200' },
-                { name: 'Yashil / Emerald', val: 'bg-emerald-100 text-emerald-700 border-emerald-200' },
-                { name: 'Ko\'k / Blue', val: 'bg-blue-100 text-blue-700 border-blue-200' },
-                { name: 'Sariq / Amber', val: 'bg-amber-100 text-amber-700 border-amber-200' },
+                { name:'Indigo / Binafsha', val:'bg-indigo-100 text-indigo-700 border-indigo-200'},
+                { name:'Yashil / Emerald', val:'bg-emerald-100 text-emerald-700 border-emerald-200'},
+                { name:'Ko\'k / Blue', val:'bg-blue-100 text-blue-700 border-blue-200'},
+                { name:'Sariq / Amber', val:'bg-amber-100 text-amber-700 border-amber-200'},
               ].map((c) => (
-                <button key={c.val} type="button" onClick={() => setForm({ ...form, color: c.val })}
+                <button key={c.val} type="button" onClick={() => setForm({ ...form, color: c.val})}
                   className={`px-2 py-2 rounded-xl text-[11px] font-bold border transition-colors ${
-                    form.color === c.val ? 'border-primary-500 ring-2 ring-primary-500/10' : 'border-slate-200 bg-white hover:bg-slate-50'
-                  }`}>
-                  <span className={`inline-block w-2 h-2 rounded-full mr-1.5 ${c.val.split(' ')[0]}`} />
+                    form.color === c.val ?'border-primary-500 ring-2 ring-primary-500/10' :'border-slate-200 bg-white hover:bg-slate-50  :bg-slate-800/50'}`}>
+                  <span className={`inline-block w-2 h-2 rounded-full mr-1.5 ${c.val.split('')[0]}`} />
                   {c.name}
                 </button>
               ))}
@@ -220,5 +208,4 @@ export default function Categories() {
         </form>
       </Modal>
     </div>
-  );
-}
+  );}

@@ -1,28 +1,30 @@
-import { useState } from 'react';
-import { Plus, Trash2, Edit } from 'lucide-react';
-import { Button } from '../../components/ui/Button';
-import { Input } from '../../components/ui/Input';
-import { Table } from '../../components/ui/Table';
-import { Modal } from '../../components/ui/Modal';
-import { useHRStore } from '../../store/useHRStore';
+import { useState} from'react';
+import { Plus, Trash2, Edit, Building2} from'lucide-react';
+import { Button} from'../../components/ui/Button';
+import { Input} from'../../components/ui/Input';
+import { Table} from'../../components/ui/Table';
+import { Modal} from'../../components/ui/Modal';
+import { useHRStore} from'../../store/useHRStore';
 
 export default function Departments() {
-  const { departments, addDepartment } = useHRStore();
+  const { departments, addDepartment} = useHRStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [form, setForm] = useState({ name: '', manager: '', employeeCount: 0 });
+  const [form, setForm] = useState({ name:'', manager:'', employeeCount: 0});
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     addDepartment(form);
-    setForm({ name: '', manager: '', employeeCount: 0 });
-    setIsModalOpen(false);
-  };
+    setForm({ name:'', manager:'', employeeCount: 0});
+    setIsModalOpen(false);};
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-medium leading-6 text-slate-900">Bo'limlar</h3>
+          <h3 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
+            <Building2 className="w-6 h-6 text-primary-600" />
+            Bo'limlar
+          </h3>
           <p className="mt-1 text-sm text-slate-500">
             Tashkilotning tarkibiy bo'linmalari va ularning ma'lumotlari.
           </p>
@@ -34,10 +36,10 @@ export default function Departments() {
 
       <Table
         columns={[
-          { key: 'name', label: "Bo'lim nomi" },
-          { key: 'manager', label: 'Rahbar' },
-          { key: 'count', label: 'Xodimlar soni' },
-          { key: 'actions', label: '' },
+          { key:'name', label:"Bo'lim nomi"},
+          { key:'manager', label:'Rahbar'},
+          { key:'count', label:'Xodimlar soni'},
+          { key:'actions', label:''},
         ]}
         data={departments}
         renderRow={(dept) => (
@@ -71,22 +73,22 @@ export default function Departments() {
             label="Bo'lim nomi"
             placeholder="Savdo bo'limi"
             value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            onChange={(e) => setForm({ ...form, name: e.target.value})}
             required
           />
           <Input
             label="Rahbar (F.I.SH)"
             placeholder="Aziz Rahimov"
             value={form.manager}
-            onChange={(e) => setForm({ ...form, manager: e.target.value })}
+            onChange={(e) => setForm({ ...form, manager: e.target.value})}
             required
           />
           <Input
             label="Xodimlar soni"
             type="number"
             placeholder="0"
-            value={form.employeeCount || ''}
-            onChange={(e) => setForm({ ...form, employeeCount: Number(e.target.value) })}
+            value={form.employeeCount ||''}
+            onChange={(e) => setForm({ ...form, employeeCount: Number(e.target.value)})}
           />
           <div className="flex gap-3 justify-end pt-2">
             <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>
@@ -97,5 +99,4 @@ export default function Departments() {
         </form>
       </Modal>
     </div>
-  );
-}
+  );}

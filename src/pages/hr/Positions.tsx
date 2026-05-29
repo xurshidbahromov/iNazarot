@@ -1,11 +1,11 @@
-import { Plus } from 'lucide-react';
-import { Button } from '../../components/ui/Button';
-import { Table } from '../../components/ui/Table';
+import { Plus, Award} from'lucide-react';
+import { Button} from'../../components/ui/Button';
+import { Table} from'../../components/ui/Table';
 
 const mockPositions = [
-  { id: 1, name: 'Sotuvchi', department: "Savdo bo'limi", baseSalary: '3,000,000 UZS' },
-  { id: 2, name: 'Bosh bugalter', department: "Moliya bo'limi", baseSalary: '8,000,000 UZS' },
-  { id: 3, name: 'Ombor mudiri', department: 'Ombor', baseSalary: '5,000,000 UZS' },
+  { id: 1, name:'Sotuvchi', department:"Savdo bo'limi", baseSalary:'3,000,000 UZS'},
+  { id: 2, name:'Bosh bugalter', department:"Moliya bo'limi", baseSalary:'8,000,000 UZS'},
+  { id: 3, name:'Ombor mudiri', department:'Ombor', baseSalary:'5,000,000 UZS'},
 ];
 
 export default function Positions() {
@@ -13,7 +13,10 @@ export default function Positions() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-medium leading-6 text-slate-900">Lavozimlar</h3>
+          <h3 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
+            <Award className="w-6 h-6 text-primary-600" />
+            Lavozimlar
+          </h3>
           <p className="mt-1 text-sm text-slate-500">
             Kompaniyadagi mavjud lavozimlar va ularning oylik stavkalari.
           </p>
@@ -25,9 +28,9 @@ export default function Positions() {
 
       <Table
         columns={[
-          { key: 'name', label: 'Lavozim nomi' },
-          { key: 'department', label: "Tegishli bo'lim" },
-          { key: 'salary', label: 'Baza oylik maoshi' },
+          { key:'name', label:'Lavozim nomi'},
+          { key:'department', label:"Tegishli bo'lim"},
+          { key:'salary', label:'Baza oylik maoshi'},
         ]}
         data={mockPositions}
         renderRow={(pos) => (
@@ -41,5 +44,4 @@ export default function Positions() {
         )}
       />
     </div>
-  );
-}
+  );}

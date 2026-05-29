@@ -1,17 +1,17 @@
-import { useState } from 'react';
-import { Plus, Search, MessageSquare, Download, Users, TrendingUp, AlertCircle, Wallet } from 'lucide-react';
-import { Button } from '../../components/ui/Button';
-import { Input } from '../../components/ui/Input';
-import { Table } from '../../components/ui/Table';
-import { Modal } from '../../components/ui/Modal';
-import { useCRMStore } from '../../store/useCRMStore';
-import { exportToExcel } from '../../utils/exportToExcel';
+import { useState} from'react';
+import { Plus, Search, MessageSquare, Download, Users, TrendingUp, AlertCircle, Wallet} from'lucide-react';
+import { Button} from'../../components/ui/Button';
+import { Input} from'../../components/ui/Input';
+import { Table} from'../../components/ui/Table';
+import { Modal} from'../../components/ui/Modal';
+import { useCRMStore} from'../../store/useCRMStore';
+import { exportToExcel} from'../../utils/exportToExcel';
 
 export default function Clients() {
-  const { clients, addClient } = useCRMStore();
+  const { clients, addClient} = useCRMStore();
   const [search, setSearch] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [form, setForm] = useState({ name: '', phone: '', status: 'Faol', lastPurchase: '-', balance: 0 });
+  const [form, setForm] = useState({ name:'', phone:'', status:'Faol', lastPurchase:'-', balance: 0});
 
   const filtered = clients.filter(c =>
     c.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -21,21 +21,19 @@ export default function Clients() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     addClient(form);
-    setForm({ name: '', phone: '', status: 'Faol', lastPurchase: '-', balance: 0 });
-    setIsModalOpen(false);
-  };
+    setForm({ name:'', phone:'', status:'Faol', lastPurchase:'-', balance: 0});
+    setIsModalOpen(false);};
 
   const formatBalance = (balance: number) => {
-    if (balance === 0) return '0 UZS';
-    const sign = balance > 0 ? '+' : '';
-    return `${sign}${balance.toLocaleString()} UZS`;
-  };
+    if (balance === 0) return'0 UZS';
+    const sign = balance > 0 ?'+' :'';
+    return`${sign}${balance.toLocaleString()} UZS`;};
 
   const stats = [
-    { title: 'Jami Mijozlar', value: clients.length.toString(), icon: Users, color: 'text-blue-500', bg: 'bg-blue-50' },
-    { title: 'Faol Mijozlar', value: clients.filter(c => c.status === 'Faol').length.toString(), icon: TrendingUp, color: 'text-emerald-500', bg: 'bg-emerald-50' },
-    { title: "Qora Ro'yxat", value: clients.filter(c => c.status !== 'Faol').length.toString(), icon: AlertCircle, color: 'text-red-500', bg: 'bg-red-50' },
-    { title: 'Umumiy Qarz', value: formatBalance(clients.filter(c => c.balance < 0).reduce((a, b) => a + b.balance, 0)), icon: Wallet, color: 'text-amber-500', bg: 'bg-amber-50' },
+    { title:'Jami Mijozlar', value: clients.length.toString(), icon: Users, color:'text-blue-500', bg:'bg-blue-50'},
+    { title:'Faol Mijozlar', value: clients.filter(c => c.status ==='Faol').length.toString(), icon: TrendingUp, color:'text-emerald-500', bg:'bg-emerald-50'},
+    { title:"Qora Ro'yxat", value: clients.filter(c => c.status !=='Faol').length.toString(), icon: AlertCircle, color:'text-red-500', bg:'bg-red-50'},
+    { title:'Umumiy Qarz', value: formatBalance(clients.filter(c => c.balance < 0).reduce((a, b) => a + b.balance, 0)), icon: Wallet, color:'text-amber-500', bg:'bg-amber-50'},
   ];
 
   return (
@@ -43,7 +41,10 @@ export default function Clients() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h3 className="text-2xl font-bold tracking-tight text-slate-900">Mijozlar bazasi</h3>
+          <h3 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
+            <Users className="w-6 h-6 text-primary-600" />
+            Mijozlar bazasi
+          </h3>
           <p className="mt-1.5 text-sm text-slate-500">
             Barcha mijozlar, ularning qarzdorligi va xaridlar tarixini boshqarish.
           </p>
@@ -51,19 +52,19 @@ export default function Clients() {
         <div className="flex flex-wrap gap-2.5">
           <Button
             variant="outline"
-            className="rounded-xl h-10 px-4 bg-white border-slate-200 hover:bg-slate-50 text-slate-700 shadow-sm transition-all"
-            onClick={() => exportToExcel(clients, 'Mijozlar_qarz_va_balans')}
+            className="rounded-xl h-10 px-4 bg-white border-slate-200 hover:bg-slate-50  :bg-slate-800/50 text-slate-700 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] transition-all"
+            onClick={() => exportToExcel(clients,'Mijozlar_qarz_va_balans')}
           >
             <Download className="w-4 h-4 mr-2 text-slate-400" strokeWidth={1.6} /> Excel yuklash
           </Button>
           <Button 
             variant="outline" 
-            className="rounded-xl h-10 px-4 bg-white border-slate-200 hover:bg-slate-50 text-slate-700 shadow-sm transition-all"
+            className="rounded-xl h-10 px-4 bg-white border-slate-200 hover:bg-slate-50  :bg-slate-800/50 text-slate-700 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] transition-all"
           >
             <MessageSquare className="w-4 h-4 mr-2 text-primary-500" strokeWidth={1.6} /> SMS xabarnoma
           </Button>
           <Button 
-            className="rounded-xl h-10 px-4 bg-primary-600 hover:bg-primary-700 shadow-sm transition-all"
+            className="rounded-xl h-10 px-4 bg-primary-600 hover:bg-primary-700 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] transition-all"
             onClick={() => setIsModalOpen(true)}
           >
             <Plus className="w-4 h-4 mr-2" strokeWidth={2} /> Mijoz qo'shish
@@ -74,7 +75,7 @@ export default function Clients() {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, idx) => (
-          <div key={idx} className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4 hover:shadow-md transition-shadow">
+          <div key={idx} className="bg-white/80 backdrop-blur-sm p-5 rounded-2xl border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] flex items-center gap-4 hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.06)] transition-shadow">
             <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${stat.bg}`}>
               <stat.icon className={`w-6 h-6 ${stat.color}`} strokeWidth={1.6} />
             </div>
@@ -87,7 +88,7 @@ export default function Clients() {
       </div>
 
       {/* Search and Table Area */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
         <div className="p-5 border-b border-slate-200 bg-slate-50/50">
           <div className="max-w-md relative">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
@@ -105,11 +106,11 @@ export default function Clients() {
         <Table
           variant="nested"
           columns={[
-            { key: 'name', label: 'Mijoz nomi' },
-            { key: 'phone', label: 'Telefon raqam' },
-            { key: 'lastPurchase', label: 'Oxirgi savdo' },
-            { key: 'balance', label: 'Joriy balans' },
-            { key: 'status', label: 'Holati' },
+            { key:'name', label:'Mijoz nomi', sortable: true},
+            { key:'phone', label:'Telefon raqam', sortable: true},
+            { key:'lastPurchase', label:'Oxirgi savdo', sortable: true},
+            { key:'balance', label:'Joriy balans', sortable: true},
+            { key:'status', label:'Holati', sortable: true},
           ]}
           data={filtered}
           renderRow={(client) => (
@@ -125,17 +126,15 @@ export default function Clients() {
               <td className="whitespace-nowrap px-3 py-4 text-[14px] text-slate-500 font-medium">{client.phone}</td>
               <td className="whitespace-nowrap px-3 py-4 text-[14px] text-slate-500">{client.lastPurchase}</td>
               <td className={`whitespace-nowrap px-3 py-4 text-[14px] font-bold ${
-                client.balance < 0 ? 'text-red-500' : 'text-slate-700'
-              }`}>
+                client.balance < 0 ?'text-red-500' :'text-slate-700'}`}>
                 {formatBalance(client.balance)}
               </td>
               <td className="whitespace-nowrap px-3 py-4 text-sm text-slate-500">
                 <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[12px] font-semibold border ${
-                  client.status === 'Faol' 
-                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
-                    : 'bg-red-50 text-red-700 border-red-200'
-                }`}>
-                  <span className={`w-1.5 h-1.5 rounded-full ${client.status === 'Faol' ? 'bg-emerald-500' : 'bg-red-500'}`} />
+                  client.status ==='Faol' 
+                    ?'bg-emerald-50 text-emerald-700 border-emerald-200' 
+                    :'bg-red-50 text-red-700 border-red-200'}`}>
+                  <span className={`w-1.5 h-1.5 rounded-full ${client.status ==='Faol' ?'bg-emerald-500' :'bg-red-500'}`} />
                   {client.status}
                 </span>
               </td>
@@ -150,7 +149,7 @@ export default function Clients() {
             label="Mijoz ismi yoki Tashkilot nomi"
             placeholder="Masalan: Tohir Murodov"
             value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            onChange={(e) => setForm({ ...form, name: e.target.value})}
             className="rounded-xl"
             required
           />
@@ -158,16 +157,16 @@ export default function Clients() {
             label="Telefon raqami"
             placeholder="+998 90 123 45 67"
             value={form.phone}
-            onChange={(e) => setForm({ ...form, phone: e.target.value })}
+            onChange={(e) => setForm({ ...form, phone: e.target.value})}
             className="rounded-xl"
             required
           />
           <div>
             <label className="block text-[13px] font-medium text-slate-700 mb-1.5">Mijoz holati</label>
             <select
-              className="flex h-11 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition-all"
               value={form.status}
-              onChange={(e) => setForm({ ...form, status: e.target.value })}
+              onChange={(e) => setForm({ ...form, status: e.target.value as 'Faol' | 'Qora ro\'yxat' })}
+              className="appearance-none flex h-11 w-full rounded-xl border-2 border-[#f1f2f4]/60 bg-white/50 backdrop-blur-sm pl-4 pr-10 py-2.5 text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)] transition-all bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:20px_20px] bg-[position:right_12px_center] bg-no-repeat"
             >
               <option value="Faol">Faol (Yaxshi)</option>
               <option value="Qora ro'yxat">Qora ro'yxat (Qarzdor/Muammoli)</option>
@@ -184,5 +183,4 @@ export default function Clients() {
         </form>
       </Modal>
     </div>
-  );
-}
+  );}

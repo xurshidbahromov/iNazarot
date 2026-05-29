@@ -1,30 +1,28 @@
-import { useState } from 'react';
-import { Plus, Search, ShoppingBag, Clock, Eye, Calendar, DollarSign, Wallet, FileText, Trash2, TrendingUp } from 'lucide-react';
-import { Button } from '../../components/ui/Button';
-import { Input } from '../../components/ui/Input';
-import { Table } from '../../components/ui/Table';
-import { Modal } from '../../components/ui/Modal';
-import { useCRMStore } from '../../store/useCRMStore';
-import type { Order, OrderItem } from '../../store/useCRMStore';
-import { useWarehouseStore } from '../../store/useWarehouseStore';
+import { useState} from'react';
+import { Plus, Search, ShoppingBag, Clock, Eye, Calendar, DollarSign, Wallet, FileText, Trash2, TrendingUp} from'lucide-react';
+import { Button} from'../../components/ui/Button';
+import { Input} from'../../components/ui/Input';
+import { Table} from'../../components/ui/Table';
+import { Modal} from'../../components/ui/Modal';
+import { useCRMStore} from'../../store/useCRMStore';
+import type { Order, OrderItem} from'../../store/useCRMStore';
+import { useWarehouseStore} from'../../store/useWarehouseStore';
 
-const statusMap: Record<string, { label: string; cls: string }> = {
-  yangi: { label: 'Yangi', cls: 'bg-blue-50 text-blue-700 border-blue-200' },
-  tayyorlanmoqda: { label: 'Tayyorlanmoqda', cls: 'bg-amber-50 text-amber-700 border-amber-200' },
-  yetkazilmoqda: { label: 'Yetkazilmoqda', cls: 'bg-indigo-50 text-indigo-700 border-indigo-200' },
-  yakunlandi: { label: 'Yakunlandi', cls: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
-  bekor_qilingan: { label: 'Bekor qilingan', cls: 'bg-rose-50 text-rose-700 border-rose-200' },
-};
+const statusMap: Record<string, { label: string; cls: string}> = {
+  yangi: { label:'Yangi', cls:'bg-blue-50 text-blue-700 border-blue-200'},
+  tayyorlanmoqda: { label:'Tayyorlanmoqda', cls:'bg-amber-50 text-amber-700 border-amber-200'},
+  yetkazilmoqda: { label:'Yetkazilmoqda', cls:'bg-indigo-50 text-indigo-700 border-indigo-200'},
+  yakunlandi: { label:'Yakunlandi', cls:'bg-emerald-50 text-emerald-700 border-emerald-200'},
+  bekor_qilingan: { label:'Bekor qilingan', cls:'bg-rose-50 text-rose-700 border-rose-200'},};
 
-const paymentStatusMap: Record<string, { label: string; cls: string }> = {
-  paid: { label: 'To\'langan', cls: 'bg-emerald-100 text-emerald-800' },
-  unpaid: { label: 'Nasiya (To\'lanmagan)', cls: 'bg-rose-100 text-rose-800' },
-  partial: { label: 'Qisman to\'langan', cls: 'bg-amber-100 text-amber-800' },
-};
+const paymentStatusMap: Record<string, { label: string; cls: string}> = {
+  paid: { label:'To\'langan', cls:'bg-emerald-100 text-emerald-800'},
+  unpaid: { label:'Nasiya (To\'lanmagan)', cls:'bg-rose-100 text-rose-800'},
+  partial: { label:'Qisman to\'langan', cls:'bg-amber-100 text-amber-800'},};
 
 export default function Orders() {
-  const { clients, orders, addOrder, updateOrderStatus, updateOrderPayment } = useCRMStore();
-  const { products } = useWarehouseStore();
+  const { clients, orders, addOrder, updateOrderStatus, updateOrderPayment} = useCRMStore();
+  const { products} = useWarehouseStore();
 
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -38,7 +36,7 @@ export default function Orders() {
 
   // New Order Form State
   const [newOrderClientId, setNewOrderClientId] = useState<string>('');
-  const [newOrderItems, setNewOrderItems] = useState<{ productId: number; quantity: number; price: number }[]>([]);
+  const [newOrderItems, setNewOrderItems] = useState<{ productId: number; quantity: number; price: number}[]>([]);
   const [newOrderPaidAmount, setNewOrderPaidAmount] = useState<number>(0);
 
   const [newOrderInstallmentTerm, setNewOrderInstallmentTerm] = useState<number>(0);
@@ -50,44 +48,34 @@ export default function Orders() {
   const filtered = orders.filter(o => {
     const matchesSearch = o.orderNumber.toLowerCase().includes(search.toLowerCase()) || 
                           o.clientName.toLowerCase().includes(search.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || o.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
+    const matchesStatus = statusFilter ==='all' || o.status === statusFilter;
+    return matchesSearch && matchesStatus;});
 
-  const totalSales = orders.filter(o => o.status !== 'bekor_qilingan').reduce((a, b) => a + b.totalAmount, 0);
-  const totalDebt = orders.filter(o => o.status !== 'bekor_qilingan').reduce((a, b) => a + (b.totalAmount - b.paidAmount), 0);
-  const activeOrdersCount = orders.filter(o => ['yangi', 'tayyorlanmoqda', 'yetkazilmoqda'].includes(o.status)).length;
+  const totalSales = orders.filter(o => o.status !=='bekor_qilingan').reduce((a, b) => a + b.totalAmount, 0);
+  const totalDebt = orders.filter(o => o.status !=='bekor_qilingan').reduce((a, b) => a + (b.totalAmount - b.paidAmount), 0);
+  const activeOrdersCount = orders.filter(o => ['yangi','tayyorlanmoqda','yetkazilmoqda'].includes(o.status)).length;
 
   const handleAddProductItem = () => {
     if (products.length > 0) {
-      setNewOrderItems(prev => [...prev, { productId: products[0].id, quantity: 1, price: products[0].price }]);
-    }
-  };
+      setNewOrderItems(prev => [...prev, { productId: products[0].id, quantity: 1, price: products[0].price}]);}};
 
   const handleRemoveProductItem = (index: number) => {
-    setNewOrderItems(prev => prev.filter((_, i) => i !== index));
-  };
+    setNewOrderItems(prev => prev.filter((_, i) => i !== index));};
 
-  const handleItemChange = (index: number, field: 'productId' | 'quantity' | 'price', value: number) => {
+  const handleItemChange = (index: number, field:'productId' |'quantity' |'price', value: number) => {
     setNewOrderItems(prev => prev.map((item, i) => {
       if (i === index) {
-        if (field === 'productId') {
+        if (field ==='productId') {
           const selectedProd = products.find(p => p.id === value);
           return {
             ...item,
             productId: value,
-            price: selectedProd ? selectedProd.price : 0
-          };
-        }
-        return { ...item, [field]: value };
-      }
-      return item;
-    }));
-  };
+            price: selectedProd ? selectedProd.price : 0};}
+        return { ...item, [field]: value};}
+      return item;}));};
 
   const calculateNewOrderTotal = () => {
-    return newOrderItems.reduce((sum, item) => sum + (item.quantity * item.price), 0);
-  };
+    return newOrderItems.reduce((sum, item) => sum + (item.quantity * item.price), 0);};
 
   const handleCreateOrder = (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,22 +89,17 @@ export default function Orders() {
     // To'lov holatini avtomatik aniqlash
     let payStatus: Order['paymentStatus'];
     if (newOrderPaidAmount === 0) {
-      payStatus = 'unpaid';
-    } else if (newOrderPaidAmount < totalAmount) {
-      payStatus = 'partial';
-    } else {
-      payStatus = 'paid';
-    }
+      payStatus ='unpaid';} else if (newOrderPaidAmount < totalAmount) {
+      payStatus ='partial';} else {
+      payStatus ='paid';}
 
     const orderProducts: OrderItem[] = newOrderItems.map(item => {
       const prod = products.find(p => p.id === item.productId);
       return {
         productId: item.productId,
-        name: prod ? prod.name : 'Noma\'lum mahsulot',
+        name: prod ? prod.name :'Noma\'lum mahsulot',
         quantity: item.quantity,
-        price: item.price
-      };
-    });
+        price: item.price};});
 
     addOrder({
       clientId: client.id,
@@ -125,10 +108,9 @@ export default function Orders() {
       totalAmount,
       paidAmount: newOrderPaidAmount,
       paymentStatus: payStatus,
-      status: 'yangi',
+      status:'yangi',
       notes: newOrderNotes,
-      installmentTerm: payStatus !== 'paid' ? newOrderInstallmentTerm : undefined
-    });
+      installmentTerm: payStatus !=='paid' ? newOrderInstallmentTerm : undefined});
 
     // Reset Form
     setNewOrderClientId('');
@@ -137,37 +119,31 @@ export default function Orders() {
 
     setNewOrderInstallmentTerm(0);
     setNewOrderNotes('');
-    setIsAddModalOpen(false);
-  };
+    setIsAddModalOpen(false);};
 
   const handleOpenPaymentModal = (order: Order) => {
     setSelectedOrder(order);
     setPaymentAmount(order.totalAmount - order.paidAmount);
-    setIsPaymentModalOpen(true);
-  };
+    setIsPaymentModalOpen(true);};
 
   const handleSavePayment = (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedOrder) return;
 
     const newPaidAmount = selectedOrder.paidAmount + Number(paymentAmount);
-    let newPayStatus: Order['paymentStatus'] = 'paid';
+    let newPayStatus: Order['paymentStatus'] ='paid';
 
     if (newPaidAmount === 0) {
-      newPayStatus = 'unpaid';
-    } else if (newPaidAmount < selectedOrder.totalAmount) {
-      newPayStatus = 'partial';
-    }
+      newPayStatus ='unpaid';} else if (newPaidAmount < selectedOrder.totalAmount) {
+      newPayStatus ='partial';}
 
     updateOrderPayment(selectedOrder.id, newPaidAmount, newPayStatus);
     setIsPaymentModalOpen(false);
-    setSelectedOrder(null);
-  };
+    setSelectedOrder(null);};
 
   const handleViewDetails = (order: Order) => {
     setSelectedOrder(order);
-    setIsViewModalOpen(true);
-  };
+    setIsViewModalOpen(true);};
 
   return (
     <div className="space-y-6 pb-8">
@@ -180,7 +156,7 @@ export default function Orders() {
           </h3>
           <p className="mt-1.5 text-sm text-slate-500">Mijozlar buyurtmalari, nasiya muddatlari va yetkazib berish jarayonini nazorat qilish.</p>
         </div>
-        <Button className="rounded-xl h-10 px-4 bg-primary-600 hover:bg-primary-700 shadow-sm" onClick={() => {
+        <Button className="rounded-xl h-10 px-4 bg-primary-600 hover:bg-primary-700 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]" onClick={() => {
           setIsAddModalOpen(true);
           handleAddProductItem(); // Dastlabki bir dona mahsulot qatorini qo'shish
         }}>
@@ -190,7 +166,7 @@ export default function Orders() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4 hover:shadow-md transition-shadow">
+        <div className="bg-white/80 backdrop-blur-sm p-5 rounded-2xl border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] flex items-center gap-4 hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.06)] transition-shadow">
           <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 bg-blue-50">
             <ShoppingBag className="w-6 h-6 text-blue-500" strokeWidth={1.6} />
           </div>
@@ -200,7 +176,7 @@ export default function Orders() {
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4 hover:shadow-md transition-shadow">
+        <div className="bg-white/80 backdrop-blur-sm p-5 rounded-2xl border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] flex items-center gap-4 hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.06)] transition-shadow">
           <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 bg-emerald-50">
             <TrendingUp className="w-6 h-6 text-emerald-500" strokeWidth={1.6} />
           </div>
@@ -210,7 +186,7 @@ export default function Orders() {
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4 hover:shadow-md transition-shadow">
+        <div className="bg-white/80 backdrop-blur-sm p-5 rounded-2xl border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] flex items-center gap-4 hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.06)] transition-shadow">
           <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 bg-red-50">
             <Wallet className="w-6 h-6 text-red-500" strokeWidth={1.6} />
           </div>
@@ -220,7 +196,7 @@ export default function Orders() {
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4 hover:shadow-md transition-shadow">
+        <div className="bg-white/80 backdrop-blur-sm p-5 rounded-2xl border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] flex items-center gap-4 hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.06)] transition-shadow">
           <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 bg-amber-50">
             <Clock className="w-6 h-6 text-amber-500" strokeWidth={1.6} />
           </div>
@@ -232,7 +208,7 @@ export default function Orders() {
       </div>
 
       {/* Filter and Table */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
         <div className="p-5 border-b border-slate-200 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="max-w-md relative flex-1">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
@@ -243,7 +219,7 @@ export default function Orders() {
           </div>
           <div className="flex gap-2">
             <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}
-              className="h-10 px-3 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary-500/20">
+              className="h-10 px-3 bg-white/80 backdrop-blur-md border border-slate-300 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary-500/20">
               <option value="all">Barcha holatlar</option>
               <option value="yangi">Yangi</option>
               <option value="tayyorlanmoqda">Tayyorlanmoqda</option>
@@ -257,14 +233,14 @@ export default function Orders() {
         <Table
           variant="nested"
           columns={[
-            { key: 'orderNumber', label: 'Buyurtma kodi' },
-            { key: 'clientName', label: 'Mijoz nomi' },
-            { key: 'date', label: 'Sana' },
-            { key: 'totalAmount', label: 'Jami' },
-            { key: 'paidAmount', label: 'To\'landi / Qarz' },
-            { key: 'paymentStatus', label: 'To\'lov' },
-            { key: 'status', label: 'Holat' },
-            { key: 'actions', label: 'Amallar', className: 'text-right' },
+            { key:'orderNumber', label:'Buyurtma kodi'},
+            { key:'clientName', label:'Mijoz nomi'},
+            { key:'date', label:'Sana'},
+            { key:'totalAmount', label:'Jami'},
+            { key:'paidAmount', label:'To\'landi / Qarz'},
+            { key:'paymentStatus', label:'To\'lov'},
+            { key:'status', label:'Holat'},
+            { key:'actions', label:'Amallar', className:'text-right'},
           ]}
           data={filtered}
           renderRow={(order) => {
@@ -291,10 +267,10 @@ export default function Orders() {
                   </span>
                 </td>
                 <td className="whitespace-nowrap px-3 py-4 text-right text-xs font-medium space-x-2">
-                  <Button variant="outline" size="sm" className="h-8 px-2 rounded-lg text-slate-600 border-slate-200 hover:bg-slate-50" onClick={() => handleViewDetails(order)}>
+                  <Button variant="outline" size="sm" className="h-8 px-2 rounded-lg text-slate-600 border-slate-200 hover:bg-slate-50  :bg-slate-800/50" onClick={() => handleViewDetails(order)}>
                     <Eye className="w-3.5 h-3.5 mr-1" /> Batafsil
                   </Button>
-                  {unpaid > 0 && order.status !== 'bekor_qilingan' && (
+                  {unpaid > 0 && order.status !=='bekor_qilingan' && (
                     <Button size="sm" className="h-8 px-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => handleOpenPaymentModal(order)}>
                       <DollarSign className="w-3.5 h-3.5 mr-1" /> To'lov
                     </Button>
@@ -312,7 +288,7 @@ export default function Orders() {
           <div>
             <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">Mijoz tanlang *</label>
             <select value={newOrderClientId} onChange={(e) => setNewOrderClientId(e.target.value)}
-              className="w-full h-11 px-3 bg-white border border-slate-300 rounded-xl text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-colors" required>
+              className="w-full h-11 px-3 bg-white/80 backdrop-blur-md border border-slate-300 rounded-xl text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-colors" required>
               <option value="">Mijozni tanlang...</option>
               {clients.map(c => <option key={c.id} value={c.id}>{c.name} (Balans: {c.balance.toLocaleString()} UZS)</option>)}
             </select>
@@ -328,23 +304,23 @@ export default function Orders() {
             
             <div className="space-y-3">
               {newOrderItems.map((item, index) => (
-                <div key={index} className="flex flex-col sm:flex-row gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                <div key={index} className="flex flex-col sm:flex-row gap-3 bg-slate-50 p-3 rounded-xl border-2 border-[#f1f2f4]">
                   <div className="flex-1">
                     <label className="block text-[11px] font-semibold text-slate-400 mb-1">Mahsulot</label>
-                    <select value={item.productId} onChange={(e) => handleItemChange(index, 'productId', Number(e.target.value))}
+                    <select value={item.productId} onChange={(e) => handleItemChange(index,'productId', Number(e.target.value))}
                       className="w-full h-9 px-2 bg-white border border-slate-300 rounded-lg text-[13px] text-slate-800 focus:outline-none">
                       {products.map(p => <option key={p.id} value={p.id}>{p.name} (Zaxira: {p.stock})</option>)}
                     </select>
                   </div>
                   
                   <div className="w-24">
-                    <Input label="Miqdor" type="number" min={1} value={item.quantity || ''}
-                      onChange={(e) => handleItemChange(index, 'quantity', Number(e.target.value))} className="h-9 rounded-lg text-sm" required />
+                    <Input label="Miqdor" type="number" min={1} value={item.quantity ||''}
+                      onChange={(e) => handleItemChange(index,'quantity', Number(e.target.value))} className="h-9 rounded-lg text-sm" required />
                   </div>
 
                   <div className="w-32">
-                    <Input label="Narx (UZS)" type="number" min={0} value={item.price || ''}
-                      onChange={(e) => handleItemChange(index, 'price', Number(e.target.value))} className="h-9 rounded-lg text-sm" required />
+                    <Input label="Narx (UZS)" type="number" min={0} value={item.price ||''}
+                      onChange={(e) => handleItemChange(index,'price', Number(e.target.value))} className="h-9 rounded-lg text-sm" required />
                   </div>
 
                   <div className="flex items-end justify-end">
@@ -358,7 +334,7 @@ export default function Orders() {
             </div>
           </div>
 
-          <div className="bg-slate-100 p-4 rounded-xl flex flex-col gap-2 border border-slate-200">
+          <div className="bg-slate-100 p-4 rounded-xl flex flex-col gap-2 border-2 border-[#f1f2f4]">
             <div className="flex justify-between text-sm font-semibold text-slate-600">
               <span>Umumiy miqdor:</span>
               <span>{newOrderItems.reduce((acc, curr) => acc + curr.quantity, 0)} dona</span>
@@ -371,14 +347,14 @@ export default function Orders() {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Input label="To'langan Summa (UZS)" type="number" min={0} max={calculateNewOrderTotal()} value={newOrderPaidAmount || ''}
+              <Input label="To'langan Summa (UZS)" type="number" min={0} max={calculateNewOrderTotal()} value={newOrderPaidAmount ||''}
                 onChange={(e) => setNewOrderPaidAmount(Number(e.target.value))} className="rounded-xl font-bold" />
               <p className="mt-1 text-[11px] text-slate-400">Qolgan summa mijoz qarziga yoziladi.</p>
             </div>
             <div>
               <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">Nasiya muddati (oyda)</label>
               <select value={newOrderInstallmentTerm} onChange={(e) => setNewOrderInstallmentTerm(Number(e.target.value))}
-                className="w-full h-11 px-3 bg-white border border-slate-300 rounded-xl text-[14px] focus:outline-none"
+                className="w-full h-11 px-3 bg-white/80 backdrop-blur-md border border-slate-300 rounded-xl text-[14px] focus:outline-none"
                 disabled={newOrderPaidAmount === calculateNewOrderTotal()}>
                 <option value={0}>Nasiya emas (bir martalik to'lov)</option>
                 <option value={1}>1 oy</option>
@@ -393,7 +369,7 @@ export default function Orders() {
             <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">Izohlar / Yetkazib berish manzili</label>
             <textarea value={newOrderNotes} onChange={(e) => setNewOrderNotes(e.target.value)}
               placeholder="Masalan: Yetkazish bepul, manzil: Toshkent sh, 1-uy"
-              className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-[14px] focus:outline-none resize-none" rows={2} />
+              className="w-full px-3 py-2 bg-white/80 backdrop-blur-md border border-slate-300 rounded-xl text-[14px] focus:outline-none resize-none" rows={2} />
           </div>
 
           <div className="flex gap-3 justify-end pt-4 border-t border-slate-100">
@@ -432,7 +408,7 @@ export default function Orders() {
           )}
           
           <Input label="Qabul qilinayotgan summa (UZS) *" type="number" min={1} max={selectedOrder ? selectedOrder.totalAmount - selectedOrder.paidAmount : 0}
-            value={paymentAmount || ''} onChange={(e) => setPaymentAmount(Number(e.target.value))} className="rounded-xl font-extrabold" required />
+            value={paymentAmount ||''} onChange={(e) => setPaymentAmount(Number(e.target.value))} className="rounded-xl font-extrabold" required />
 
           <div className="flex gap-3 justify-end pt-4 mt-2 border-t border-slate-100">
             <Button type="button" variant="outline" className="rounded-xl px-5" onClick={() => setIsPaymentModalOpen(false)}>Bekor qilish</Button>
@@ -460,16 +436,15 @@ export default function Orders() {
             </div>
 
             {/* Status change actions */}
-            <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+            <div className="bg-slate-50 p-4 rounded-xl border-2 border-[#f1f2f4] space-y-2">
               <label className="block text-xs font-bold text-slate-500 mb-1">Buyurtma holatini o'zgartirish</label>
               <div className="flex flex-wrap gap-2">
                 {Object.keys(statusMap).map((st) => (
                   <button key={st} type="button" onClick={() => updateOrderStatus(selectedOrder.id, st as Order['status'])}
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors ${
                       selectedOrder.status === st
-                        ? 'bg-primary-600 border-primary-600 text-white shadow-sm'
-                        : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
-                    }`}>
+                        ?'bg-primary-600 border-primary-600 text-white shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]'
+                        :'bg-white border-slate-200 text-slate-600 hover:bg-slate-50  :bg-slate-800/50'}`}>
                     {statusMap[st].label}
                   </button>
                 ))}
@@ -479,7 +454,7 @@ export default function Orders() {
             {/* Client info */}
             <div>
               <h5 className="text-[13px] font-bold text-slate-400 uppercase tracking-wider mb-2">Mijoz haqida</h5>
-              <div className="bg-white border border-slate-200 p-3 rounded-xl flex items-center gap-3">
+              <div className="bg-white/80 backdrop-blur-md border-2 border-[#f1f2f4] p-3 rounded-xl flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-500 text-sm">
                   {selectedOrder.clientName.substring(0, 2).toUpperCase()}
                 </div>
@@ -493,7 +468,7 @@ export default function Orders() {
             {/* Products List */}
             <div>
               <h5 className="text-[13px] font-bold text-slate-400 uppercase tracking-wider mb-2">Mahsulotlar</h5>
-              <div className="border border-slate-200 rounded-xl overflow-hidden">
+              <div className="border-2 border-[#f1f2f4] rounded-xl overflow-hidden">
                 <table className="min-w-full divide-y divide-slate-200">
                   <thead className="bg-slate-50">
                     <tr>
@@ -518,7 +493,7 @@ export default function Orders() {
             </div>
 
             {/* Financial summary */}
-            <div className="bg-slate-100 p-4 rounded-xl border border-slate-200 space-y-2">
+            <div className="bg-slate-100 p-4 rounded-xl border-2 border-[#f1f2f4] space-y-2">
               <div className="flex justify-between text-xs font-bold text-slate-500">
                 <span>Jami summa:</span>
                 <span className="text-slate-800">{selectedOrder.totalAmount.toLocaleString()} UZS</span>
@@ -535,7 +510,7 @@ export default function Orders() {
               ) : null}
               <div className="flex justify-between text-sm font-extrabold text-slate-900 border-t border-slate-200 pt-2">
                 <span>Qolgan qarz:</span>
-                <span className={selectedOrder.totalAmount - selectedOrder.paidAmount > 0 ? "text-rose-600" : "text-slate-800"}>
+                <span className={selectedOrder.totalAmount - selectedOrder.paidAmount > 0 ?"text-rose-600" :"text-slate-800"}>
                   {(selectedOrder.totalAmount - selectedOrder.paidAmount).toLocaleString()} UZS
                 </span>
               </div>

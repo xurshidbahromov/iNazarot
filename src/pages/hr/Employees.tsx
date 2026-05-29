@@ -1,16 +1,16 @@
-import { useState } from 'react';
-import { Plus, Search, Filter, Trash2, Edit, Users, UserCheck, Coffee, UserMinus } from 'lucide-react';
-import { Button } from '../../components/ui/Button';
-import { Input } from '../../components/ui/Input';
-import { Table } from '../../components/ui/Table';
-import { Modal } from '../../components/ui/Modal';
-import { useHRStore } from '../../store/useHRStore';
+import { useState} from'react';
+import { Plus, Search, Filter, Trash2, Edit, Users, UserCheck, Coffee, UserMinus} from'lucide-react';
+import { Button} from'../../components/ui/Button';
+import { Input} from'../../components/ui/Input';
+import { Table} from'../../components/ui/Table';
+import { Modal} from'../../components/ui/Modal';
+import { useHRStore} from'../../store/useHRStore';
 
 export default function Employees() {
-  const { employees, addEmployee, deleteEmployee } = useHRStore();
+  const { employees, addEmployee, deleteEmployee} = useHRStore();
   const [search, setSearch] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [form, setForm] = useState({ name: '', position: '', department: '', phone: '', status: 'Faol' });
+  const [form, setForm] = useState({ name:'', position:'', department:'', phone:'', status:'Faol'});
 
   const filtered = employees.filter(e =>
     e.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -21,15 +21,14 @@ export default function Employees() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     addEmployee(form);
-    setForm({ name: '', position: '', department: '', phone: '', status: 'Faol' });
-    setIsModalOpen(false);
-  };
+    setForm({ name:'', position:'', department:'', phone:'', status:'Faol'});
+    setIsModalOpen(false);};
 
   const stats = [
-    { title: 'Jami xodimlar', value: employees.length.toString(), icon: Users, color: 'text-blue-500', bg: 'bg-blue-50' },
-    { title: 'Faol', value: employees.filter(e => e.status === 'Faol').length.toString(), icon: UserCheck, color: 'text-emerald-500', bg: 'bg-emerald-50' },
-    { title: "Ta'tilda", value: employees.filter(e => e.status === "Ta'tilda").length.toString(), icon: Coffee, color: 'text-amber-500', bg: 'bg-amber-50' },
-    { title: "Bo'shatilgan", value: employees.filter(e => e.status === "Ishdan bo'shatilgan").length.toString(), icon: UserMinus, color: 'text-red-500', bg: 'bg-red-50' },
+    { title:'Jami xodimlar', value: employees.length.toString(), icon: Users, color:'text-blue-500', bg:'bg-blue-50'},
+    { title:'Faol', value: employees.filter(e => e.status ==='Faol').length.toString(), icon: UserCheck, color:'text-emerald-500', bg:'bg-emerald-50'},
+    { title:"Ta'tilda", value: employees.filter(e => e.status ==="Ta'tilda").length.toString(), icon: Coffee, color:'text-amber-500', bg:'bg-amber-50'},
+    { title:"Bo'shatilgan", value: employees.filter(e => e.status ==="Ishdan bo'shatilgan").length.toString(), icon: UserMinus, color:'text-red-500', bg:'bg-red-50'},
   ];
 
   return (
@@ -37,7 +36,10 @@ export default function Employees() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h3 className="text-2xl font-bold tracking-tight text-slate-900">Xodimlar ro'yxati</h3>
+          <h3 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
+            <Users className="w-6 h-6 text-primary-600" />
+            Xodimlar ro'yxati
+          </h3>
           <p className="mt-1.5 text-sm text-slate-500">
             Kompaniyadagi barcha xodimlarni boshqarish, qo'shish va ularni tahrirlash.
           </p>
@@ -45,12 +47,12 @@ export default function Employees() {
         <div className="flex gap-2.5">
           <Button 
             variant="outline" 
-            className="rounded-xl h-10 px-4 bg-white border-slate-200 hover:bg-slate-50 text-slate-700 shadow-sm transition-all"
+            className="rounded-xl h-10 px-4 bg-white border-slate-200 hover:bg-slate-50  :bg-slate-800/50 text-slate-700 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] transition-all"
           >
             <Filter className="w-4 h-4 mr-2 text-slate-400" strokeWidth={1.6} /> Filtrlash
           </Button>
           <Button 
-            className="rounded-xl h-10 px-4 bg-primary-600 hover:bg-primary-700 shadow-sm transition-all"
+            className="rounded-xl h-10 px-4 bg-primary-600 hover:bg-primary-700 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] transition-all"
             onClick={() => setIsModalOpen(true)}
           >
             <Plus className="w-4 h-4 mr-2" strokeWidth={2} /> Xodim qo'shish
@@ -61,7 +63,7 @@ export default function Employees() {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, idx) => (
-          <div key={idx} className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4 hover:shadow-md transition-shadow">
+          <div key={idx} className="bg-white/80 backdrop-blur-sm p-5 rounded-2xl border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] flex items-center gap-4 hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.06)] transition-shadow">
             <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${stat.bg}`}>
               <stat.icon className={`w-6 h-6 ${stat.color}`} strokeWidth={1.6} />
             </div>
@@ -74,7 +76,7 @@ export default function Employees() {
       </div>
 
       {/* Search and Table Area */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
         <div className="p-5 border-b border-slate-200 bg-slate-50/50">
           <div className="max-w-md relative">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
@@ -92,12 +94,12 @@ export default function Employees() {
         <Table
           variant="nested"
           columns={[
-            { key: 'name', label: 'Xodim F.I.SH' },
-            { key: 'position', label: 'Lavozimi' },
-            { key: 'department', label: "Bo'limi" },
-            { key: 'phone', label: 'Telefon raqam' },
-            { key: 'status', label: 'Holati' },
-            { key: 'actions', label: '' },
+            { key:'name', label:'F.I.SH.', sortable: true},
+            { key:'position', label:'Lavozimi', sortable: true},
+            { key:'department', label:"Bo'limi", sortable: true},
+            { key:'phone', label:'Telefon raqam', sortable: true},
+            { key:'status', label:'Holati', sortable: true},
+            { key:'actions', label:''},
           ]}
           data={filtered}
           renderRow={(employee) => (
@@ -115,14 +117,11 @@ export default function Employees() {
               <td className="whitespace-nowrap px-3 py-4 text-[14px] text-slate-500 font-mono text-sm">{employee.phone}</td>
               <td className="whitespace-nowrap px-3 py-4 text-sm text-slate-500">
                 <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[12px] font-semibold border ${
-                  employee.status === 'Faol' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
-                  employee.status === "Ta'tilda" ? 'bg-amber-50 text-amber-700 border-amber-200' :
-                  'bg-red-50 text-red-700 border-red-200'
-                }`}>
+                  employee.status ==='Faol' ?'bg-emerald-50 text-emerald-700 border-emerald-200' : 
+                  employee.status ==="Ta'tilda" ?'bg-amber-50 text-amber-700 border-amber-200' :'bg-red-50 text-red-700 border-red-200'}`}>
                   <span className={`w-1.5 h-1.5 rounded-full ${
-                    employee.status === 'Faol' ? 'bg-emerald-500' : 
-                    employee.status === "Ta'tilda" ? 'bg-amber-500' : 'bg-red-500'
-                  }`} />
+                    employee.status ==='Faol' ?'bg-emerald-500' : 
+                    employee.status ==="Ta'tilda" ?'bg-amber-500' :'bg-red-500'}`} />
                   {employee.status}
                 </span>
               </td>
@@ -151,7 +150,7 @@ export default function Employees() {
             label="Xodim F.I.SH"
             placeholder="Masalan: Aziz Rahimov"
             value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            onChange={(e) => setForm({ ...form, name: e.target.value})}
             className="rounded-xl"
             required
           />
@@ -160,7 +159,7 @@ export default function Employees() {
               label="Lavozim"
               placeholder="Masalan: Sotuvchi"
               value={form.position}
-              onChange={(e) => setForm({ ...form, position: e.target.value })}
+              onChange={(e) => setForm({ ...form, position: e.target.value})}
               className="rounded-xl"
               required
             />
@@ -168,7 +167,7 @@ export default function Employees() {
               label="Bo'lim"
               placeholder="Savdo bo'limi"
               value={form.department}
-              onChange={(e) => setForm({ ...form, department: e.target.value })}
+              onChange={(e) => setForm({ ...form, department: e.target.value})}
               className="rounded-xl"
               required
             />
@@ -177,7 +176,7 @@ export default function Employees() {
             label="Telefon raqami"
             placeholder="+998 90 123 45 67"
             value={form.phone}
-            onChange={(e) => setForm({ ...form, phone: e.target.value })}
+            onChange={(e) => setForm({ ...form, phone: e.target.value})}
             className="rounded-xl"
             required
           />
@@ -186,7 +185,7 @@ export default function Employees() {
             <select
               className="flex h-11 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition-all"
               value={form.status}
-              onChange={(e) => setForm({ ...form, status: e.target.value })}
+              onChange={(e) => setForm({ ...form, status: e.target.value})}
             >
               <option value="Faol">Faol</option>
               <option value="Ta'tilda">Ta'tilda</option>
@@ -204,5 +203,4 @@ export default function Employees() {
         </form>
       </Modal>
     </div>
-  );
-}
+  );}

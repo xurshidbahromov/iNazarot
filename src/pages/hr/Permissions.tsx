@@ -1,9 +1,8 @@
-import { useState } from 'react';
+import { useState} from'react';
 import { 
   Shield, Check, X, Plus, Save, ChevronDown, ChevronUp,
-  LayoutDashboard, ShoppingCart, Users, Package, RefreshCw, DollarSign, Layers, Settings 
-} from 'lucide-react';
-import { cn } from '../../utils/cn';
+  LayoutDashboard, ShoppingCart, Users, Package, RefreshCw, DollarSign, Layers, Settings} from'lucide-react';
+import { cn} from'../../utils/cn';
 
 interface Permission {
   module: string;
@@ -12,9 +11,7 @@ interface Permission {
     view: boolean;
     create: boolean;
     edit: boolean;
-    delete: boolean;
-  };
-}
+    delete: boolean;};}
 
 interface Role {
   id: number;
@@ -22,101 +19,87 @@ interface Role {
   color: string;
   bg: string;
   description: string;
-  permissions: Permission[];
-}
+  permissions: Permission[];}
 
 const modules = [
-  { key: 'dashboard', label: 'Asosiy panel', icon: LayoutDashboard, iconColor: 'text-indigo-500', bg: 'bg-indigo-50' },
-  { key: 'pos', label: 'Savdo (POS)', icon: ShoppingCart, iconColor: 'text-emerald-500', bg: 'bg-emerald-50' },
-  { key: 'crm', label: 'Mijozlar (CRM)', icon: Users, iconColor: 'text-blue-500', bg: 'bg-blue-50' },
-  { key: 'warehouse', label: 'Ombor', icon: Package, iconColor: 'text-amber-500', bg: 'bg-amber-50' },
-  { key: 'supply', label: "Ta'minot", icon: RefreshCw, iconColor: 'text-purple-500', bg: 'bg-purple-50' },
-  { key: 'finance', label: 'Moliya', icon: DollarSign, iconColor: 'text-rose-500', bg: 'bg-rose-50' },
-  { key: 'hr', label: 'HR', icon: Layers, iconColor: 'text-teal-500', bg: 'bg-teal-50' },
-  { key: 'settings', label: 'Sozlamalar', icon: Settings, iconColor: 'text-slate-500', bg: 'bg-slate-50' },
+  { key:'dashboard', label:'Asosiy panel', icon: LayoutDashboard, iconColor:'text-indigo-500', bg:'bg-indigo-50'},
+  { key:'pos', label:'Savdo (POS)', icon: ShoppingCart, iconColor:'text-emerald-500', bg:'bg-emerald-50'},
+  { key:'crm', label:'Mijozlar (CRM)', icon: Users, iconColor:'text-blue-500', bg:'bg-blue-50'},
+  { key:'warehouse', label:'Ombor', icon: Package, iconColor:'text-amber-500', bg:'bg-amber-50'},
+  { key:'supply', label:"Ta'minot", icon: RefreshCw, iconColor:'text-purple-500', bg:'bg-purple-50'},
+  { key:'finance', label:'Moliya', icon: DollarSign, iconColor:'text-rose-500', bg:'bg-rose-50'},
+  { key:'hr', label:'HR', icon: Layers, iconColor:'text-teal-500', bg:'bg-teal-50'},
+  { key:'settings', label:'Sozlamalar', icon: Settings, iconColor:'text-slate-500', bg:'bg-slate-50'},
 ];
 
 const defaultPermissions = (all: boolean): Permission[] =>
   modules.map(m => ({
     module: m.key,
     icon: m.icon,
-    actions: { view: all, create: all, edit: all, delete: all },
-  }));
+    actions: { view: all, create: all, edit: all, delete: all},}));
 
 const initialRoles: Role[] = [
   {
     id: 1,
-    name: 'Admin',
-    color: 'text-violet-700',
-    bg: 'bg-violet-100',
-    description: "Tizimning to'liq boshqaruvchisi",
-    permissions: defaultPermissions(true),
-  },
+    name:'Admin',
+    color:'text-violet-700',
+    bg:'bg-violet-100',
+    description:"Tizimning to'liq boshqaruvchisi",
+    permissions: defaultPermissions(true),},
   {
     id: 2,
-    name: 'Kassir',
-    color: 'text-emerald-700',
-    bg: 'bg-emerald-100',
-    description: 'Savdo va kassa operatsiyalari',
+    name:'Kassir',
+    color:'text-emerald-700',
+    bg:'bg-emerald-100',
+    description:'Savdo va kassa operatsiyalari',
     permissions: modules.map(m => ({
       module: m.key,
       icon: m.icon,
       actions: {
-        view: ['dashboard', 'pos', 'crm', 'warehouse'].includes(m.key),
+        view: ['dashboard','pos','crm','warehouse'].includes(m.key),
         create: ['pos'].includes(m.key),
         edit: false,
-        delete: false,
-      },
-    })),
-  },
+        delete: false,},})),},
   {
     id: 3,
-    name: 'Omborchi',
-    color: 'text-amber-700',
-    bg: 'bg-amber-100',
-    description: "Ombor va mahsulotlarni boshqaruvchi",
+    name:'Omborchi',
+    color:'text-amber-700',
+    bg:'bg-amber-100',
+    description:"Ombor va mahsulotlarni boshqaruvchi",
     permissions: modules.map(m => ({
       module: m.key,
       icon: m.icon,
       actions: {
-        view: ['dashboard', 'warehouse', 'supply'].includes(m.key),
-        create: ['warehouse', 'supply'].includes(m.key),
-        edit: ['warehouse', 'supply'].includes(m.key),
-        delete: false,
-      },
-    })),
-  },
+        view: ['dashboard','warehouse','supply'].includes(m.key),
+        create: ['warehouse','supply'].includes(m.key),
+        edit: ['warehouse','supply'].includes(m.key),
+        delete: false,},})),},
   {
     id: 4,
-    name: 'Hisobchi',
-    color: 'text-blue-700',
-    bg: 'bg-blue-100',
-    description: 'Moliyaviy hisobot va tahlil',
+    name:'Hisobchi',
+    color:'text-blue-700',
+    bg:'bg-blue-100',
+    description:'Moliyaviy hisobot va tahlil',
     permissions: modules.map(m => ({
       module: m.key,
       icon: m.icon,
       actions: {
-        view: ['dashboard', 'finance', 'crm'].includes(m.key),
+        view: ['dashboard','finance','crm'].includes(m.key),
         create: ['finance'].includes(m.key),
         edit: ['finance'].includes(m.key),
-        delete: false,
-      },
-    })),
-  },
+        delete: false,},})),},
 ];
 
 const actionLabels: Record<string, string> = {
-  view: "Ko'rish",
-  create: 'Qo\'shish',
-  edit: 'Tahrirlash',
-  delete: "O'chirish",
-};
+  view:"Ko'rish",
+  create:'Qo\'shish',
+  edit:'Tahrirlash',
+  delete:"O'chirish",};
 const actionColors: Record<string, string> = {
-  view: 'text-sky-600',
-  create: 'text-emerald-600',
-  edit: 'text-amber-600',
-  delete: 'text-red-500',
-};
+  view:'text-sky-600',
+  create:'text-emerald-600',
+  edit:'text-amber-600',
+  delete:'text-red-500',};
 
 export default function Permissions() {
   const [roles, setRoles] = useState<Role[]>(initialRoles);
@@ -127,8 +110,7 @@ export default function Permissions() {
   const toggleModule = (moduleKey: string) => {
     setExpandedModules(prev =>
       prev.includes(moduleKey) ? prev.filter(m => m !== moduleKey) : [...prev, moduleKey]
-    );
-  };
+    );};
 
   const togglePermission = (moduleKey: string, action: keyof Permission['actions']) => {
     setSelectedRole(prev => {
@@ -136,31 +118,25 @@ export default function Permissions() {
         ...prev,
         permissions: prev.permissions.map(p =>
           p.module === moduleKey
-            ? { ...p, actions: { ...p.actions, [action]: !p.actions[action] } }
+            ? { ...p, actions: { ...p.actions, [action]: !p.actions[action]}}
             : p
-        ),
-      };
-      return updated;
-    });
-    setHasChanges(true);
-  };
+        ),};
+      return updated;});
+    setHasChanges(true);};
 
   const toggleAllForModule = (moduleKey: string, value: boolean) => {
     setSelectedRole(prev => ({
       ...prev,
       permissions: prev.permissions.map(p =>
         p.module === moduleKey
-          ? { ...p, actions: { view: value, create: value, edit: value, delete: value } }
+          ? { ...p, actions: { view: value, create: value, edit: value, delete: value}}
           : p
-      ),
-    }));
-    setHasChanges(true);
-  };
+      ),}));
+    setHasChanges(true);};
 
   const saveChanges = () => {
     setRoles(prev => prev.map(r => (r.id === selectedRole.id ? selectedRole : r)));
-    setHasChanges(false);
-  };
+    setHasChanges(false);};
 
   const getModuleLabel = (key: string) => modules.find(m => m.key === key)?.label || key;
   const getModuleIcon = (key: string) => {
@@ -171,10 +147,8 @@ export default function Permissions() {
         <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center", mod.bg)}>
           <Icon className={cn("w-5 h-5", mod.iconColor)} strokeWidth={1.6} />
         </div>
-      );
-    }
-    return null;
-  };
+      );}
+    return null;};
 
   const totalEnabled = selectedRole.permissions.reduce(
     (acc, p) => acc + Object.values(p.actions).filter(Boolean).length,
@@ -187,8 +161,8 @@ export default function Permissions() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-            <Shield className="w-5 h-5 text-violet-600" />
+          <h3 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
+            <Shield className="w-6 h-6 text-violet-600" strokeWidth={1.8} />
             Rollar va Ruxsatlar
           </h3>
           <p className="mt-1 text-sm text-slate-500">
@@ -198,7 +172,7 @@ export default function Permissions() {
         {hasChanges && (
           <button
             onClick={saveChanges}
-            className="flex items-center gap-2 px-4 py-2 bg-violet-600 text-white rounded-xl text-sm font-semibold hover:bg-violet-700 transition-colors shadow-sm"
+            className="flex items-center gap-2 px-4 py-2 bg-violet-600 text-white rounded-xl text-sm font-semibold hover:bg-violet-700 transition-colors shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]"
           >
             <Save className="w-4 h-4" />
             Saqlash
@@ -215,13 +189,11 @@ export default function Permissions() {
               key={role.id}
               onClick={() => {
                 setSelectedRole(role);
-                setHasChanges(false);
-              }}
-              className={cn(
-                'w-full text-left px-4 py-3.5 rounded-2xl border transition-all',
+                setHasChanges(false);}}
+              className={cn('w-full text-left px-4 py-3.5 rounded-2xl border transition-all',
                 selectedRole.id === role.id
-                  ? 'bg-white border-violet-200 shadow-md shadow-violet-100'
-                  : 'bg-white border-transparent hover:border-slate-200 hover:shadow-sm'
+                  ?'bg-white border-violet-200 shadow-md shadow-violet-100'
+                  :'bg-white border-transparent hover:border-slate-200 hover:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]'
               )}
             >
               <div className="flex items-center gap-3">
@@ -229,7 +201,7 @@ export default function Permissions() {
                   {role.name.charAt(0)}
                 </span>
                 <div className="min-w-0">
-                  <p className={cn('font-semibold text-sm', selectedRole.id === role.id ? 'text-violet-700' : 'text-slate-800')}>
+                  <p className={cn('font-semibold text-sm', selectedRole.id === role.id ?'text-violet-700' :'text-slate-800')}>
                     {role.name}
                   </p>
                   <p className="text-xs text-slate-400 truncate">{role.description}</p>
@@ -247,7 +219,7 @@ export default function Permissions() {
         {/* Permissions Panel */}
         <div className="flex-1 space-y-3">
           {/* Role stats */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-5 flex items-center justify-between shadow-sm">
+          <div className="bg-white/80 backdrop-blur-md border-2 border-[#f1f2f4] rounded-2xl p-5 flex items-center justify-between shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]">
             <div>
               <div className="flex items-center gap-3">
                 <span className={cn('w-10 h-10 rounded-xl flex items-center justify-center text-base font-bold', selectedRole.bg, selectedRole.color)}>
@@ -265,7 +237,7 @@ export default function Permissions() {
               <div className="w-32 h-1.5 bg-slate-100 rounded-full mt-2 ml-auto">
                 <div
                   className="h-full bg-violet-500 rounded-full transition-all"
-                  style={{ width: `${(totalEnabled / totalActions) * 100}%` }}
+                  style={{ width:`${(totalEnabled / totalActions) * 100}%`}}
                 />
               </div>
             </div>
@@ -278,9 +250,9 @@ export default function Permissions() {
             const allActive = activeCount === 4;
 
             return (
-              <div key={perm.module} className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+              <div key={perm.module} className="bg-white/80 backdrop-blur-md border-2 border-[#f1f2f4] rounded-2xl overflow-hidden shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]">
                 <div
-                  className="flex items-center justify-between px-5 py-4 cursor-pointer hover:bg-slate-50 transition-colors"
+                  className="flex items-center justify-between px-5 py-4 cursor-pointer hover:bg-slate-50  :bg-slate-800/50 transition-colors"
                   onClick={() => toggleModule(perm.module)}
                 >
                   <div className="flex items-center gap-3">
@@ -298,13 +270,12 @@ export default function Permissions() {
                         {(Object.keys(perm.actions) as Array<keyof typeof perm.actions>).map(action => (
                           <button
                             key={action}
-                            onClick={e => { e.stopPropagation(); togglePermission(perm.module, action); }}
+                            onClick={e => { e.stopPropagation(); togglePermission(perm.module, action);}}
                             title={actionLabels[action]}
-                            className={cn(
-                              'w-6 h-6 rounded-lg flex items-center justify-center text-xs transition-all',
+                            className={cn('w-6 h-6 rounded-lg flex items-center justify-center text-xs transition-all',
                               perm.actions[action]
-                                ? 'bg-emerald-100 text-emerald-700 hover:bg-red-100 hover:text-red-600'
-                                : 'bg-slate-100 text-slate-400 hover:bg-emerald-100 hover:text-emerald-600'
+                                ?'bg-emerald-100 text-emerald-700 hover:bg-red-100 hover:text-red-600'
+                                :'bg-slate-100 text-slate-400 hover:bg-emerald-100 hover:text-emerald-600'
                             )}
                           >
                             {perm.actions[action] ? <Check className="w-3 h-3" /> : <X className="w-3 h-3" />}
@@ -315,13 +286,12 @@ export default function Permissions() {
 
                     {/* All / None toggle */}
                     <button
-                      onClick={e => { e.stopPropagation(); toggleAllForModule(perm.module, !allActive); }}
-                      className={cn(
-                        'text-xs font-medium px-2.5 py-1 rounded-lg transition-colors',
-                        allActive ? 'bg-red-50 text-red-500 hover:bg-red-100' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'
+                      onClick={e => { e.stopPropagation(); toggleAllForModule(perm.module, !allActive);}}
+                      className={cn('text-xs font-medium px-2.5 py-1 rounded-lg transition-colors',
+                        allActive ?'bg-red-50 text-red-500 hover:bg-red-100' :'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'
                       )}
                     >
-                      {allActive ? 'Barchani o\'chir' : 'Barchasini yoq'}
+                      {allActive ?'Barchani o\'chir' :'Barchasini yoq'}
                     </button>
 
                     {isExpanded ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
@@ -334,21 +304,18 @@ export default function Permissions() {
                       <button
                         key={action}
                         onClick={() => togglePermission(perm.module, action)}
-                        className={cn(
-                          'flex flex-col items-center gap-2 p-4 rounded-2xl border-2 transition-all',
+                        className={cn('flex flex-col items-center gap-2 p-4 rounded-2xl border-2 transition-all',
                           perm.actions[action]
-                            ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
-                            : 'border-slate-100 bg-slate-50 text-slate-400 hover:border-slate-200'
+                            ?'border-emerald-200 bg-emerald-50 text-emerald-700'
+                            :'border-slate-100 bg-slate-50 text-slate-400 hover:border-slate-200'
                         )}
                       >
-                        <div className={cn(
-                          'w-8 h-8 rounded-xl flex items-center justify-center',
-                          perm.actions[action] ? 'bg-emerald-200' : 'bg-slate-200'
+                        <div className={cn('w-8 h-8 rounded-xl flex items-center justify-center',
+                          perm.actions[action] ?'bg-emerald-200' :'bg-slate-200'
                         )}>
                           {perm.actions[action]
                             ? <Check className="w-4 h-4 text-emerald-700" />
-                            : <X className="w-4 h-4 text-slate-400" />
-                          }
+                            : <X className="w-4 h-4 text-slate-400" />}
                         </div>
                         <span className={cn('text-xs font-semibold', actionColors[action])}>
                           {actionLabels[action]}
@@ -358,10 +325,8 @@ export default function Permissions() {
                   </div>
                 )}
               </div>
-            );
-          })}
+            );})}
         </div>
       </div>
     </div>
-  );
-}
+  );}

@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { Plus, Search, DollarSign, ArrowLeftRight, TrendingUp, TrendingDown, Clock, Calendar, CheckCircle2, AlertCircle, Edit3 } from 'lucide-react';
-import { Button } from '../../components/ui/Button';
-import { Input } from '../../components/ui/Input';
-import { Table } from '../../components/ui/Table';
-import { Modal } from '../../components/ui/Modal';
+import { useState} from'react';
+import { Plus, Search, DollarSign, ArrowLeftRight, TrendingUp, TrendingDown, Clock, Calendar, CheckCircle2, AlertCircle, Edit3} from'lucide-react';
+import { Button} from'../../components/ui/Button';
+import { Input} from'../../components/ui/Input';
+import { Table} from'../../components/ui/Table';
+import { Modal} from'../../components/ui/Modal';
 
 interface CurrencyRate {
   id: number;
@@ -13,14 +13,13 @@ interface CurrencyRate {
   rate: number;
   previousRate: number;
   updatedAt: string;
-  isActive: boolean;
-}
+  isActive: boolean;}
 
 const mockCurrencies: CurrencyRate[] = [
-  { id: 1, code: 'USD', name: 'AQSH Dollari', symbol: '$', rate: 12850, previousRate: 12820, updatedAt: '2026-05-27 10:00', isActive: true },
-  { id: 2, code: 'EUR', name: 'Yevro', symbol: '€', rate: 13950, previousRate: 14000, updatedAt: '2026-05-27 10:00', isActive: true },
-  { id: 3, code: 'RUB', name: 'Rossiya Rubli', symbol: '₽', rate: 142, previousRate: 140, updatedAt: '2026-05-27 10:00', isActive: true },
-  { id: 4, code: 'KZT', name: 'Qozog\'iston Tengesi', symbol: '₸', rate: 28.5, previousRate: 28.8, updatedAt: '2026-05-27 10:00', isActive: true },
+  { id: 1, code:'USD', name:'AQSH Dollari', symbol:'$', rate: 12850, previousRate: 12820, updatedAt:'2026-05-27 10:00', isActive: true},
+  { id: 2, code:'EUR', name:'Yevro', symbol:'€', rate: 13950, previousRate: 14000, updatedAt:'2026-05-27 10:00', isActive: true},
+  { id: 3, code:'RUB', name:'Rossiya Rubli', symbol:'₽', rate: 142, previousRate: 140, updatedAt:'2026-05-27 10:00', isActive: true},
+  { id: 4, code:'KZT', name:'Qozog\'iston Tengesi', symbol:'₸', rate: 28.5, previousRate: 28.8, updatedAt:'2026-05-27 10:00', isActive: true},
 ];
 
 export default function Currency() {
@@ -32,12 +31,11 @@ export default function Currency() {
 
   // Form states
   const [form, setForm] = useState({
-    code: '',
-    name: '',
-    symbol: '',
+    code:'',
+    name:'',
+    symbol:'',
     rate: 0,
-    isActive: true,
-  });
+    isActive: true,});
 
   // Converter states
   const [convAmount, setConvAmount] = useState<number>(100);
@@ -48,45 +46,36 @@ export default function Currency() {
   const handleCalculate = (amount: number, from: string, to: string) => {
     let amountInUzs = amount;
     
-    if (from !== 'UZS') {
+    if (from !=='UZS') {
       const fromCurr = currencies.find(c => c.code === from);
       if (fromCurr) {
-        amountInUzs = amount * fromCurr.rate;
-      }
-    }
+        amountInUzs = amount * fromCurr.rate;}}
 
     let finalAmount = amountInUzs;
-    if (to !== 'UZS') {
+    if (to !=='UZS') {
       const toCurr = currencies.find(c => c.code === to);
       if (toCurr && toCurr.rate > 0) {
-        finalAmount = amountInUzs / toCurr.rate;
-      }
-    }
+        finalAmount = amountInUzs / toCurr.rate;}}
     
-    setConvResult(finalAmount);
-  };
+    setConvResult(finalAmount);};
 
   const handleAmountChange = (val: number) => {
     setConvAmount(val);
-    handleCalculate(val, convFrom, convTo);
-  };
+    handleCalculate(val, convFrom, convTo);};
 
   const handleFromChange = (val: string) => {
     setConvFrom(val);
-    handleCalculate(convAmount, val, convTo);
-  };
+    handleCalculate(convAmount, val, convTo);};
 
   const handleToChange = (val: string) => {
     setConvTo(val);
-    handleCalculate(convAmount, convFrom, val);
-  };
+    handleCalculate(convAmount, convFrom, val);};
 
   const handleSwap = () => {
     const temp = convFrom;
     setConvFrom(convTo);
     setConvTo(temp);
-    handleCalculate(convAmount, convTo, temp);
-  };
+    handleCalculate(convAmount, convTo, temp);};
 
   const filtered = currencies.filter(c =>
     c.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -105,9 +94,7 @@ export default function Currency() {
         previousRate: c.rate,
         rate: Number(form.rate),
         isActive: form.isActive,
-        updatedAt: new Date().toISOString().slice(0, 16).replace('T', ' ')
-      } : c));
-    } else {
+        updatedAt: new Date().toISOString().slice(0, 16).replace('T','')} : c));} else {
       // Add new
       setCurrencies(prev => [...prev, {
         id: Date.now(),
@@ -116,12 +103,9 @@ export default function Currency() {
         symbol: form.symbol,
         rate: Number(form.rate),
         previousRate: Number(form.rate),
-        updatedAt: new Date().toISOString().slice(0, 16).replace('T', ' '),
-        isActive: form.isActive
-      }]);
-    }
-    closeFormModal();
-  };
+        updatedAt: new Date().toISOString().slice(0, 16).replace('T',''),
+        isActive: form.isActive}]);}
+    closeFormModal();};
 
   const openEditModal = (currency: CurrencyRate) => {
     setSelectedCurrency(currency);
@@ -130,27 +114,22 @@ export default function Currency() {
       name: currency.name,
       symbol: currency.symbol,
       rate: currency.rate,
-      isActive: currency.isActive
-    });
-    setIsModalOpen(true);
-  };
+      isActive: currency.isActive});
+    setIsModalOpen(true);};
 
   const openAddModal = () => {
     setSelectedCurrency(null);
     setForm({
-      code: '',
-      name: '',
-      symbol: '',
+      code:'',
+      name:'',
+      symbol:'',
       rate: 0,
-      isActive: true
-    });
-    setIsModalOpen(true);
-  };
+      isActive: true});
+    setIsModalOpen(true);};
 
   const closeFormModal = () => {
     setIsModalOpen(false);
-    setSelectedCurrency(null);
-  };
+    setSelectedCurrency(null);};
 
   return (
     <div className="space-y-6 pb-8">
@@ -164,10 +143,10 @@ export default function Currency() {
           <p className="mt-1.5 text-sm text-slate-500">Tizimdagi chet el valyutalari kurslarini yangilash va hisob-kitob qilish.</p>
         </div>
         <div className="flex gap-3">
-          <Button variant="outline" className="rounded-xl h-10 px-4 flex items-center gap-2 border-slate-200 text-slate-700 hover:bg-slate-50" onClick={() => setIsConverterOpen(true)}>
+          <Button variant="outline" className="rounded-xl h-10 px-4 flex items-center gap-2 border-slate-200 text-slate-700 hover:bg-slate-50  :bg-slate-800/50" onClick={() => setIsConverterOpen(true)}>
             <ArrowLeftRight className="w-4 h-4" /> Kalkulyator
           </Button>
-          <Button className="rounded-xl h-10 px-4 bg-primary-600 hover:bg-primary-700 shadow-sm" onClick={openAddModal}>
+          <Button className="rounded-xl h-10 px-4 bg-primary-600 hover:bg-primary-700 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]" onClick={openAddModal}>
             <Plus className="w-4 h-4 mr-2" strokeWidth={2} /> Kurs qo'shish
           </Button>
         </div>
@@ -179,7 +158,7 @@ export default function Currency() {
           const diff = c.rate - c.previousRate;
           const isUp = diff > 0;
           return (
-            <div key={c.id} className="bg-white border border-slate-200 p-5 rounded-2xl shadow-sm flex flex-col justify-between hover:border-slate-300 transition-colors">
+            <div key={c.id} className="bg-white/80 backdrop-blur-sm border-2 border-[#f1f2f4] p-5 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] flex flex-col justify-between hover:border-slate-200 transition-colors">
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
@@ -188,8 +167,7 @@ export default function Currency() {
                   </div>
                   {diff !== 0 ? (
                     <span className={`flex items-center gap-0.5 text-xs font-semibold px-2 py-0.5 rounded-full ${
-                      isUp ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'
-                    }`}>
+                      isUp ?'bg-emerald-50 text-emerald-700' :'bg-rose-50 text-rose-700'}`}>
                       {isUp ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />}
                       {parseFloat(Math.abs(diff).toFixed(4))} UZS
                     </span>
@@ -208,12 +186,11 @@ export default function Currency() {
                 <span>{c.updatedAt} da yangilandi</span>
               </div>
             </div>
-          );
-        })}
+          );})}
       </div>
 
       {/* Filter and Content */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
         <div className="p-5 border-b border-slate-200 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="max-w-md relative flex-1">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
@@ -231,13 +208,13 @@ export default function Currency() {
         <Table
           variant="nested"
           columns={[
-            { key: 'code', label: 'Valyuta kodi' },
-            { key: 'name', label: 'Nomi' },
-            { key: 'rate', label: 'Kurs qiymati (UZS)' },
-            { key: 'diff', label: 'O\'zgarish' },
-            { key: 'updatedAt', label: 'Oxirgi yangilanish' },
-            { key: 'status', label: 'Holati' },
-            { key: 'actions', label: 'Amallar', className: 'text-right' },
+            { key:'code', label:'Valyuta kodi'},
+            { key:'name', label:'Nomi'},
+            { key:'rate', label:'Kurs qiymati (UZS)'},
+            { key:'diff', label:'O\'zgarish'},
+            { key:'updatedAt', label:'Oxirgi yangilanish'},
+            { key:'status', label:'Holati'},
+            { key:'actions', label:'Amallar', className:'text-right'},
           ]}
           data={filtered}
           renderRow={(currency) => {
@@ -282,13 +259,12 @@ export default function Currency() {
                   )}
                 </td>
                 <td className="whitespace-nowrap px-3 py-4 text-right text-[13px] font-medium">
-                  <Button variant="outline" size="sm" className="h-8 px-2 rounded-lg text-slate-600 border-slate-200 hover:bg-slate-50" onClick={() => openEditModal(currency)}>
+                  <Button variant="outline" size="sm" className="h-8 px-2 rounded-lg text-slate-600 border-slate-200 hover:bg-slate-50  :bg-slate-800/50" onClick={() => openEditModal(currency)}>
                     <Edit3 className="w-3.5 h-3.5 mr-1" /> Tahrirlash
                   </Button>
                 </td>
               </>
-            );
-          }}
+            );}}
         />
       </div>
 
@@ -305,7 +281,7 @@ export default function Currency() {
               <div className="sm:col-span-3 space-y-1.5">
                 <label className="block text-xs font-semibold text-slate-500">Qaysi valyutadan</label>
                 <div className="flex rounded-xl border border-slate-300 overflow-hidden bg-white">
-                  <input type="number" value={convAmount || ''} onChange={(e) => handleAmountChange(Number(e.target.value))}
+                  <input type="number" value={convAmount ||''} onChange={(e) => handleAmountChange(Number(e.target.value))}
                     className="flex-1 min-w-0 border-0 px-3 py-2 text-[15px] font-bold text-slate-800 focus:outline-none" />
                   <select value={convFrom} onChange={(e) => handleFromChange(e.target.value)}
                     className="bg-slate-100 border-l border-slate-300 px-3 text-[14px] font-bold text-slate-700 focus:outline-none">
@@ -318,7 +294,7 @@ export default function Currency() {
               {/* Swap Button */}
               <div className="flex justify-center sm:col-span-1 pt-4 sm:pt-0">
                 <button type="button" onClick={handleSwap}
-                  className="w-10 h-10 rounded-full border border-slate-200 bg-white flex items-center justify-center text-slate-500 hover:bg-slate-50 hover:text-slate-700 shadow-sm transition-colors">
+                  className="w-10 h-10 rounded-full border-2 border-[#f1f2f4] bg-white flex items-center justify-center text-slate-500 hover:bg-slate-50  :bg-slate-800/50 hover:text-slate-700 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] transition-colors">
                   <ArrowLeftRight className="w-4 h-4 rotate-90 sm:rotate-0" />
                 </button>
               </div>
@@ -327,7 +303,7 @@ export default function Currency() {
               <div className="sm:col-span-3 space-y-1.5">
                 <label className="block text-xs font-semibold text-slate-500">Qaysi valyutaga</label>
                 <div className="flex rounded-xl border border-slate-300 overflow-hidden bg-white">
-                  <input type="text" readOnly value={convResult.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                  <input type="text" readOnly value={convResult.toLocaleString(undefined, { maximumFractionDigits: 2})}
                     className="flex-1 min-w-0 border-0 px-3 py-2 text-[15px] font-extrabold text-primary-600 bg-slate-50/50 focus:outline-none" />
                   <select value={convTo} onChange={(e) => handleToChange(e.target.value)}
                     className="bg-slate-100 border-l border-slate-300 px-3 text-[14px] font-bold text-slate-700 focus:outline-none">
@@ -346,24 +322,24 @@ export default function Currency() {
       </Modal>
 
       {/* Add/Edit Modal */}
-      <Modal isOpen={isModalOpen} onClose={closeFormModal} title={selectedCurrency ? "Valyuta kursini tahrirlash" : "Yangi valyuta qo'shish"}>
+      <Modal isOpen={isModalOpen} onClose={closeFormModal} title={selectedCurrency ?"Valyuta kursini tahrirlash" :"Yangi valyuta qo'shish"}>
         <form onSubmit={handleSubmit} className="space-y-4 p-1">
           <div className="grid grid-cols-2 gap-4">
             <Input label="Valyuta kodi *" placeholder="Masalan: USD, EUR, RUB" value={form.code}
-              onChange={(e) => setForm({ ...form, code: e.target.value })} className="rounded-xl uppercase font-bold" required disabled={!!selectedCurrency} />
+              onChange={(e) => setForm({ ...form, code: e.target.value})} className="rounded-xl uppercase font-bold" required disabled={!!selectedCurrency} />
             <Input label="Belgisi *" placeholder="Masalan: $, €, ₽" value={form.symbol}
-              onChange={(e) => setForm({ ...form, symbol: e.target.value })} className="rounded-xl font-bold" required />
+              onChange={(e) => setForm({ ...form, symbol: e.target.value})} className="rounded-xl font-bold" required />
           </div>
           <Input label="Valyuta nomi *" placeholder="Masalan: AQSH Dollari" value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })} className="rounded-xl" required />
+            onChange={(e) => setForm({ ...form, name: e.target.value})} className="rounded-xl" required />
           <div>
-            <Input label="Kurs qiymati (UZS da) *" type="number" min={0.01} step="any" value={form.rate || ''}
-              onChange={(e) => setForm({ ...form, rate: Number(e.target.value) })} className="rounded-xl font-extrabold" required />
+            <Input label="Kurs qiymati (UZS da) *" type="number" min={0.01} step="any" value={form.rate ||''}
+              onChange={(e) => setForm({ ...form, rate: Number(e.target.value)})} className="rounded-xl font-extrabold" required />
             <p className="mt-1 text-[11px] text-slate-400">1 birlik valyutaning o'zbek so'midagi ekvivalenti.</p>
           </div>
 
           <div className="flex items-center gap-2 py-2">
-            <input type="checkbox" id="isActive" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
+            <input type="checkbox" id="isActive" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked})}
               className="w-4 h-4 text-primary-600 border-slate-300 rounded focus:ring-primary-500" />
             <label htmlFor="isActive" className="text-sm font-semibold text-slate-700 select-none cursor-pointer">
               Ushbu valyuta faol (Tizim bo'yicha amalda qo'llanilsin)
@@ -377,5 +353,4 @@ export default function Currency() {
         </form>
       </Modal>
     </div>
-  );
-}
+  );}

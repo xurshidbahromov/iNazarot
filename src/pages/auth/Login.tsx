@@ -1,21 +1,21 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, ArrowRight, LayoutDashboard, ShoppingCart, Users, Wallet } from 'lucide-react';
-import { useAuthStore } from '../../store/useAuthStore';
+import { useState} from'react';
+import { useNavigate} from'react-router-dom';
+import { Eye, EyeOff, ArrowRight, LayoutDashboard, ShoppingCart, Users, Wallet} from'lucide-react';
+import { useAuthStore} from'../../store/useAuthStore';
 
 const features = [
-  { icon: LayoutDashboard, title: 'Yagona boshqaruv', desc: 'Barcha jarayonlarni bitta joydan nazorat qiling' },
-  { icon: ShoppingCart, title: 'POS va Savdo', desc: 'Chakana va ulgurji savdolarni oson boshqaring' },
-  { icon: Wallet, title: 'Moliya va Kassa', desc: 'Kirim-chiqimlarni aniq va ishonchli hisoblang' },
-  { icon: Users, title: 'HR va CRM', desc: 'Xodimlar va mijozlar bilan ishlashni avtomatlashtiring' },
+  { icon: LayoutDashboard, title:'Yagona boshqaruv', desc:'Barcha jarayonlarni bitta joydan nazorat qiling'},
+  { icon: ShoppingCart, title:'POS va Savdo', desc:'Chakana va ulgurji savdolarni oson boshqaring'},
+  { icon: Wallet, title:'Moliya va Kassa', desc:'Kirim-chiqimlarni aniq va ishonchli hisoblang'},
+  { icon: Users, title:'HR va CRM', desc:'Xodimlar va mijozlar bilan ishlashni avtomatlashtiring'},
 ];
 
 export default function Login() {
   const navigate = useNavigate();
-  const { login } = useAuthStore();
+  const { login} = useAuthStore();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [form, setForm] = useState({ email: 'admin@inazorat.uz', password: '' });
+  const [form, setForm] = useState({ email:'admin@inazorat.uz', password:''});
   const [error, setError] = useState('');
 
   const handleLogin = (e: React.FormEvent) => {
@@ -23,19 +23,14 @@ export default function Login() {
     setError('');
     if (!form.email || !form.password) {
       setError('Email va parolni kiriting');
-      return;
-    }
+      return;}
     setLoading(true);
     setTimeout(() => {
-      if (form.email === 'admin@inazorat.uz' && form.password === 'admin123') {
-        login({ id: '1', name: 'Admin User', email: form.email, role: 'Administrator' });
-        navigate('/');
-      } else {
+      if (form.email ==='admin@inazorat.uz' && form.password ==='admin123') {
+        login({ id:'1', name:'Admin User', email: form.email, role:'Administrator'});
+        navigate('/');} else {
         setError("Login yoki parol noto'g'ri. admin@inazorat.uz / admin123");
-        setLoading(false);
-      }
-    }, 800);
-  };
+        setLoading(false);}}, 800);};
 
   return (
     <div className="min-h-screen flex bg-white">
@@ -46,13 +41,13 @@ export default function Login() {
 
           <div className="flex items-center mb-10">
             <div className="relative flex items-center pr-3">
-              <span className="text-[40px] font-bold tracking-tight text-slate-800 leading-none" style={{ fontFamily: "'Quicksand', sans-serif" }}>
+              <span className="text-[40px] font-bold tracking-tight text-slate-800 leading-none" style={{ fontFamily:"'Quicksand', sans-serif"}}>
                 iNazorat
               </span>
               
               {/* Double Chevron Growth Arrow (Elevate logo style representing scale & automation) */}
               <svg 
-                className="w-[22px] h-[22px] text-[#20c997] absolute top-[-1px] -right-[10px] drop-shadow-sm" 
+                className="w-[22px] h-[22px] text-[#20c997] absolute top-[-1px] -right-[10px] drop-shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]" 
                 viewBox="0 0 24 24" 
                 fill="none" 
                 stroke="currentColor" 
@@ -81,10 +76,10 @@ export default function Login() {
                 type="email"
                 placeholder="admin@inazorat.uz"
                 value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                onChange={(e) => setForm({ ...form, email: e.target.value})}
                 autoComplete="email"
                 required
-                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-400 transition-all"
+                className="w-full px-3.5 py-2.5 bg-slate-50 border-2 border-[#f1f2f4] rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-400 transition-all"
               />
             </div>
 
@@ -93,13 +88,13 @@ export default function Login() {
               <div className="relative">
                 <input
                   id="password"
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ?'text' :'password'}
                   placeholder="••••••••"
                   value={form.password}
-                  onChange={(e) => setForm({ ...form, password: e.target.value })}
+                  onChange={(e) => setForm({ ...form, password: e.target.value})}
                   autoComplete="current-password"
                   required
-                  className="w-full px-3.5 py-2.5 pr-10 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-400 transition-all"
+                  className="w-full px-3.5 py-2.5 pr-10 bg-slate-50 border-2 border-[#f1f2f4] rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-400 transition-all"
                 />
                 <button
                   type="button"
@@ -132,7 +127,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="group w-full flex items-center justify-center gap-2 py-2.5 bg-primary-600 text-white text-sm font-semibold rounded-xl hover:bg-primary-700 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              className="group w-full flex items-center justify-center gap-2 py-2.5 bg-primary-600 text-white text-sm font-semibold rounded-xl hover:bg-primary-700 transition-all shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <>
@@ -161,7 +156,7 @@ export default function Login() {
       <div className="hidden lg:flex flex-1 bg-slate-50 border-l border-slate-200 p-12 items-center justify-center relative overflow-hidden">
         {/* Subtle Background Pattern */}
         <div className="absolute inset-0 opacity-[0.03]"
-          style={{ backgroundImage: 'radial-gradient(circle, #000 1px, transparent 1px)', backgroundSize: '24px 24px' }}
+          style={{ backgroundImage:'radial-gradient(circle, #000 1px, transparent 1px)', backgroundSize:'24px 24px'}}
         />
         
         <div className="max-w-lg w-full relative z-10">
@@ -174,7 +169,7 @@ export default function Login() {
 
           <div className="space-y-4">
             {features.map((feature, idx) => (
-              <div key={idx} className="flex items-start gap-4 p-4 bg-white rounded-2xl border border-slate-200 shadow-sm hover:-translate-y-0.5 hover:shadow-md hover:border-slate-300 transition-all duration-300">
+              <div key={idx} className="flex items-start gap-4 p-4 bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:-translate-y-0.5 hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.06)] hover:border-slate-200 transition-all duration-300">
                 <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center flex-shrink-0">
                   <feature.icon className="w-5 h-5 text-primary-600" strokeWidth={1.6} />
                 </div>
@@ -191,5 +186,4 @@ export default function Login() {
       </div>
 
     </div>
-  );
-}
+  );}

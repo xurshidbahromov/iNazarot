@@ -1,21 +1,20 @@
-import { useState } from 'react';
-import { Plus, Search, ArrowRightLeft, MapPin, Package } from 'lucide-react';
-import { Button } from '../../components/ui/Button';
-import { Input } from '../../components/ui/Input';
-import { Table } from '../../components/ui/Table';
-import { Modal } from '../../components/ui/Modal';
-import { useWarehouseStore } from '../../store/useWarehouseStore';
+import { useState} from'react';
+import { Plus, Search, ArrowRightLeft, MapPin, Package} from'lucide-react';
+import { Button} from'../../components/ui/Button';
+import { Input} from'../../components/ui/Input';
+import { Table} from'../../components/ui/Table';
+import { Modal} from'../../components/ui/Modal';
+import { useWarehouseStore} from'../../store/useWarehouseStore';
 
 export default function Transfers() {
-  const { transfers, addTransfer, locations, products } = useWarehouseStore();
+  const { transfers, addTransfer, locations, products} = useWarehouseStore();
   const [search, setSearch] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form, setForm] = useState({
     fromLocationId: locations[0]?.id || 0,
     toLocationId: locations[1]?.id || 0,
     productId: products[0]?.id || 0,
-    quantity: 1,
-  });
+    quantity: 1,});
 
   const filtered = transfers.filter(t => {
     const from = locations.find(l => l.id === t.fromLocationId);
@@ -25,53 +24,51 @@ export default function Transfers() {
       from?.name.toLowerCase().includes(search.toLowerCase()) ||
       to?.name.toLowerCase().includes(search.toLowerCase()) ||
       prod?.name.toLowerCase().includes(search.toLowerCase())
-    );
-  });
+    );});
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (form.fromLocationId === form.toLocationId) {
       alert("Qayerdan va qayerga bir xil bo'lmasin!");
-      return;
-    }
-    addTransfer({ ...form, date: new Date().toISOString(), status: 'kutilmoqda' });
-    setIsModalOpen(false);
-  };
+      return;}
+    addTransfer({ ...form, date: new Date().toISOString(), status:'kutilmoqda'});
+    setIsModalOpen(false);};
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'kutilmoqda': return (
+      case'kutilmoqda': return (
         <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[12px] font-semibold border bg-amber-50 text-amber-700 border-amber-200">
           <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />Kutilmoqda
         </span>
       );
-      case 'tasdiqlangan': return (
+      case'tasdiqlangan': return (
         <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[12px] font-semibold border bg-emerald-50 text-emerald-700 border-emerald-200">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />Tasdiqlangan
         </span>
       );
-      case 'bekor_qilingan': return (
+      case'bekor_qilingan': return (
         <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[12px] font-semibold border bg-red-50 text-red-700 border-red-200">
           <span className="w-1.5 h-1.5 rounded-full bg-red-500" />Bekor qilingan
         </span>
       );
-      default: return null;
-    }
-  };
+      default: return null;}};
 
   return (
     <div className="space-y-6 pb-8">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h3 className="text-2xl font-bold tracking-tight text-slate-900">Ichki ko'chirishlar</h3>
+          <h3 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
+            <ArrowRightLeft className="w-6 h-6 text-primary-600" />
+            Ichki ko'chirishlar
+          </h3>
           <p className="mt-1.5 text-sm text-slate-500">
             Tovarlarni omborlar o'rtasida ko'chirish va qayd etish.
           </p>
         </div>
         <div className="flex flex-wrap gap-2.5">
           <Button
-            className="rounded-xl h-10 px-4 bg-primary-600 hover:bg-primary-700 shadow-sm transition-all"
+            className="rounded-xl h-10 px-4 bg-primary-600 hover:bg-primary-700 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] transition-all"
             onClick={() => setIsModalOpen(true)}
           >
             <Plus className="w-4 h-4 mr-2" strokeWidth={2} /> Ko'chirish yaratish
@@ -80,7 +77,7 @@ export default function Transfers() {
       </div>
 
       {/* Search and Table Area */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
         <div className="p-5 border-b border-slate-200 bg-slate-50/50">
           <div className="max-w-md relative">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
@@ -98,11 +95,11 @@ export default function Transfers() {
         <Table
           variant="nested"
           columns={[
-            { key: 'date', label: 'Sana' },
-            { key: 'product', label: 'Mahsulot' },
-            { key: 'route', label: "Yo'nalish" },
-            { key: 'quantity', label: 'Miqdor' },
-            { key: 'status', label: 'Holati' },
+            { key:'date', label:'Sana'},
+            { key:'product', label:'Mahsulot'},
+            { key:'route', label:"Yo'nalish"},
+            { key:'quantity', label:'Miqdor'},
+            { key:'status', label:'Holati'},
           ]}
           data={filtered}
           renderRow={(transfer) => {
@@ -136,8 +133,7 @@ export default function Transfers() {
                   {getStatusBadge(transfer.status)}
                 </td>
               </>
-            );
-          }}
+            );}}
         />
       </div>
 
@@ -147,8 +143,8 @@ export default function Transfers() {
             <label className="block text-[13px] font-medium text-slate-700 mb-1.5">Mahsulot *</label>
             <select
               value={form.productId}
-              onChange={(e) => setForm({ ...form, productId: Number(e.target.value) })}
-              className="w-full h-10 px-3 bg-white border border-slate-300 rounded-xl text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-colors"
+              onChange={(e) => setForm({ ...form, productId: Number(e.target.value)})}
+              className="w-full h-10 px-3 bg-white/80 backdrop-blur-md border border-slate-300 rounded-xl text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-colors"
               required
             >
               {products.map(p => (
@@ -163,8 +159,8 @@ export default function Transfers() {
               </label>
               <select
                 value={form.fromLocationId}
-                onChange={(e) => setForm({ ...form, fromLocationId: Number(e.target.value) })}
-                className="w-full h-10 px-3 bg-white border border-slate-300 rounded-xl text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-colors"
+                onChange={(e) => setForm({ ...form, fromLocationId: Number(e.target.value)})}
+                className="w-full h-10 px-3 bg-white/80 backdrop-blur-md border border-slate-300 rounded-xl text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-colors"
                 required
               >
                 {locations.map(l => (
@@ -178,8 +174,8 @@ export default function Transfers() {
               </label>
               <select
                 value={form.toLocationId}
-                onChange={(e) => setForm({ ...form, toLocationId: Number(e.target.value) })}
-                className="w-full h-10 px-3 bg-white border border-slate-300 rounded-xl text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-colors"
+                onChange={(e) => setForm({ ...form, toLocationId: Number(e.target.value)})}
+                className="w-full h-10 px-3 bg-white/80 backdrop-blur-md border border-slate-300 rounded-xl text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-colors"
                 required
               >
                 {locations.map(l => (
@@ -193,8 +189,8 @@ export default function Transfers() {
             type="number"
             placeholder="100"
             min={1}
-            value={form.quantity || ''}
-            onChange={(e) => setForm({ ...form, quantity: Number(e.target.value) })}
+            value={form.quantity ||''}
+            onChange={(e) => setForm({ ...form, quantity: Number(e.target.value)})}
             className="rounded-xl"
             required
           />
@@ -207,5 +203,4 @@ export default function Transfers() {
         </form>
       </Modal>
     </div>
-  );
-}
+  );}

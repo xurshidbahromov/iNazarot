@@ -46,6 +46,7 @@ const queryClient = new QueryClient();
 import { Toaster } from 'sonner';
 
 function App() {
+
   return (
     <>
       <QueryClientProvider client={queryClient}>
