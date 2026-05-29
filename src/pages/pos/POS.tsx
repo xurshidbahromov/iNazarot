@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ShoppingCart, Search, CreditCard, Banknote, Plus, Minus, Trash2, PackageSearch, User, ChevronDown } from 'lucide-react';
+import { toast } from 'sonner';
 import { Input } from '../../components/ui/Input';
 import { useWarehouseStore } from '../../store/useWarehouseStore';
 import { useFinanceStore } from '../../store/useFinanceStore';
@@ -17,6 +18,11 @@ export default function POS() {
   const { addTransaction } = useFinanceStore();
   const [search, setSearch] = useState('');
   const [cart, setCart] = useState<CartItem[]>([]);
+  const showToast = (message: string, type: 'success' | 'warning' | 'error' = 'success') => {
+    if (type === 'success') toast.success(message);
+    else if (type === 'error') toast.error(message);
+    else toast.warning(message);
+  };
 
   const filtered = products.filter(p =>
     p.name.toLowerCase().includes(search.toLowerCase())
@@ -24,14 +30,14 @@ export default function POS() {
 
   const addToCart = (product: typeof products[0]) => {
     if (product.stock <= 0) {
-      alert("Bu mahsulot zaxirada tugagan!");
+      showToast("Bu mahsulot zaxirada tugagan!", 'error');
       return;
     }
     setCart(prev => {
       const existing = prev.find(c => c.id === product.id);
       if (existing) {
         if (existing.quantity >= product.stock) {
-          alert(`Zaxirada atigi ${product.stock} ${product.unit} bor!`);
+          showToast(`Zaxirada atigi ${product.stock} ${product.unit} bor!`, 'warning');
           return prev;
         }
         return prev.map(c => c.id === product.id ? { ...c, quantity: c.quantity + 1 } : c);
@@ -48,7 +54,7 @@ export default function POS() {
         if (c.id === id) {
           const newQty = c.quantity + delta;
           if (newQty > product.stock) {
-            alert(`Zaxirada atigi ${product.stock} ${product.unit} bor!`);
+            showToast(`Zaxirada atigi ${product.stock} ${product.unit} bor!`, 'warning');
             return c;
           }
           return { ...c, quantity: Math.max(1, newQty) };
@@ -83,12 +89,14 @@ export default function POS() {
       method: method === 'Naqd pul' ? 'Naqd' : 'Karta'
     });
 
-    alert(`To'lov qabul qilindi!\nUsul: ${method}\nSumma: ${total.toLocaleString()} UZS\nOmbor zaxiralari yangilandi.`);
+    showToast(`To'lov muvaffaqiyatli qabul qilindi! Summa: ${total.toLocaleString()} UZS`, 'success');
     setCart([]);
   };
 
   return (
-    <div className="flex h-[calc(100vh-8rem)] gap-6">
+    <div className="flex h-[calc(100vh-8rem)] gap-6 relative">
+
+
       {/* Products Section */}
       <div className="flex-1 flex flex-col bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
         {/* Search Header */}

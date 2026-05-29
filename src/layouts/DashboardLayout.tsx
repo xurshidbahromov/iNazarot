@@ -92,6 +92,7 @@ export default function DashboardLayout() {
   const [hoveredMenu, setHoveredMenu] = useState<string | null>(null);
   const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Close user menu on outside click
   useEffect(() => {
@@ -102,6 +103,18 @@ export default function DashboardLayout() {
     };
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
+
+  // Handle Cmd+K / Ctrl+K shortcut for search
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   const toggleMenu = (name: string) => {
@@ -343,41 +356,34 @@ export default function DashboardLayout() {
               className="group p-2 rounded-xl text-slate-500 hover:bg-slate-100/80 hover:text-slate-800 transition-all duration-300 active:scale-95 flex items-center justify-center relative overflow-hidden"
               title={isCollapsed ? "Menyuni yozish" : "Menyuni yig'ish"}
             >
-              <svg 
-                className="w-5 h-5 transition-colors duration-300"
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeWidth="1.8" 
-                strokeLinecap="round" 
-                strokeLinejoin="round"
-              >
-                {/* Outlined browser card frame */}
-                <rect 
-                  x="3" 
-                  y="3" 
-                  width="18" 
-                  height="18" 
-                  rx="2.5" 
-                  className="stroke-slate-400 group-hover:stroke-slate-600 transition-colors duration-300" 
-                />
+              <div className="w-5 h-5 relative flex items-center justify-center">
+                {/* Outer Frame */}
+                <div className="absolute inset-0 border-[1.8px] border-slate-400 group-hover:border-slate-600 rounded-[5px] transition-colors duration-300" />
                 
-                {/* Vertical panel separator that slides left/right based on collapsed state */}
-                <line 
-                  x1={isCollapsed ? "7" : "9"} 
-                  y1="3" 
-                  x2={isCollapsed ? "7" : "9"} 
-                  y2="21" 
-                  className="stroke-slate-400 group-hover:stroke-slate-600 transition-all duration-300 ease-in-out" 
-                />
+                {/* Animated Sidebar Panel Background */}
+                <div className={cn(
+                  "absolute top-0 bottom-0 left-0 bg-slate-400 group-hover:bg-slate-600 transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)]",
+                  isCollapsed ? "w-[3px] rounded-l-[3.5px] opacity-60" : "w-[7px] rounded-l-[3.5px] border-r border-slate-200 opacity-100"
+                )} />
                 
-                {/* Micro-chevron arrow indicating toggle direction, bouncing on hover */}
-                <path 
-                  d={isCollapsed ? "M11 9l3 3-3 3" : "M14 9l-3 3 3 3"} 
-                  className="stroke-[#797a7a] transition-all duration-300 ease-in-out transform group-hover:translate-x-0.5"
-                  strokeWidth="2.2"
-                />
-              </svg>
+                {/* Animated Arrow/Chevron */}
+                <svg
+                  className={cn(
+                    "w-3 h-3 absolute transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)]",
+                    isCollapsed 
+                      ? "left-[6px] rotate-0 text-slate-500 group-hover:translate-x-[2px] group-hover:text-primary-600" 
+                      : "left-[8px] rotate-180 text-white group-hover:-translate-x-[2px]"
+                  )}
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M9 18l6-6-6-6" />
+                </svg>
+              </div>
             </button>
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1.5 text-sm">
@@ -400,6 +406,7 @@ export default function DashboardLayout() {
                 strokeWidth={1.6}
               />
               <input
+                ref={searchInputRef}
                 type="text"
                 placeholder="Qidiruv..."
                 onFocus={() => setSearchFocused(true)}

@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import DashboardLayout from './layouts/DashboardLayout';
 import Dashboard from './pages/Dashboard';
 import AuthGuard from './components/AuthGuard';
-import { ToastProvider } from './contexts/ToastContext';
+
 
 import HRLayout from './pages/hr/HRLayout';
 import Employees from './pages/hr/Employees';
@@ -43,9 +43,11 @@ const queryClient = new QueryClient();
 
 
 
+import { Toaster } from 'sonner';
+
 function App() {
   return (
-    <ToastProvider>
+    <>
       <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Routes>
@@ -99,7 +101,8 @@ function App() {
       </BrowserRouter>
 
     </QueryClientProvider>
-    </ToastProvider>
+    <Toaster position="top-right" richColors />
+    </>
   );
 }
 

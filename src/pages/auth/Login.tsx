@@ -174,7 +174,7 @@ export default function Login() {
 
           <div className="space-y-4">
             {features.map((feature, idx) => (
-              <div key={idx} className="flex items-start gap-4 p-4 bg-white rounded-2xl border border-slate-200 shadow-sm">
+              <div key={idx} className="flex items-start gap-4 p-4 bg-white rounded-2xl border border-slate-200 shadow-sm hover:-translate-y-0.5 hover:shadow-md hover:border-slate-300 transition-all duration-300">
                 <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center flex-shrink-0">
                   <feature.icon className="w-5 h-5 text-primary-600" strokeWidth={1.6} />
                 </div>
