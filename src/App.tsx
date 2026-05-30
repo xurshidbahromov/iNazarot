@@ -11,7 +11,11 @@ import Departments from './pages/hr/Departments';
 import Positions from './pages/hr/Positions';
 import Permissions from './pages/hr/Permissions';
 import SettingsPage from './pages/settings/SettingsPage';
+import Guide from './pages/help/Guide';
 import Login from './pages/auth/Login';
+
+import ReportsLayout from './pages/reports/ReportsLayout';
+import ReportsList from './pages/reports/ReportsList';
 
 import CRMLayout from './pages/crm/CRMLayout';
 import Clients from './pages/crm/Clients';
@@ -37,8 +41,9 @@ import Cashbox from './pages/finance/Cashbox';
 import Expenses from './pages/finance/Expenses';
 import Currency from './pages/finance/Currency';
 
+import POSLayout from './pages/pos/POSLayout';
+import POSLauncher from './pages/pos/POSLauncher';
 import POS from './pages/pos/POS';
-
 const queryClient = new QueryClient();
 
 
@@ -57,9 +62,17 @@ function App() {
 
           {/* Protected Routes */}
           <Route element={<AuthGuard />}>
+            {/* Standalone POS Terminal */}
+            <Route path="/pos/terminal" element={<POSLayout />}>
+              <Route index element={<POS />} />
+            </Route>
+
             <Route element={<DashboardLayout />}>
               <Route path="/" element={<Dashboard />} />
-              <Route path="/pos" element={<POS />} />
+              <Route path="/pos" element={<POSLauncher />} />
+              <Route path="/reports" element={<ReportsLayout />}>
+                <Route index element={<ReportsList />} />
+              </Route>
               <Route path="/crm" element={<CRMLayout />}>
                 <Route index element={<Navigate to="clients" replace />} />
                 <Route path="clients" element={<Clients />} />
@@ -96,6 +109,7 @@ function App() {
                 <Route path="permissions" element={<Permissions />} />
               </Route>
               <Route path="/settings" element={<SettingsPage />} />
+              <Route path="/help" element={<Guide />} />
             </Route>
           </Route>
         </Routes>
