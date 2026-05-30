@@ -133,43 +133,44 @@ export default function Dashboard() {
               <p className="text-[12px] text-slate-500 mt-0.5">Haftalik tushum va xarajatlar</p>
             </div>
             <div className="flex items-center gap-4 text-[12px] font-medium text-slate-500">
-              <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-primary-500"></div>Tushum</div>
+              <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>Tushum</div>
               <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-rose-500"></div>Xarajat</div>
             </div>
           </div>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={salesData} margin={{ top: 10, right: 10, left: 0, bottom: 0}}>
+              <AreaChart data={salesData} margin={{ top: 10, right: 10, left: 0, bottom: 15}}>
                 <defs>
                   <linearGradient id="colorTushum" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#0ea5e9" stopOpacity={0.25}/>
-                    <stop offset="95%" stopColor="#0ea5e9" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.2}/>
+                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
                   </linearGradient>
                   <linearGradient id="colorXarajat" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.25}/>
+                    <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.2}/>
                     <stop offset="95%" stopColor="#f43f5e" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill:'#64748b', fontSize: 13, fontWeight: 500}} dy={15} />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill:'#94a3b8', fontSize: 12, fontWeight: 500}} dy={10} />
                 <YAxis 
                   axisLine={false} 
                   tickLine={false} 
-                  tick={{fill:'#64748b', fontSize: 13, fontWeight: 500}} 
+                  tick={{fill:'#94a3b8', fontSize: 12, fontWeight: 500}} 
                   dx={-10}
                   tickFormatter={(value) =>`${value / 1000000}M`}
                 />
-                <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="#e2e8f0" />
+                <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="#f1f5f9" />
                 <Tooltip 
-                  cursor={{stroke:'#94a3b8', strokeWidth: 1, strokeDasharray:'4 4'}}
+                  wrapperStyle={{ backgroundColor: 'transparent', border: 'none', outline: 'none' }}
+                  cursor={{stroke:'#cbd5e1', strokeWidth: 1, strokeDasharray:'4 4'}}
                   content={({ active, payload, label}) => {
                     if (active && payload && payload.length) {
                       return (
-                        <div className="backdrop-blur-md bg-white/80 backdrop-blur-md/90 border-2 border-[#f1f2f4]/80 p-3 rounded-2xl shadow-xl flex flex-col gap-1.5 min-w-[170px] transition-all">
-                          <p className="text-xs font-semibold text-slate-400  uppercase tracking-wider">{label}</p>
-                          <div className="divide-y divide-slate-100">
+                        <div className="backdrop-blur-md bg-white/75 border border-white/60 p-3.5 rounded-2xl shadow-[0_12px_30px_rgba(0,0,0,0.06)] flex flex-col gap-2 min-w-[160px] transition-all select-none">
+                          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{label}</p>
+                          <div className="space-y-1.5">
                             {payload.map((entry: any, index: number) => (
-                              <div key={index} className="flex items-center justify-between gap-4 py-1.5 first:pt-0 last:pb-0">
-                                <span className="flex items-center gap-1.5 text-xs font-semibold text-slate-600">
+                              <div key={index} className="flex items-center justify-between gap-4 py-0.5">
+                                <span className="flex items-center gap-2 text-xs font-medium text-slate-600">
                                   <span className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color}} />
                                   {entry.name}
                                 </span>
@@ -187,21 +188,21 @@ export default function Dashboard() {
                   type="monotone" 
                   name="Tushum" 
                   dataKey="tushum" 
-                  stroke="#0ea5e9" 
-                  strokeWidth={3} 
+                  stroke="#10b981" 
+                  strokeWidth={2.5} 
                   fillOpacity={1} 
                   fill="url(#colorTushum)" 
-                  activeDot={{r: 6, strokeWidth: 0, fill:'#0ea5e9'}}
+                  activeDot={{r: 5, strokeWidth: 0, fill:'#10b981'}}
                 />
                 <Area 
                   type="monotone" 
                   name="Xarajat" 
                   dataKey="xarajat" 
                   stroke="#f43f5e" 
-                  strokeWidth={3} 
+                  strokeWidth={2.5} 
                   fillOpacity={1} 
                   fill="url(#colorXarajat)" 
-                  activeDot={{r: 6, strokeWidth: 0, fill:'#f43f5e'}}
+                  activeDot={{r: 5, strokeWidth: 0, fill:'#f43f5e'}}
                 />
               </AreaChart>
             </ResponsiveContainer>
@@ -218,31 +219,40 @@ export default function Dashboard() {
           </div>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={categoryData} margin={{ top: 10, right: 10, left: 0, bottom: 0}}>
-                <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="#e2e8f0" />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill:'#64748b', fontSize: 13, fontWeight: 500}} dy={15} />
-                <YAxis axisLine={false} tickLine={false} tick={{fill:'#64748b', fontSize: 13, fontWeight: 500}} dx={-10} />
+              <BarChart data={categoryData} margin={{ top: 10, right: 10, left: 0, bottom: 15}}>
+                <defs>
+                  <linearGradient id="colorQiymat" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.85}/>
+                    <stop offset="95%" stopColor="#14b8a6" stopOpacity={0.85}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="#f1f5f9" />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill:'#94a3b8', fontSize: 12, fontWeight: 500}} dy={10} />
+                <YAxis axisLine={false} tickLine={false} tick={{fill:'#94a3b8', fontSize: 12, fontWeight: 500}} dx={-10} />
                 <Tooltip 
-                  cursor={{fill:'rgba(99, 102, 241, 0.05)'}}
+                  wrapperStyle={{ backgroundColor: 'transparent', border: 'none', outline: 'none' }}
+                  cursor={{fill:'rgba(16, 185, 129, 0.03)'}}
                   content={({ active, payload, label}) => {
                     if (active && payload && payload.length) {
                       return (
-                        <div className="backdrop-blur-md bg-white/80 backdrop-blur-md/90 border-2 border-[#f1f2f4]/80 p-3 rounded-2xl shadow-xl flex flex-col gap-1.5 min-w-[140px] transition-all">
-                          <p className="text-xs font-semibold text-slate-400  uppercase tracking-wider">{label}</p>
-                          <div className="flex items-center justify-between gap-4 py-0.5">
-                            <span className="flex items-center gap-1.5 text-xs font-semibold text-slate-600">
-                              <span className="w-2 h-2 rounded-full bg-indigo-500" />
-                              Sotuvlar
-                            </span>
-                            <span className="text-xs font-bold text-indigo-600">
-                              {Number(payload[0].value).toLocaleString()} dona
-                            </span>
+                        <div className="backdrop-blur-md bg-white/75 border border-white/60 p-3.5 rounded-2xl shadow-[0_12px_30px_rgba(0,0,0,0.06)] flex flex-col gap-2 min-w-[160px] transition-all select-none">
+                          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{label}</p>
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between gap-4 py-0.5">
+                              <span className="flex items-center gap-2 text-xs font-medium text-slate-600">
+                                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                                Sotuvlar
+                              </span>
+                              <span className="text-xs font-bold text-emerald-600">
+                                {Number(payload[0].value).toLocaleString()} dona
+                              </span>
+                            </div>
                           </div>
                         </div>
                       );}
                     return null;}}
                 />
-                <Bar name="Sotuv hajmi" dataKey="qiymat" fill="#6366f1" radius={[6, 6, 0, 0]} maxBarSize={50} />
+                <Bar name="Sotuv hajmi" dataKey="qiymat" fill="url(#colorQiymat)" radius={[5, 5, 0, 0]} maxBarSize={45} />
               </BarChart>
             </ResponsiveContainer>
           </div>
