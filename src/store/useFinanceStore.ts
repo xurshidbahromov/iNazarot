@@ -31,10 +31,15 @@ export const useFinanceStore = create<FinanceState>()(
         transactions: [{ 
           ...trx, 
           id: Date.now(),
-          date: new Intl.DateTimeFormat('uz-UZ', { 
-            day: '2-digit', month: '2-digit', year: 'numeric', 
-            hour: '2-digit', minute: '2-digit' 
-          }).format(new Date())
+          date: (() => {
+            const now = new Date();
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const year = now.getFullYear();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            return `${day}.${month}.${year} ${hours}:${minutes}`;
+          })()
         }, ...state.transactions] 
       })),
       getBalance: () => {

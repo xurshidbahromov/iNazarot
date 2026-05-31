@@ -48,8 +48,9 @@ export default function Dashboard() {
     return d;
   });
   const salesData = last7Days.map(d => {
-    const dayStr = `${String(d.getDate()).padStart(2, '0')}.${String(d.getMonth() + 1).padStart(2, '0')}.${d.getFullYear()}`;
-    const dayTrx = transactions.filter(t => t.date.startsWith(dayStr));
+    const dayStrDot = `${String(d.getDate()).padStart(2, '0')}.${String(d.getMonth() + 1).padStart(2, '0')}.${d.getFullYear()}`;
+    const dayStrSlash = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+    const dayTrx = transactions.filter(t => t.date.startsWith(dayStrDot) || t.date.startsWith(dayStrSlash));
     return {
       name: dayNames[d.getDay()],
       tushum: dayTrx.filter(t => t.type === 'Kirim').reduce((a, t) => a + t.amount * t.rate, 0),

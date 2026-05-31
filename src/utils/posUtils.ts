@@ -180,8 +180,9 @@ export function getSystemAlerts(products: Product[], transactions: Transaction[]
 
   // 2. Daily income summary (today's transactions)
   const today = new Date();
-  const todayStr = `${String(today.getDate()).padStart(2, '0')}.${String(today.getMonth() + 1).padStart(2, '0')}.${today.getFullYear()}`;
-  const todayTrx = transactions.filter(t => t.date.startsWith(todayStr));
+  const todayStrDot = `${String(today.getDate()).padStart(2, '0')}.${String(today.getMonth() + 1).padStart(2, '0')}.${today.getFullYear()}`;
+  const todayStrSlash = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
+  const todayTrx = transactions.filter(t => t.date.startsWith(todayStrDot) || t.date.startsWith(todayStrSlash));
   const todayIncome = todayTrx.filter(t => t.type === 'Kirim').reduce((a, t) => a + t.amount * t.rate, 0);
   const todayExpense = todayTrx.filter(t => t.type === 'Chiqim').reduce((a, t) => a + t.amount * t.rate, 0);
 
