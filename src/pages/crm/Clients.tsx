@@ -4,11 +4,13 @@ import { Button} from'../../components/ui/Button';
 import { Input} from'../../components/ui/Input';
 import { Table} from'../../components/ui/Table';
 import { Modal} from'../../components/ui/Modal';
-import { useCRMStore} from'../../store/useCRMStore';
-import { exportToExcel} from'../../utils/exportToExcel';
+import { useCRMStore } from '../../store/useCRMStore';
+import { useActivityStore } from '../../store/useActivityStore';
+import { exportToExcel } from '../../utils/exportToExcel';
 
 export default function Clients() {
-  const { clients, addClient} = useCRMStore();
+  const { clients, addClient } = useCRMStore();
+  const { addActivity } = useActivityStore();
   const [search, setSearch] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form, setForm] = useState({ name:'', phone:'', status:'Faol', lastPurchase:'-', balance: 0});
@@ -21,6 +23,14 @@ export default function Clients() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     addClient(form);
+
+    addActivity({
+      type: 'client',
+      title: "Yangi mijoz qo'shildi",
+      description: `${form.name} — ${form.phone}`,
+      href: '/crm/clients',
+    });
+
     setForm({ name:'', phone:'', status:'Faol', lastPurchase:'-', balance: 0});
     setIsModalOpen(false);};
 

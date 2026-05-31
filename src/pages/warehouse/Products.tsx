@@ -4,11 +4,13 @@ import { Button} from'../../components/ui/Button';
 import { Input} from'../../components/ui/Input';
 import { Table} from'../../components/ui/Table';
 import { Modal} from'../../components/ui/Modal';
-import { useWarehouseStore} from'../../store/useWarehouseStore';
-import { exportToExcel} from'../../utils/exportToExcel';
+import { useWarehouseStore } from '../../store/useWarehouseStore';
+import { useActivityStore } from '../../store/useActivityStore';
+import { exportToExcel } from '../../utils/exportToExcel';
 
 export default function Products() {
   const { products, addProduct, setMinStock } = useWarehouseStore();
+  const { addActivity } = useActivityStore();
   const [search, setSearch] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form, setForm] = useState({
@@ -42,6 +44,14 @@ export default function Products() {
       boxType: form.boxType || undefined,
       boxQuantity: form.boxQuantity ? Number(form.boxQuantity) : undefined,
       features: form.features || undefined});
+
+    addActivity({
+      type: 'product',
+      title: "Yangi mahsulot qo'shildi",
+      description: `${form.name} — ${form.stock} ${form.unit} (Sotuv narxi: ${Number(form.price).toLocaleString()} UZS)`,
+      href: '/warehouse/products',
+    });
+
     setForm({
       name:'',
       category:'',

@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 import { Input } from '../../components/ui/Input';
 import { useWarehouseStore } from '../../store/useWarehouseStore';
 import { useFinanceStore } from '../../store/useFinanceStore';
+import { useActivityStore } from '../../store/useActivityStore';
 import { cn } from '../../utils/cn';
 import { printReceipt } from '../../utils/posUtils';
 import POSLockScreen from './POSLockScreen';
@@ -27,6 +28,7 @@ interface PaymentSuccessModal {
 export default function POS() {
   const { products, updateStock } = useWarehouseStore();
   const { addTransaction } = useFinanceStore();
+  const { addActivity } = useActivityStore();
   
   const [isLocked, setIsLocked] = useState(true);
   const [search, setSearch] = useState('');
@@ -114,6 +116,16 @@ export default function POS() {
       total,
       checkId: timestamp,
       items: [...cart]
+    });
+
+    // Faoliyat logiga yozish
+    const itemCount = cart.reduce((a, c) => a + c.quantity, 0);
+    addActivity({
+      type: 'sale',
+      title: 'Savdo amalga oshirildi',
+      description: `${itemCount} ta mahsulot — ${method === 'Naqd pul' ? 'Naqd' : 'Plastik karta'} orqali`,
+      amount: total,
+      href: '/finance/cashbox',
     });
 
     setCart([]);

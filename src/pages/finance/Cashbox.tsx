@@ -4,12 +4,14 @@ import { Button} from'../../components/ui/Button';
 import { Input} from'../../components/ui/Input';
 import { Table} from'../../components/ui/Table';
 import { Modal} from'../../components/ui/Modal';
-import { useFinanceStore} from'../../store/useFinanceStore';
-import type { Transaction} from'../../store/useFinanceStore';
-import { exportToExcel} from'../../utils/exportToExcel';
+import { useFinanceStore } from '../../store/useFinanceStore';
+import type { Transaction } from '../../store/useFinanceStore';
+import { useActivityStore } from '../../store/useActivityStore';
+import { exportToExcel } from '../../utils/exportToExcel';
 
 export default function Cashbox() {
-  const { transactions, addTransaction, getBalance} = useFinanceStore();
+  const { transactions, addTransaction, getBalance } = useFinanceStore();
+  const { addActivity } = useActivityStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<'Kirim' |'Chiqim'>('Kirim');
   const [search, setSearch] = useState('');
@@ -66,6 +68,15 @@ export default function Cashbox() {
       description: form.description,
       method: form.method,
       type: modalType});
+
+    addActivity({
+      type: modalType === 'Kirim' ? 'income' : 'expense',
+      title: modalType === 'Kirim' ? "Kirim qo'shildi" : "Xarajat qayd etildi",
+      description: `${form.description} — ${form.method} orqali`,
+      amount: Number(form.amount) * Number(form.rate), // UZS ekvivalentida saqlaymiz
+      href: '/finance/cashbox',
+    });
+
     setIsModalOpen(false);};
 
   return (

@@ -7,15 +7,19 @@ import {
   BarChart, Bar} from'recharts';
 import { useFinanceStore} from'../store/useFinanceStore';
 import { useCRMStore} from'../store/useCRMStore';
-import { useWarehouseStore} from'../store/useWarehouseStore';
-import { useHRStore} from'../store/useHRStore';
-import { exportToCSV } from'../utils/posUtils';
+import { useWarehouseStore } from '../store/useWarehouseStore';
+import { useHRStore } from '../store/useHRStore';
+import { useActivityStore } from '../store/useActivityStore';
+import { exportToCSV } from '../utils/posUtils';
+import { formatDistanceToNow } from 'date-fns';
+import { uz } from 'date-fns/locale';
 
 export default function Dashboard() {
-  const { getBalance, transactions} = useFinanceStore();
-  const { clients} = useCRMStore();
-  const { products} = useWarehouseStore();
-  const { employees} = useHRStore();
+  const { getBalance, transactions } = useFinanceStore();
+  const { clients } = useCRMStore();
+  const { products } = useWarehouseStore();
+  const { employees } = useHRStore();
+  const { logs } = useActivityStore();
 
   const balance = getBalance();
   const totalStock = products.reduce((a, p) => a + p.stock, 0);
@@ -124,6 +128,29 @@ export default function Dashboard() {
   ];
 
   const recentTransactions = transactions.slice(0, 5);
+  const recentActivities = logs.slice(0, 5);
+
+  const getActivityIcon = (type: string) => {
+    switch (type) {
+      case 'sale': return <ShoppingCart className="w-4 h-4 text-emerald-600" />;
+      case 'income': return <DollarSign className="w-4 h-4 text-emerald-600" />;
+      case 'expense': return <DollarSign className="w-4 h-4 text-rose-600" />;
+      case 'product': return <Package className="w-4 h-4 text-indigo-600" />;
+      case 'client': return <Users className="w-4 h-4 text-blue-600" />;
+      default: return <Activity className="w-4 h-4 text-slate-600" />;
+    }
+  };
+
+  const getActivityColor = (type: string) => {
+    switch (type) {
+      case 'sale': return 'bg-emerald-50 border-emerald-100';
+      case 'income': return 'bg-emerald-50 border-emerald-100';
+      case 'expense': return 'bg-rose-50 border-rose-100';
+      case 'product': return 'bg-indigo-50 border-indigo-100';
+      case 'client': return 'bg-blue-50 border-blue-100';
+      default: return 'bg-slate-50 border-slate-200';
+    }
+  };
 
   return (
     <div className="space-y-8 pb-8">
@@ -408,6 +435,38 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
+          
+          {/* Activity Log */}
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
+            <div className="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50/50">
+              <div className="flex items-center gap-2">
+                <Activity className="w-4 h-4 text-slate-500" strokeWidth={2} />
+                <h3 className="font-bold text-slate-900">So'nggi faoliyat</h3>
+              </div>
+            </div>
+            <div className="p-2 space-y-1 max-h-[300px] overflow-y-auto custom-scrollbar">
+              {recentActivities.map((log) => (
+                <div key={log.id} className="flex gap-3 p-3 hover:bg-slate-50 rounded-xl transition-colors">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center border flex-shrink-0 ${getActivityColor(log.type)}`}>
+                    {getActivityIcon(log.type)}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13px] font-bold text-slate-900 leading-tight">{log.title}</p>
+                    <p className="text-[12px] text-slate-500 mt-0.5 truncate">{log.description}</p>
+                    <p className="text-[10px] font-medium text-slate-400 mt-1">
+                      {formatDistanceToNow(new Date(log.timestamp), { addSuffix: true, locale: uz })}
+                    </p>
+                  </div>
+                </div>
+              ))}
+              {recentActivities.length === 0 && (
+                <div className="p-6 text-center text-slate-400">
+                  Faoliyat tarixi bo'sh
+                </div>
+              )}
+            </div>
+          </div>
+          
         </div>
       </div>
     </div>
