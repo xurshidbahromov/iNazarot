@@ -8,7 +8,7 @@ import { useWarehouseStore} from'../../store/useWarehouseStore';
 import { exportToExcel} from'../../utils/exportToExcel';
 
 export default function Products() {
-  const { products, addProduct} = useWarehouseStore();
+  const { products, addProduct, setMinStock } = useWarehouseStore();
   const [search, setSearch] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form, setForm] = useState({
@@ -17,6 +17,7 @@ export default function Products() {
     unit:'',
     price: 0,
     stock: 0,
+    minStock: 0,
     sku:'',
     boxType:'',
     boxQuantity: 0,
@@ -36,6 +37,7 @@ export default function Products() {
       unit: form.unit,
       price: Number(form.price),
       stock: Number(form.stock),
+      minStock: form.minStock ? Number(form.minStock) : undefined,
       sku: form.sku || undefined,
       boxType: form.boxType || undefined,
       boxQuantity: form.boxQuantity ? Number(form.boxQuantity) : undefined,
@@ -46,6 +48,7 @@ export default function Products() {
       unit:'',
       price: 0,
       stock: 0,
+      minStock: 0,
       sku:'',
       boxType:'',
       boxQuantity: 0,
@@ -53,16 +56,27 @@ export default function Products() {
     setIsModalOpen(false);};
 
   const totalProducts = products.length;
-  const lowStockProducts = products.filter(p => p.stock > 0 && p.stock <= 10).length;
+  const lowStockProducts = products.filter(p => {
+    const threshold = p.minStock ?? 10;
+    return p.stock > 0 && p.stock <= threshold;
+  }).length;
   const outOfStockProducts = products.filter(p => p.stock === 0).length;
   const totalValue = products.reduce((acc, p) => acc + (p.price * p.stock), 0);
 
   const stats = [
     { title:'Jami turlar', value: totalProducts.toString(), icon: Package, color:'text-blue-500', bg:'bg-blue-50'},
     { title:'Umumiy qiymat', value:`${(totalValue / 1000000).toFixed(1)}M UZS`, icon: Box, color:'text-emerald-500', bg:'bg-emerald-50'},
-    { title:'Kam qolganlar', value: lowStockProducts.toString(), icon: TrendingDown, color:'text-amber-500', bg:'bg-amber-50'},
+    { title:'Chegara oshganlar', value: lowStockProducts.toString(), icon: TrendingDown, color:'text-amber-500', bg:'bg-amber-50'},
     { title:'Tugaganlar', value: outOfStockProducts.toString(), icon: AlertCircle, color:'text-red-500', bg:'bg-red-50'},
   ];
+
+  // Inline minStock editing handler
+  const handleMinStockChange = (id: number, value: string) => {
+    const num = parseInt(value, 10);
+    if (!isNaN(num) && num >= 0) {
+      setMinStock(id, num);
+    }
+  };
 
   return (
     <div className="space-y-6 pb-8">
@@ -132,10 +146,10 @@ export default function Products() {
           columns={[
             { key:'name', label:'Mahsulot (Nomi & SKU)', sortable: true},
             { key:'category', label:'Kategoriya', sortable: true},
-            { key:'box', label:'Qadoqlash (Quti)'},
             { key:'unit', label:'Birligi', sortable: true},
             { key:'price', label:'Sotuv narxi', sortable: true},
             { key:'stock', label:'Joriy qoldiq', sortable: true},
+            { key:'minStock', label:'Min. chegara'},
           ]}
           data={filtered}
           renderRow={(product) => (
@@ -155,33 +169,43 @@ export default function Products() {
                 </div>
               </td>
               <td className="whitespace-nowrap px-3 py-4 text-[14px] text-slate-500 font-semibold">{product.category}</td>
-              <td className="whitespace-nowrap px-3 py-4 text-[13px] text-slate-600 font-medium">
-                {product.boxType ? (
-                  <div>
-                    <span>{product.boxType}</span>
-                    {product.boxQuantity ? (
-                      <span className="text-[11px] text-slate-400 block font-normal mt-0.5">({product.boxQuantity} {product.unit}/quti)</span>
-                    ) : null}
-                  </div>
-                ) : (
-                  <span className="text-slate-400">—</span>
-                )}
-              </td>
               <td className="whitespace-nowrap px-3 py-4 text-[14px] text-slate-500">{product.unit}</td>
               <td className="whitespace-nowrap px-3 py-4 text-[14px] font-bold text-slate-700">
                 {product.price.toLocaleString()} <span className="text-[12px] text-slate-400 font-medium">UZS</span>
               </td>
               <td className="whitespace-nowrap px-3 py-4 text-sm text-slate-500">
-                <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[12px] font-semibold border ${
-                  product.stock === 0 
-                    ?'bg-red-50 text-red-700 border-red-200' 
-                    : product.stock <= 10 
-                      ?'bg-amber-50 text-amber-700 border-amber-200'
-                      :'bg-emerald-50 text-emerald-700 border-emerald-200'}`}>
-                  <span className={`w-1.5 h-1.5 rounded-full ${
-                    product.stock === 0 ?'bg-red-500' : product.stock <= 10 ?'bg-amber-500' :'bg-emerald-500'}`} />
-                  {product.stock} {product.unit}
-                </span>
+                {(() => {
+                  const threshold = product.minStock ?? 0;
+                  const isOut = product.stock === 0;
+                  const isLow = !isOut && threshold > 0 && product.stock <= threshold;
+                  const colorClass = isOut
+                    ? 'bg-red-50 text-red-700 border-red-200'
+                    : isLow
+                      ? 'bg-amber-50 text-amber-700 border-amber-200'
+                      : 'bg-emerald-50 text-emerald-700 border-emerald-200';
+                  const dotClass = isOut ? 'bg-red-500' : isLow ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500';
+                  return (
+                    <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[12px] font-semibold border ${colorClass}`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${dotClass}`} />
+                      {product.stock} {product.unit}
+                    </span>
+                  );
+                })()}
+              </td>
+              {/* Inline editable minStock */}
+              <td className="whitespace-nowrap px-3 py-4">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    min={0}
+                    defaultValue={product.minStock ?? ''}
+                    placeholder="—"
+                    onBlur={(e) => handleMinStockChange(product.id, e.target.value)}
+                    onKeyDown={(e) => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur(); }}
+                    className="w-20 px-2 py-1.5 text-[13px] font-bold text-slate-700 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-amber-400 focus:bg-white transition-colors"
+                  />
+                  <span className="text-[11px] text-slate-400 font-medium">{product.unit}</span>
+                </div>
               </td>
             </>
           )}
@@ -271,6 +295,20 @@ export default function Products() {
               onChange={(e) => setForm({ ...form, stock: Number(e.target.value)})}
               className="rounded-xl font-bold"
               required
+            />
+          </div>
+
+          {/* Min stock threshold */}
+          <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl">
+            <label className="block text-[13px] font-bold text-amber-800 mb-1">⚠️ Minimal zaxira chegarasi</label>
+            <p className="text-[11px] text-amber-600 mb-3">Qoldiq bu raqamdan tushsa bildirishnoma keladi. Bo'sh qoldirsangiz 50 ta qabul qilinadi.</p>
+            <Input
+              type="number"
+              min={0}
+              placeholder="Masalan: 30"
+              value={form.minStock ||''}
+              onChange={(e) => setForm({ ...form, minStock: Number(e.target.value)})}
+              className="rounded-xl font-bold bg-white"
             />
           </div>
 

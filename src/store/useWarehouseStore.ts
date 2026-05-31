@@ -8,6 +8,7 @@ export interface Product {
   unit: string;
   price: number;
   stock: number;
+  minStock?: number; // Minimal zaxira chegarasi
   sku?: string;
   boxType?: string;
   boxQuantity?: number;
@@ -47,6 +48,7 @@ interface WarehouseState {
   transfers: Transfer[];
   addProduct: (product: Omit<Product, 'id'>) => void;
   updateStock: (id: number, quantity: number) => void;
+  setMinStock: (id: number, minStock: number) => void;
   addLocation: (location: Omit<Location, 'id'>) => void;
   addInventory: (inventory: Omit<Inventory, 'id'>) => void;
   addTransfer: (transfer: Omit<Transfer, 'id'>) => void;
@@ -56,9 +58,9 @@ export const useWarehouseStore = create<WarehouseState>()(
   persist(
     (set) => ({
       products: [
-        { id: 1, name: 'Sement M-400', category: 'Qurilish materiallari', unit: 'qop', price: 45000, stock: 120, sku: 'SKU-001' },
-        { id: 2, name: 'Armatura 12mm', category: 'Metall prokati', unit: 'metr', price: 6500, stock: 1500, sku: 'SKU-002' },
-        { id: 3, name: 'Gipskarton oddiy', category: 'Qurilish materiallari', unit: 'dona', price: 32000, stock: 85, sku: 'SKU-003' },
+        { id: 1, name: 'Sement M-400', category: 'Qurilish materiallari', unit: 'qop', price: 45000, stock: 120, minStock: 30, sku: 'SKU-001' },
+        { id: 2, name: 'Armatura 12mm', category: 'Metall prokati', unit: 'metr', price: 6500, stock: 1500, minStock: 200, sku: 'SKU-002' },
+        { id: 3, name: 'Gipskarton oddiy', category: 'Qurilish materiallari', unit: 'dona', price: 32000, stock: 85, minStock: 50, sku: 'SKU-003' },
       ],
       locations: [
         { id: 1, name: 'Asosiy ombor', address: 'Toshkent sh, Chilonzor tumani', manager: 'Alisher Vohidov', status: 'faol' },
@@ -71,7 +73,12 @@ export const useWarehouseStore = create<WarehouseState>()(
       })),
       updateStock: (id, quantity) => set((state) => ({
         products: state.products.map(p => 
-          p.id === id ? { ...p, stock: p.stock + quantity } : p
+          p.id === id ? { ...p, stock: Math.max(0, p.stock + quantity) } : p
+        )
+      })),
+      setMinStock: (id, minStock) => set((state) => ({
+        products: state.products.map(p =>
+          p.id === id ? { ...p, minStock: Math.max(0, minStock) } : p
         )
       })),
       addLocation: (location) => set((state) => ({

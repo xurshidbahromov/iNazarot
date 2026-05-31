@@ -154,9 +154,14 @@ export function getSystemAlerts(products: Product[], transactions: Transaction[]
 
   const alerts: { id: string; type: 'warning' | 'error' | 'info'; title: string; body: string; href: string }[] = [];
 
-  // 1. Low/out of stock
+  // 1. Low/out of stock — individual minStock threshold ishlatiladi
   const outOfStock = products.filter(p => p.stock === 0);
-  const lowStock = products.filter(p => p.stock > 0 && p.stock < 50);
+  // Har mahsulot uchun o'z minStock chegarasidan foydalaniladi (yo'q bo'lsa global 50)
+  const lowStock = products.filter(p => {
+    if (p.stock === 0) return false;
+    const threshold = p.minStock ?? 50;
+    return p.stock <= threshold;
+  });
 
   outOfStock.forEach(p => {
     alerts.push({
@@ -168,12 +173,13 @@ export function getSystemAlerts(products: Product[], transactions: Transaction[]
     });
   });
 
-  lowStock.slice(0, 3).forEach(p => {
+  lowStock.slice(0, 5).forEach(p => {
+    const threshold = p.minStock ?? 50;
     alerts.push({
       id: `low-${p.id}`,
       type: 'warning',
-      title: 'Kam qoldiq',
-      body: `${p.name} — faqat ${p.stock} ${p.unit} qoldi`,
+      title: 'Minimal chegara oshildi',
+      body: `${p.name} — ${p.stock} ${p.unit} qoldi (min: ${threshold} ${p.unit})`,
       href: '/warehouse/products',
     });
   });
