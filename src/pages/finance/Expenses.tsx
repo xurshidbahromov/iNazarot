@@ -50,7 +50,7 @@ export default function Expenses() {
 
       {/* Stats Area */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <div className="bg-red-50 border border-red-200 p-5 rounded-2xl">
+        <div className="bg-red-50 border border-red-200 p-5 rounded-[20px]">
           <div className="flex items-center justify-between mb-4">
             <div className="w-10 h-10 bg-white/80 backdrop-blur-md rounded-xl flex items-center justify-center shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]">
               <ArrowUpRight className="w-5 h-5 text-red-600" />
@@ -61,7 +61,7 @@ export default function Expenses() {
           <p className="text-2xl font-bold text-red-700">{totalExpenses.toLocaleString()} UZS</p>
         </div>
         
-        <div className="bg-slate-50 border-2 border-[#f1f2f4] p-5 rounded-2xl">
+        <div className="bg-slate-50 border-2 border-[#f1f2f4] p-5 rounded-[20px]">
            <div className="flex items-center justify-between mb-4">
             <div className="w-10 h-10 bg-white/80 backdrop-blur-md rounded-xl flex items-center justify-center shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]">
               <DollarSign className="w-5 h-5 text-slate-500" />
@@ -72,7 +72,7 @@ export default function Expenses() {
           <p className="text-2xl font-bold text-slate-800">{(totalExpenses * 0.85).toLocaleString()} UZS</p>
         </div>
 
-        <div className="bg-slate-50 border-2 border-[#f1f2f4] p-5 rounded-2xl">
+        <div className="bg-slate-50 border-2 border-[#f1f2f4] p-5 rounded-[20px]">
            <div className="flex items-center justify-between mb-4">
             <div className="w-10 h-10 bg-white/80 backdrop-blur-md rounded-xl flex items-center justify-center shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]">
               <DollarSign className="w-5 h-5 text-slate-500" />

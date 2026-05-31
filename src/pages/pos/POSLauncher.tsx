@@ -139,7 +139,7 @@ export default function POSLauncher() {
 
           {/* ── Floating: Receipt Card ── */}
           <div
-            className="absolute -bottom-8 -left-10 w-44 bg-white/85 backdrop-blur-2xl border-2 border-white/80 rounded-2xl p-4 shadow-2xl"
+            className="absolute -bottom-8 -left-10 w-44 bg-white/85 backdrop-blur-2xl border-2 border-white/80 rounded-[20px] p-4 shadow-2xl"
             style={{ animation: 'float 7s ease-in-out infinite' }}
           >
             <div className="flex items-center gap-2 mb-3">

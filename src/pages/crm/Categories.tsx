@@ -65,7 +65,7 @@ export default function Categories() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <div className="bg-indigo-50 border border-indigo-200 p-5 rounded-2xl flex flex-col justify-between">
+        <div className="bg-indigo-50 border border-indigo-200 p-5 rounded-[20px] flex flex-col justify-between">
           <div>
             <div className="w-10 h-10 bg-white/80 backdrop-blur-md rounded-xl flex items-center justify-center shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] mb-3">
               <Trophy className="w-5 h-5 text-indigo-600" />
@@ -78,7 +78,7 @@ export default function Categories() {
           <p className="text-xs text-slate-500 mt-4">VIP mijozlarimiz uchun maxsus takliflar va imtiyozlar.</p>
         </div>
 
-        <div className="bg-emerald-50 border border-emerald-200 p-5 rounded-2xl flex flex-col justify-between">
+        <div className="bg-emerald-50 border border-emerald-200 p-5 rounded-[20px] flex flex-col justify-between">
           <div>
             <div className="w-10 h-10 bg-white/80 backdrop-blur-md rounded-xl flex items-center justify-center shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] mb-3">
               <Percent className="w-5 h-5 text-emerald-600" />
@@ -91,7 +91,7 @@ export default function Categories() {
           <p className="text-xs text-slate-500 mt-4">Mijozlarni rag'batlantirish uchun turli darajadagi chegirma tizimi.</p>
         </div>
 
-        <div className="bg-blue-50 border border-blue-200 p-5 rounded-2xl flex flex-col justify-between">
+        <div className="bg-blue-50 border border-blue-200 p-5 rounded-[20px] flex flex-col justify-between">
           <div>
             <div className="w-10 h-10 bg-white/80 backdrop-blur-md rounded-xl flex items-center justify-center shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] mb-3">
               <Users className="w-5 h-5 text-blue-600" />
@@ -106,7 +106,7 @@ export default function Categories() {
       </div>
 
       {/* Table & Filter */}
-      <div className="bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
+      <div className="bg-white/80 backdrop-blur-sm rounded-[20px] border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
         <div className="p-5 border-b border-slate-200 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="max-w-md relative flex-1">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">

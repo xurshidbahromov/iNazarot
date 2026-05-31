@@ -158,7 +158,7 @@ export default function Currency() {
           const diff = c.rate - c.previousRate;
           const isUp = diff > 0;
           return (
-            <div key={c.id} className="bg-white/80 backdrop-blur-sm border-2 border-[#f1f2f4] p-5 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] flex flex-col justify-between hover:border-slate-200 transition-colors">
+            <div key={c.id} className="bg-white/80 backdrop-blur-sm border-2 border-[#f1f2f4] p-5 rounded-[20px] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] flex flex-col justify-between hover:border-slate-200 transition-colors">
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
@@ -190,7 +190,7 @@ export default function Currency() {
       </div>
 
       {/* Filter and Content */}
-      <div className="bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
+      <div className="bg-white/80 backdrop-blur-sm rounded-[20px] border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
         <div className="p-5 border-b border-slate-200 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="max-w-md relative flex-1">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">

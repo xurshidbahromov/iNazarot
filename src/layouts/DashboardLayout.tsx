@@ -216,7 +216,7 @@ export default function DashboardLayout() {
                   <div>
                     <button
                       onClick={() => toggleMenu(item.name)}
-                      className={cn('group w-full flex items-center justify-between px-3 py-3 text-[15px] font-semibold rounded-2xl transition-all',
+                      className={cn('group w-full flex items-center justify-between px-3 py-3 text-[15px] font-semibold rounded-[16px] transition-all',
                         (isChildActive && !isOpen) || (isCollapsed && isChildActive)
                           ?'text-slate-900 bg-white shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]'
                           :'text-slate-600 hover:text-slate-900 hover:bg-white/80',
@@ -252,7 +252,7 @@ export default function DashboardLayout() {
                                 <div className="absolute -left-4 w-3 h-0.5 bg-slate-200/60 top-1/2 -translate-y-1/2"></div>
                                 <Link
                                   to={child.href}
-                                  className={cn('flex-1 flex items-center justify-between px-3 py-2.5 text-[14px] font-medium rounded-2xl transition-all',
+                                  className={cn('flex-1 flex items-center justify-between px-3 py-2.5 text-[14px] font-medium rounded-[16px] transition-all',
                                     isChildLinkActive
                                       ?'bg-white text-slate-900 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]'
                                       :'text-slate-500 hover:text-slate-800 hover:bg-slate-200/50'
@@ -278,7 +278,7 @@ export default function DashboardLayout() {
                         onMouseEnter={() => handleMenuHoverEnter(item.name)}
                         onMouseLeave={() => handleMenuHoverLeave()}
                       >
-                        <div className="bg-slate-50 rounded-2xl shadow-[0_12px_40px_-8px_rgba(0,0,0,0.15)] border border-slate-200/60 py-2.5 px-2.5 ml-1 animate-fade-in-scale">
+                        <div className="bg-slate-50 rounded-[16px] shadow-[0_12px_40px_-8px_rgba(0,0,0,0.15)] border border-slate-200/60 py-2.5 px-2.5 ml-1 animate-fade-in-scale">
                           <div className="px-3 py-1.5 mb-1 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
                             {item.name}
                           </div>
@@ -313,7 +313,7 @@ export default function DashboardLayout() {
                   <Link
                     to={item.href!}
                     title={isCollapsed ? item.name : undefined}
-                    className={cn('group flex items-center gap-3 px-3 py-3 text-[15px] font-semibold rounded-2xl transition-all',
+                    className={cn('group flex items-center gap-3 px-3 py-3 text-[15px] font-semibold rounded-[16px] transition-all',
                       isActive
                         ?'bg-white text-slate-900 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]'
                         :'text-slate-600 hover:text-slate-900 hover:bg-white/80',
@@ -421,7 +421,7 @@ export default function DashboardLayout() {
 
               {/* Alerts Dropdown */}
               {showAlerts && (
-                <div className="absolute top-full right-0 mt-3 w-80 bg-white rounded-2xl shadow-[0_20px_50px_rgba(15,23,42,0.12)] border border-slate-200/70 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="absolute top-full right-0 mt-3 w-80 bg-white rounded-[16px] shadow-[0_20px_50px_rgba(15,23,42,0.12)] border border-slate-200/70 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
                   {/* Header */}
                   <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 bg-slate-50/70">
                     <div className="flex items-center gap-2">
@@ -507,7 +507,7 @@ export default function DashboardLayout() {
 
               {/* Dropdown */}
               {showUserMenu && (
-                <div className="absolute top-full right-0 mt-3 w-68 bg-white rounded-2xl shadow-[0_20px_50px_rgba(15,23,42,0.1)] border border-slate-200/70 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200" style={{ width: '280px' }}>
+                <div className="absolute top-full right-0 mt-3 w-68 bg-white rounded-[16px] shadow-[0_20px_50px_rgba(15,23,42,0.1)] border border-slate-200/70 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200" style={{ width: '280px' }}>
                   
                   {/* User info header — dark gradient */}
                   <div className="relative px-4 py-4 bg-gradient-to-br from-slate-900 to-slate-800 overflow-hidden">

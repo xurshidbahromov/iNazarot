@@ -105,7 +105,7 @@ export default function WarehouseDrafts() {
           placeholder="Qoralama yoki muallif bo'yicha qidiring..."
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="w-full pl-11 pr-4 py-3 bg-white/80 backdrop-blur-md border-2 border-[#f1f2f4] rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-300 transition-all placeholder:text-slate-400"
+          className="w-full pl-11 pr-4 py-3 bg-white/80 backdrop-blur-md border-2 border-[#f1f2f4] rounded-[20px] text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-300 transition-all placeholder:text-slate-400"
         />
       </div>
 
@@ -117,7 +117,7 @@ export default function WarehouseDrafts() {
           const StatusIcon = status.icon;
 
           return (
-            <div key={draft.id} className="group bg-white/80 backdrop-blur-md border-2 border-[#f1f2f4] rounded-2xl p-5 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.06)] hover:border-slate-200 transition-all duration-200">
+            <div key={draft.id} className="group bg-white/80 backdrop-blur-md border-2 border-[#f1f2f4] rounded-[20px] p-5 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.06)] hover:border-slate-200 transition-all duration-200">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-3">
@@ -183,8 +183,8 @@ export default function WarehouseDrafts() {
           );})}
 
         {filtered.length === 0 && (
-          <div className="text-center py-16 bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-[#f1f2f4] border-dashed">
-            <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <div className="text-center py-16 bg-white/80 backdrop-blur-sm rounded-[20px] border-2 border-[#f1f2f4] border-dashed">
+            <div className="w-16 h-16 bg-slate-100 rounded-[20px] flex items-center justify-center mx-auto mb-4">
               <FileText className="w-8 h-8 text-slate-300" strokeWidth={1.6} />
             </div>
             <p className="font-semibold text-slate-500">Qoralamalar topilmadi</p>

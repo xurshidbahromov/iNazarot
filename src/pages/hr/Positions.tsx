@@ -3,9 +3,11 @@ import { Button} from'../../components/ui/Button';
 import { Table} from'../../components/ui/Table';
 
 const mockPositions = [
-  { id: 1, name:'Sotuvchi', department:"Savdo bo'limi", baseSalary:'3,000,000 UZS'},
-  { id: 2, name:'Bosh bugalter', department:"Moliya bo'limi", baseSalary:'8,000,000 UZS'},
-  { id: 3, name:'Ombor mudiri', department:'Ombor', baseSalary:'5,000,000 UZS'},
+  { id: 1, name: 'Sotuvchi-maslahatchi', department: "Savdo bo'limi", baseSalary: '3,200,000 UZS' },
+  { id: 2, name: 'Kassir', department: "Savdo bo'limi", baseSalary: '3,500,000 UZS' },
+  { id: 3, name: 'Bosh buxgalter', department: "Moliya bo'limi", baseSalary: '8,000,000 UZS' },
+  { id: 4, name: 'Ombor mudiri', department: 'Ombor', baseSalary: '5,000,000 UZS' },
+  { id: 5, name: 'Kuryer (Yetkazib beruvchi)', department: 'Logistika', baseSalary: '4,000,000 UZS' },
 ];
 
 export default function Positions() {

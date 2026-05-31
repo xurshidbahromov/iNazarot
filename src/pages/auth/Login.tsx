@@ -184,7 +184,7 @@ export default function Login() {
             {/* Top row - Charts */}
             <div className="flex gap-6 h-[180px]">
               {/* Bar Chart Block */}
-              <div className="flex-1 bg-white/60 rounded-2xl border border-white/60 p-5 flex items-end justify-between gap-4 relative overflow-hidden shadow-sm">
+              <div className="flex-1 bg-white/60 rounded-[20px] border border-white/60 p-5 flex items-end justify-between gap-4 relative overflow-hidden shadow-sm">
                 <div className="absolute top-5 left-5 w-24 h-3 rounded-full bg-slate-200" />
                 <div className="w-full bg-emerald-200/60 rounded-t-lg h-[40%] transition-all duration-1000 group-hover:h-[60%]" />
                 <div className="w-full bg-teal-400/80 rounded-t-lg h-[70%] transition-all duration-1000 group-hover:h-[80%]" />
@@ -194,7 +194,7 @@ export default function Login() {
               </div>
 
               {/* Pie Chart Block */}
-              <div className="w-[180px] flex-shrink-0 bg-white/60 rounded-2xl border border-white/60 p-5 flex items-center justify-center shadow-sm relative">
+              <div className="w-[180px] flex-shrink-0 bg-white/60 rounded-[20px] border border-white/60 p-5 flex items-center justify-center shadow-sm relative">
                 <div className="absolute top-5 left-5 w-16 h-3 rounded-full bg-slate-200" />
                  {/* CSS Pie Chart */}
                  <div className="w-28 h-28 rounded-full transform rotate-12" style={{ background: 'conic-gradient(#10b981 0% 35%, #6ee7b7 35% 75%, #e2e8f0 75% 100%)' }} />
@@ -213,7 +213,7 @@ export default function Login() {
                    <div className="w-24 h-2 rounded-full bg-slate-200" />
                  </div>
                </div>
-               <div className="w-[200px] bg-gradient-to-br from-emerald-500/10 to-teal-500/5 rounded-2xl border border-emerald-500/20 p-5 shadow-sm">
+               <div className="w-[200px] bg-gradient-to-br from-emerald-500/10 to-teal-500/5 rounded-[20px] border border-emerald-500/20 p-5 shadow-sm">
                  <div className="w-20 h-3 rounded-full bg-emerald-500/40 mb-5" />
                  <div className="w-full h-2.5 rounded-full bg-emerald-500/20 mb-3" />
                  <div className="w-3/4 h-2.5 rounded-full bg-emerald-500/20 mb-3" />
@@ -231,7 +231,7 @@ export default function Login() {
         </div>
 
         {/* Floating Stats Card */}
-        <div className="absolute bottom-12 right-10 lg:-right-4 xl:right-10 w-40 bg-white/80 backdrop-blur-2xl border-2 border-white/80 rounded-2xl p-4 shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-500">
+        <div className="absolute bottom-12 right-10 lg:-right-4 xl:right-10 w-40 bg-white/80 backdrop-blur-2xl border-2 border-white/80 rounded-[20px] p-4 shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-500">
            <div className="w-16 h-2 rounded-full bg-slate-200 mb-4" />
            <div className="flex items-end justify-between gap-2 h-14">
              <div className="w-full bg-slate-200 rounded-sm h-[30%]" />

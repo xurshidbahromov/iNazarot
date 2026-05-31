@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { ShoppingCart, Search, CreditCard, Banknote, Plus, Minus, Trash2, PackageSearch, User, X, ScanBarcode, ChevronRight, Store, Printer, Check } from 'lucide-react';
+import { ShoppingCart, Search, CreditCard, Banknote, Plus, Minus, Trash2, PackageSearch, Package, User, X, ScanBarcode, ChevronRight, Store, Printer, Check } from 'lucide-react';
 import { toast } from 'sonner';
 import { Input } from '../../components/ui/Input';
 import { useWarehouseStore } from '../../store/useWarehouseStore';
@@ -200,13 +200,13 @@ export default function POS() {
             <div className="p-6 pt-3 grid grid-cols-2 gap-3">
               <button
                 onClick={handleCloseModal}
-                className="h-14 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm transition-all duration-150 active:scale-95"
+                className="h-14 rounded-[20px] bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm transition-all duration-150 active:scale-95"
               >
                 Yopish
               </button>
               <button
                 onClick={handlePrintAndClose}
-                className="h-14 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-sm transition-all duration-150 active:scale-95 flex items-center justify-center gap-2 shadow-[0_8px_20px_rgba(16,185,129,0.3)]"
+                className="h-14 rounded-[20px] bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-sm transition-all duration-150 active:scale-95 flex items-center justify-center gap-2 shadow-[0_8px_20px_rgba(16,185,129,0.3)]"
               >
                 <Printer className="w-4 h-4" strokeWidth={2.5} />
                 Chek chop et
@@ -247,7 +247,7 @@ export default function POS() {
         </div>
         
         <div className="flex items-center gap-6">
-          <div className="flex items-center gap-3 bg-slate-100 rounded-2xl px-5 py-2.5">
+          <div className="flex items-center gap-3 bg-slate-100 rounded-[20px] px-5 py-2.5">
             <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center">
               <User className="w-4 h-4 text-slate-600" />
             </div>
@@ -258,7 +258,7 @@ export default function POS() {
           </div>
           <button 
             onClick={handleClose}
-            className="w-12 h-12 flex items-center justify-center bg-white hover:bg-red-50 text-slate-400 hover:text-red-500 rounded-2xl transition-all duration-150 border border-slate-200/60 shadow-sm active:scale-90 active:rotate-3"
+            className="w-12 h-12 flex items-center justify-center bg-white hover:bg-red-50 text-slate-400 hover:text-red-500 rounded-[20px] transition-all duration-150 border border-slate-200/60 shadow-sm active:scale-90 active:rotate-3"
             title="Terminalni yopish"
           >
             <X className="w-6 h-6" strokeWidth={2.5} />
@@ -287,7 +287,7 @@ export default function POS() {
               {!isLocked && (
                 <Input
                   ref={searchRef}
-                  className="pl-14 h-14 text-lg rounded-2xl bg-slate-100/50 border-transparent hover:bg-slate-100 focus:bg-white focus:border-slate-300 transition-all placeholder:text-slate-400 font-medium"
+                  className="pl-14 h-14 text-lg rounded-[20px] bg-slate-100/50 border-transparent hover:bg-slate-100 focus:bg-white focus:border-slate-300 transition-all placeholder:text-slate-400 font-medium"
                   placeholder="Mahsulot qidirish yoki shtrix kod skanerlash..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
@@ -309,14 +309,12 @@ export default function POS() {
                 onClick={() => addToCart(p)}
                 className="group flex flex-col bg-white border border-slate-100 rounded-[1.5rem] p-4 cursor-pointer hover:border-slate-200 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] transition-all duration-150 active:scale-[0.94] active:translate-y-0.5 select-none"
               >
-                <div className="h-32 rounded-2xl mb-4 flex items-center justify-center relative overflow-hidden flex-shrink-0 bg-slate-50 group-hover:bg-slate-100 transition-colors">
+                <div className="h-32 rounded-[20px] mb-4 flex items-center justify-center relative overflow-hidden flex-shrink-0 bg-slate-50 group-hover:bg-slate-100 transition-colors">
                   {p.image ? (
                     <img src={p.image} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={p.name} />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-tr from-slate-100 to-slate-50 flex flex-col items-center justify-center relative group-hover:scale-105 transition-transform duration-300">
-                      <div className="w-12 h-12 rounded-xl bg-white shadow-sm flex items-center justify-center text-slate-400 font-extrabold text-lg border border-slate-100/50">
-                        {p.name.charAt(0).toUpperCase()}
-                      </div>
+                      <Package className="w-8 h-8 text-slate-400" strokeWidth={1.5} />
                     </div>
                   )}
                 </div>
@@ -355,7 +353,7 @@ export default function POS() {
           
           {/* Customer Selector */}
           <div className="p-6 pb-4 border-b border-slate-50">
-            <button className="w-full flex items-center justify-between px-5 py-4 bg-slate-50 rounded-2xl hover:bg-slate-100 active:scale-[0.97] active:translate-y-px transition-all duration-150 group">
+            <button className="w-full flex items-center justify-between px-5 py-4 bg-slate-50 rounded-[20px] hover:bg-slate-100 active:scale-[0.97] active:translate-y-px transition-all duration-150 group">
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm">
                   <User className="w-5 h-5 text-slate-400 group-hover:text-slate-600 transition-colors" strokeWidth={2} />

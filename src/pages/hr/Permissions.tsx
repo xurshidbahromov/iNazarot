@@ -190,7 +190,7 @@ export default function Permissions() {
               onClick={() => {
                 setSelectedRole(role);
                 setHasChanges(false);}}
-              className={cn('w-full text-left px-4 py-3.5 rounded-2xl border transition-all',
+              className={cn('w-full text-left px-4 py-3.5 rounded-[20px] border transition-all',
                 selectedRole.id === role.id
                   ?'bg-white border-violet-200 shadow-md shadow-violet-100'
                   :'bg-white border-transparent hover:border-slate-200 hover:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]'
@@ -210,7 +210,7 @@ export default function Permissions() {
             </button>
           ))}
 
-          <button className="w-full flex items-center gap-2 px-4 py-3 rounded-2xl border border-dashed border-slate-300 text-slate-400 hover:border-violet-400 hover:text-violet-600 text-sm font-medium transition-colors">
+          <button className="w-full flex items-center gap-2 px-4 py-3 rounded-[20px] border border-dashed border-slate-300 text-slate-400 hover:border-violet-400 hover:text-violet-600 text-sm font-medium transition-colors">
             <Plus className="w-4 h-4" />
             Yangi rol
           </button>
@@ -219,7 +219,7 @@ export default function Permissions() {
         {/* Permissions Panel */}
         <div className="flex-1 space-y-3">
           {/* Role stats */}
-          <div className="bg-white/80 backdrop-blur-md border-2 border-[#f1f2f4] rounded-2xl p-5 flex items-center justify-between shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]">
+          <div className="bg-white/80 backdrop-blur-md border-2 border-[#f1f2f4] rounded-[20px] p-5 flex items-center justify-between shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]">
             <div>
               <div className="flex items-center gap-3">
                 <span className={cn('w-10 h-10 rounded-xl flex items-center justify-center text-base font-bold', selectedRole.bg, selectedRole.color)}>
@@ -250,7 +250,7 @@ export default function Permissions() {
             const allActive = activeCount === 4;
 
             return (
-              <div key={perm.module} className="bg-white/80 backdrop-blur-md border-2 border-[#f1f2f4] rounded-2xl overflow-hidden shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]">
+              <div key={perm.module} className="bg-white/80 backdrop-blur-md border-2 border-[#f1f2f4] rounded-[20px] overflow-hidden shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]">
                 <div
                   className="flex items-center justify-between px-5 py-4 cursor-pointer hover:bg-slate-50  :bg-slate-800/50 transition-colors"
                   onClick={() => toggleModule(perm.module)}
@@ -304,7 +304,7 @@ export default function Permissions() {
                       <button
                         key={action}
                         onClick={() => togglePermission(perm.module, action)}
-                        className={cn('flex flex-col items-center gap-2 p-4 rounded-2xl border-2 transition-all',
+                        className={cn('flex flex-col items-center gap-2 p-4 rounded-[20px] border-2 transition-all',
                           perm.actions[action]
                             ?'border-emerald-200 bg-emerald-50 text-emerald-700'
                             :'border-slate-100 bg-slate-50 text-slate-400 hover:border-slate-200'

@@ -92,7 +92,7 @@ export default function WarehouseScheduled() {
 
       {/* Upcoming Alert */}
       {upcomingToday.length > 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-start gap-3">
+        <div className="bg-amber-50 border border-amber-200 rounded-[20px] p-4 flex items-start gap-3">
           <div className="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
             <Bell className="w-5 h-5 text-amber-600" strokeWidth={1.6} />
           </div>
@@ -116,7 +116,7 @@ export default function WarehouseScheduled() {
           { label:"To'xtatilgan", value: counts.paused, color:'text-amber-600', bg:'bg-amber-50', border:'border-amber-200'},
           { label:'Tugallangan', value: counts.completed, color:'text-slate-600', bg:'bg-slate-50', border:'border-slate-200'},
         ].map(stat => (
-          <div key={stat.label} className={cn('rounded-2xl border p-4 text-center', stat.bg, stat.border)}>
+          <div key={stat.label} className={cn('rounded-[20px] border p-4 text-center', stat.bg, stat.border)}>
             <p className={cn('text-3xl font-bold', stat.color)}>{stat.value}</p>
             <p className="text-sm text-slate-600 mt-1">{stat.label}</p>
           </div>
@@ -174,7 +174,7 @@ export default function WarehouseScheduled() {
           return (
             <div
               key={item.id}
-              className={cn('group bg-white border rounded-2xl p-5 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.06)] hover:border-slate-200 transition-all duration-200',
+              className={cn('group bg-white border rounded-[20px] p-5 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.06)] hover:border-slate-200 transition-all duration-200',
                 isUrgent ?'border-amber-300 hover:border-amber-400' :'border-slate-200'
               )}
             >
@@ -259,8 +259,8 @@ export default function WarehouseScheduled() {
           );})}
 
         {filtered.length === 0 && (
-          <div className="text-center py-16 bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-[#f1f2f4] border-dashed">
-            <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <div className="text-center py-16 bg-white/80 backdrop-blur-sm rounded-[20px] border-2 border-[#f1f2f4] border-dashed">
+            <div className="w-16 h-16 bg-slate-100 rounded-[20px] flex items-center justify-center mx-auto mb-4">
               <Calendar className="w-8 h-8 text-slate-300" strokeWidth={1.6} />
             </div>
             <p className="font-semibold text-slate-500">Rejalashtirilgan operatsiyalar topilmadi</p>

@@ -123,7 +123,7 @@ function App() {
           borderRadius: '16px',
         },
         classNames: {
-          toast: '!backdrop-blur-2xl !shadow-[0_8px_30px_rgba(0,0,0,0.05)] !rounded-2xl',
+          toast: '!backdrop-blur-2xl !shadow-[0_8px_30px_rgba(0,0,0,0.05)] !rounded-[20px]',
           success: '!bg-emerald-50/90 !border !border-emerald-200/80 !text-emerald-900',
           error: '!bg-red-50/90 !border !border-red-200/80 !text-red-900',
           warning: '!bg-amber-50/90 !border !border-amber-200/80 !text-amber-900',

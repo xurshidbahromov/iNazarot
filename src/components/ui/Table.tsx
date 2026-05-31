@@ -64,7 +64,7 @@ export function Table<T extends Record<string, unknown> | { id?: string | number
   return (
     <div className={cn(
       variant ==='standalone'
-        ?"overflow-hidden border-2 border-[#f1f2f4] bg-white/80 backdrop-blur-sm rounded-xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]"
+        ?"overflow-hidden border-2 border-[#f1f2f4] bg-white/80 backdrop-blur-sm rounded-[20px] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]"
         :"overflow-hidden bg-white/70",
       className
     )}>

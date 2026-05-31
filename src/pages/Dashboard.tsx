@@ -1,25 +1,42 @@
+import { useState } from 'react';
 import {
   TrendingUp, TrendingDown, DollarSign, Users, ShoppingCart, Package,
-  Activity, ArrowRight, LayoutDashboard, Download} from'lucide-react';
-import { Link} from'react-router-dom';
+  Activity, ArrowRight, LayoutDashboard, Download, Sparkles, Brain,
+  CheckCircle2, AlertTriangle, Info, RefreshCw, ChevronRight, X
+} from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  BarChart, Bar} from'recharts';
-import { useFinanceStore} from'../store/useFinanceStore';
-import { useCRMStore} from'../store/useCRMStore';
+  BarChart, Bar } from 'recharts';
+import { useFinanceStore } from '../store/useFinanceStore';
+import { useCRMStore } from '../store/useCRMStore';
 import { useWarehouseStore } from '../store/useWarehouseStore';
 import { useHRStore } from '../store/useHRStore';
 import { useActivityStore } from '../store/useActivityStore';
 import { exportToCSV } from '../utils/posUtils';
 import { formatDistanceToNow } from 'date-fns/formatDistanceToNow';
 import { uz } from 'date-fns/locale/uz';
+import { generateAIRecommendations, type BusinessGoal } from '../utils/aiUtils';
 
 export default function Dashboard() {
   const { getBalance, transactions } = useFinanceStore();
-  const { clients } = useCRMStore();
+  const { clients, orders } = useCRMStore();
   const { products } = useWarehouseStore();
   const { employees } = useHRStore();
   const { logs } = useActivityStore();
+
+  const [selectedGoal, setSelectedGoal] = useState<BusinessGoal>('general');
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isAIOpen, setIsAIOpen] = useState(false);
+
+  const handleRefreshAnalysis = () => {
+    setIsAnalyzing(true);
+    setTimeout(() => {
+      setIsAnalyzing(false);
+    }, 800);
+  };
+
+  const aiRecommendations = generateAIRecommendations(products, transactions, clients, orders || [], selectedGoal);
 
   const balance = getBalance();
   const totalStock = products.reduce((a, p) => a + p.stock, 0);
@@ -180,7 +197,7 @@ export default function Dashboard() {
           <Link
             key={stat.name}
             to={stat.href}
-            className="group bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.06)] hover:border-slate-200  :border-slate-700 transition-all duration-300"
+            className="group bg-white/80 backdrop-blur-sm rounded-[20px] border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.06)] hover:border-slate-200  :border-slate-700 transition-all duration-300"
           >
             <div className="p-5">
               <div className="flex items-center justify-between">
@@ -203,10 +220,181 @@ export default function Dashboard() {
         ))}
       </div>
 
+      {/* 🧠 iNazorat Intelligence */}
+      <div className={`relative overflow-hidden bg-white/70 backdrop-blur-2xl rounded-[20px] border transition-all duration-500 ${isAIOpen ? 'border-slate-200/60 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)]' : 'border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:border-slate-200/50 cursor-pointer group'}`}>
+        
+        {/* Ambient Glow */}
+        {isAIOpen && (
+          <div className="absolute -top-40 -right-40 w-96 h-96 bg-slate-100 rounded-full blur-3xl opacity-50 pointer-events-none" />
+        )}
+
+        {/* Toggle / Header Area */}
+        <div 
+          onClick={() => !isAIOpen && setIsAIOpen(true)}
+          className={`relative z-10 flex items-center justify-between ${isAIOpen ? 'p-6 border-b border-slate-100/80' : 'p-5'}`}
+        >
+          <div className="flex items-center gap-4">
+            <div className={`relative flex items-center justify-center transition-transform duration-500 ${isAIOpen ? 'scale-110' : 'group-hover:scale-110'}`}>
+              <div className="absolute inset-0 bg-[#20c997] rounded-full blur-[20px] opacity-25 pointer-events-none" />
+              <Brain className={`relative z-10 text-[#20c997] transition-all duration-500 ${isAIOpen ? 'w-8 h-8' : 'w-6 h-6'}`} strokeWidth={1.5} />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className={`font-bold tracking-tight text-slate-900 transition-all ${isAIOpen ? 'text-lg' : 'text-base'}`}>
+                  iNazorat Intelligence
+                </h3>
+                <span className="flex items-center gap-1 text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider border border-emerald-100/60">
+                  <Sparkles className="w-2.5 h-2.5" /> PRO
+                </span>
+              </div>
+              {!isAIOpen && (
+                <p className="text-[13px] font-medium text-slate-500 mt-0.5">
+                  Biznesingiz uchun <span className="text-slate-800 font-bold">{aiRecommendations.length} ta</span> strategik tavsiya
+                </p>
+              )}
+              {isAIOpen && (
+                <p className="text-[13px] font-medium text-slate-500 mt-0.5">Tizim ma'lumotlari asosida shakllantirilgan analitika</p>
+              )}
+            </div>
+          </div>
+          
+          {/* Controls (Only visible when Open) */}
+          {isAIOpen ? (
+            <div className="flex flex-wrap items-center gap-4">
+              <div className="flex items-center gap-1 bg-slate-50/80 backdrop-blur-sm border border-slate-200/60 p-1 rounded-[20px]">
+                {[
+                  { id: 'general', label: 'Umumiy' },
+                  { id: 'growth', label: 'Kengayish' },
+                  { id: 'efficiency', label: 'Samaradorlik' },
+                  { id: 'debt_reduction', label: 'Nasiyalar' }
+                ].map(g => (
+                  <button
+                    key={g.id}
+                    onClick={(e) => { e.stopPropagation(); setSelectedGoal(g.id as BusinessGoal); }}
+                    className={`px-4 py-2 rounded-xl text-[12px] font-semibold transition-all duration-300 ${selectedGoal === g.id ? 'bg-white text-slate-900 shadow-sm border border-slate-200/50' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-100/50 border border-transparent'}`}
+                  >
+                    {g.label}
+                  </button>
+                ))}
+              </div>
+              <div className="h-8 w-px bg-slate-200/60 mx-1" />
+              <button
+                onClick={(e) => { e.stopPropagation(); handleRefreshAnalysis(); }}
+                disabled={isAnalyzing}
+                className="p-2.5 bg-white border border-slate-200/80 rounded-xl text-slate-600 hover:text-slate-900 hover:border-slate-300 shadow-sm hover:shadow active:scale-95 transition-all disabled:opacity-50"
+                title="Qayta tahlil"
+              >
+                <RefreshCw className={`w-4 h-4 ${isAnalyzing ? 'animate-spin text-slate-400' : ''}`} strokeWidth={2} />
+              </button>
+              <button
+                onClick={(e) => { e.stopPropagation(); setIsAIOpen(false); }}
+                className="p-2.5 bg-slate-50 border border-slate-200/80 rounded-xl text-slate-400 hover:text-slate-900 hover:bg-slate-100 active:scale-95 transition-all"
+                title="Yopish"
+              >
+                <X className="w-4 h-4" strokeWidth={2.5} />
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-3 pr-2">
+              <div className="flex -space-x-2">
+                <div className="w-8 h-8 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center shadow-sm">
+                  <TrendingUp className="w-3.5 h-3.5 text-slate-600" />
+                </div>
+                <div className="w-8 h-8 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center shadow-sm">
+                  <Activity className="w-3.5 h-3.5 text-slate-600" />
+                </div>
+              </div>
+              <span className="flex items-center gap-1.5 text-[13px] font-bold text-slate-700 bg-white shadow-sm px-4 py-2 rounded-xl border border-slate-200/60 transition-all group-hover:bg-slate-900 group-hover:text-white group-hover:border-slate-800">
+                Ochish <ChevronRight className="w-3.5 h-3.5" />
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Expanded Content */}
+        <div className={`relative z-10 grid transition-all duration-[600ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${isAIOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
+          <div className="overflow-hidden">
+            <div className="p-6 bg-slate-50/30">
+            {isAnalyzing ? (
+              <div className="flex flex-col items-center justify-center py-16 text-center bg-white/50 backdrop-blur-sm rounded-[20px] border border-slate-100 shadow-sm">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-slate-200 rounded-full animate-ping opacity-20" />
+                  <div className="w-14 h-14 bg-slate-900 rounded-[20px] flex items-center justify-center shadow-xl shadow-slate-900/10 mb-4 animate-pulse">
+                    <Brain className="w-7 h-7 text-white" strokeWidth={1.5} />
+                  </div>
+                </div>
+                <h4 className="text-base font-bold text-slate-900 mb-1">Ma'lumotlar qayta ishlanmoqda</h4>
+                <p className="text-sm font-medium text-slate-500">Iltimos, kutib turing...</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                {aiRecommendations.map((rec, idx) => {
+                  const theme = {
+                    success: { border: 'border-l-emerald-500', icon: <CheckCircle2 className="w-5 h-5 text-emerald-500" />, badge: 'bg-emerald-50 text-emerald-700 border-emerald-100/50' },
+                    warning: { border: 'border-l-amber-500', icon: <AlertTriangle className="w-5 h-5 text-amber-500" />, badge: 'bg-amber-50 text-amber-700 border-amber-100/50' },
+                    info: { border: 'border-l-blue-500', icon: <Info className="w-5 h-5 text-blue-500" />, badge: 'bg-blue-50 text-blue-700 border-blue-100/50' }
+                  }[rec.severity];
+
+                  return (
+                    <div 
+                      key={rec.id} 
+                      className="group flex flex-col bg-white rounded-[20px] border border-slate-200/60 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.02)] overflow-hidden"
+                      style={{ animationDelay: `${idx * 100}ms` }}
+                    >
+                      {/* Left border accent */}
+                      <div className="flex flex-col h-full relative">
+                        <div className={`absolute left-0 top-0 bottom-0 w-1 ${theme.border}`} />
+                        
+                        <div className="p-5 pl-6 flex-1">
+                          <div className="flex items-start justify-between gap-4 mb-3">
+                            <div className="flex items-center gap-3">
+                              <div className="p-2 bg-slate-50 rounded-xl">
+                                {theme.icon}
+                              </div>
+                              <h4 className="text-[15px] font-bold text-slate-900 tracking-tight">{rec.title}</h4>
+                            </div>
+                          </div>
+                          <p className="text-[13px] leading-relaxed text-slate-500 font-medium pl-11">{rec.description}</p>
+                        </div>
+                        
+                        <div className="px-5 py-3.5 pl-6 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between">
+                          <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md border ${theme.badge}`}>
+                            {rec.severity === 'success' ? 'Yaxshi' : rec.severity === 'warning' ? 'Diqqat' : 'Ma\'lumot'}
+                          </span>
+                          <Link
+                            to={rec.actionLink}
+                            className="flex items-center gap-1.5 text-[12px] font-bold text-slate-600 group-hover:text-slate-900 transition-all duration-300"
+                          >
+                            {rec.actionText} <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+                
+                {aiRecommendations.length === 0 && (
+                  <div className="col-span-2 py-12 flex flex-col items-center justify-center text-center bg-white/50 backdrop-blur-sm rounded-[20px] border border-slate-100 border-dashed">
+                    <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mb-3">
+                      <CheckCircle2 className="w-6 h-6 text-slate-400" />
+                    </div>
+                    <h4 className="text-[15px] font-bold text-slate-900 mb-1">Hammasi joyida!</h4>
+                    <p className="text-[13px] text-slate-500 font-medium max-w-md">
+                      Ushbu yo'nalish bo'yicha tizimda hech qanday xavf yoki muammo aniqlanmadi. Barchasi me'yorda ishlamoqda.
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Sales Trend Chart */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] p-5 transition-all hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.06)]">
+        <div className="bg-white/80 backdrop-blur-sm rounded-[20px] border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] p-5 transition-all hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.06)]">
           <div className="flex items-center justify-between mb-5">
             <div>
               <h3 className="text-[15px] font-semibold text-slate-900">Moliyaviy dinamika</h3>
@@ -245,7 +433,7 @@ export default function Dashboard() {
                   content={({ active, payload, label}) => {
                     if (active && payload && payload.length) {
                       return (
-                        <div className="backdrop-blur-md bg-white/75 border border-white/60 p-3.5 rounded-2xl shadow-[0_12px_30px_rgba(0,0,0,0.06)] flex flex-col gap-2 min-w-[160px] transition-all select-none">
+                        <div className="backdrop-blur-md bg-white/75 border border-white/60 p-3.5 rounded-[20px] shadow-[0_12px_30px_rgba(0,0,0,0.06)] flex flex-col gap-2 min-w-[160px] transition-all select-none">
                           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{label}</p>
                           <div className="space-y-1.5">
                             {payload.map((entry: any, index: number) => (
@@ -290,7 +478,7 @@ export default function Dashboard() {
         </div>
 
         {/* Categories Bar Chart */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] p-5 transition-all hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.06)]">
+        <div className="bg-white/80 backdrop-blur-sm rounded-[20px] border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] p-5 transition-all hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.06)]">
           <div className="flex items-center justify-between mb-5">
             <div>
               <h3 className="text-[15px] font-semibold text-slate-900">Ommabop kategoriyalar</h3>
@@ -315,7 +503,7 @@ export default function Dashboard() {
                   content={({ active, payload, label}) => {
                     if (active && payload && payload.length) {
                       return (
-                        <div className="backdrop-blur-md bg-white/75 border border-white/60 p-3.5 rounded-2xl shadow-[0_12px_30px_rgba(0,0,0,0.06)] flex flex-col gap-2 min-w-[160px] transition-all select-none">
+                        <div className="backdrop-blur-md bg-white/75 border border-white/60 p-3.5 rounded-[20px] shadow-[0_12px_30px_rgba(0,0,0,0.06)] flex flex-col gap-2 min-w-[160px] transition-all select-none">
                           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{label}</p>
                           <div className="space-y-1.5">
                             <div className="flex items-center justify-between gap-4 py-0.5">
@@ -342,7 +530,7 @@ export default function Dashboard() {
       {/* Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Recent Transactions */}
-        <div className="lg:col-span-2 bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
+        <div className="lg:col-span-2 bg-white/80 backdrop-blur-sm rounded-[20px] border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
           <div className="p-6 border-b border-slate-200 flex items-center justify-between bg-slate-50/50">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center">
@@ -380,7 +568,7 @@ export default function Dashboard() {
         {/* Right Column */}
         <div className="space-y-6">
           {/* Low Stock Alert */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
+          <div className="bg-white/80 backdrop-blur-sm rounded-[20px] border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
             <div className="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50/50">
               <div className="flex items-center gap-2">
                 <Package className="w-4 h-4 text-amber-500" strokeWidth={2} />
@@ -410,7 +598,7 @@ export default function Dashboard() {
           </div>
 
           {/* HR Summary */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
+          <div className="bg-white/80 backdrop-blur-sm rounded-[20px] border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
             <div className="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50/50">
               <div className="flex items-center gap-2">
                 <Users className="w-4 h-4 text-indigo-500" strokeWidth={2} />
@@ -437,7 +625,7 @@ export default function Dashboard() {
           </div>
           
           {/* Activity Log */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
+          <div className="bg-white/80 backdrop-blur-sm rounded-[20px] border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
             <div className="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50/50">
               <div className="flex items-center gap-2">
                 <Activity className="w-4 h-4 text-slate-500" strokeWidth={2} />

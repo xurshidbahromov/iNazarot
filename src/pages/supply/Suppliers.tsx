@@ -68,7 +68,7 @@ export default function Suppliers() {
       {/* Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {filtered.map(supplier => (
-          <div key={supplier.id} className="bg-white/80 backdrop-blur-md border-2 border-[#f1f2f4] rounded-2xl p-5 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.06)] transition-all">
+          <div key={supplier.id} className="bg-white/80 backdrop-blur-md border-2 border-[#f1f2f4] rounded-[20px] p-5 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.06)] transition-all">
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-primary-50 text-primary-600 rounded-xl flex items-center justify-center font-bold text-lg">
@@ -137,7 +137,7 @@ export default function Suppliers() {
       </div>
       
       {filtered.length === 0 && (
-        <div className="text-center py-16 bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]">
+        <div className="text-center py-16 bg-white/80 backdrop-blur-sm rounded-[20px] border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]">
           <Building2 className="w-12 h-12 text-slate-300 mx-auto mb-3" strokeWidth={1.6} />
           <p className="font-medium text-slate-500">Yetkazib beruvchilar topilmadi</p>
         </div>

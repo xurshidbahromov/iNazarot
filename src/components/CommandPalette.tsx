@@ -23,7 +23,7 @@ export function CommandPalette({ open, setOpen}: CommandPaletteProps) {
 
   return (
     <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-start justify-center pt-[15vh] px-4 animate-fade-in-scale">
-      <div className="w-full max-w-xl bg-white/80 backdrop-blur-md rounded-2xl shadow-2xl overflow-hidden ring-1 ring-slate-200">
+      <div className="w-full max-w-xl bg-white/80 backdrop-blur-md rounded-[20px] shadow-2xl overflow-hidden ring-1 ring-slate-200">
         <Command
           value={value}
           onValueChange={setValue}

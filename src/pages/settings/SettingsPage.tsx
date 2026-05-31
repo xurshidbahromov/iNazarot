@@ -39,7 +39,7 @@ export default function SettingsPage() {
               <button
                 key={category.id}
                 onClick={() => setActiveTab(category.id)}
-                className={cn('w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-left transition-all border',
+                className={cn('w-full flex items-center gap-3.5 px-4 py-3.5 rounded-[20px] text-left transition-all border',
                   isActive 
                     ?'bg-white border-primary-200 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] text-primary-700' 
                     :'bg-transparent border-transparent hover:bg-white hover:border-slate-200 hover:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] text-slate-600'
@@ -61,7 +61,7 @@ export default function SettingsPage() {
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 bg-white/80 backdrop-blur-md border-2 border-[#f1f2f4] rounded-2xl p-6 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]">
+        <div className="flex-1 bg-white/80 backdrop-blur-md border-2 border-[#f1f2f4] rounded-[20px] p-6 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]">
           {activeTab ==='general' && (
             <div className="space-y-6">
               <div className="border-b border-slate-100 pb-4">
@@ -122,7 +122,7 @@ export default function SettingsPage() {
 
           {activeTab !=='general' && (
             <div className="py-16 text-center text-slate-500">
-              <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-slate-100 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]">
+              <div className="w-16 h-16 bg-slate-50 rounded-[20px] flex items-center justify-center mx-auto mb-4 border border-slate-100 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]">
                 <Shield className="w-8 h-8 text-slate-300" strokeWidth={1.6} />
               </div>
               <h4 className="font-bold text-slate-900 text-lg">Tez kunda</h4>

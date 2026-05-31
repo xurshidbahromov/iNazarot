@@ -123,7 +123,7 @@ export default function ReportsList() {
       </div>
 
       {/* Tabs & View Toggles */}
-      <div className="bg-white/60 backdrop-blur-xl border border-slate-200/60 rounded-2xl p-2 flex flex-col xl:flex-row xl:items-center justify-between gap-4 shadow-[0_4px_20px_rgb(0,0,0,0.02)]">
+      <div className="bg-white/60 backdrop-blur-xl border border-slate-200/60 rounded-[20px] p-2 flex flex-col xl:flex-row xl:items-center justify-between gap-4 shadow-[0_4px_20px_rgb(0,0,0,0.02)]">
         <div className="flex items-center overflow-x-auto custom-scrollbar pb-1 xl:pb-0 gap-1 flex-1">
           {categories.map((category) => (
             <button
@@ -170,7 +170,7 @@ export default function ReportsList() {
 
       {/* Reports Content */}
       {viewMode === 'list' ? (
-        <div className="bg-white border border-slate-200/60 rounded-2xl overflow-hidden shadow-[0_4px_20px_rgb(0,0,0,0.02)]">
+        <div className="bg-white border border-slate-200/60 rounded-[20px] overflow-hidden shadow-[0_4px_20px_rgb(0,0,0,0.02)]">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50/80 border-b border-slate-200/80">
@@ -241,7 +241,7 @@ export default function ReportsList() {
             </div>
           ))}
           {filteredReports.length === 0 && (
-            <div className="col-span-full py-12 text-center text-slate-500 bg-white rounded-2xl border border-slate-200/60">
+            <div className="col-span-full py-12 text-center text-slate-500 bg-white rounded-[20px] border border-slate-200/60">
               Hisobotlar topilmadi
             </div>
           )}

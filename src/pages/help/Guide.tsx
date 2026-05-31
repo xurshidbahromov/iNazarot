@@ -22,7 +22,7 @@ export default function Guide() {
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* Header Section */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white shadow-xl p-7 md:p-10 border border-slate-700/50">
+      <div className="relative overflow-hidden rounded-[20px] bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white shadow-xl p-7 md:p-10 border border-slate-700/50">
         <div className="absolute top-0 right-0 w-[40rem] h-[40rem] bg-emerald-500/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/3" />
         <div className="absolute bottom-0 left-0 w-[30rem] h-[30rem] bg-blue-500/10 rounded-full blur-[80px] translate-y-1/3 -translate-x-1/4" />
         
@@ -64,7 +64,7 @@ export default function Guide() {
         {categories.map((cat, idx) => (
           <button 
             key={idx}
-            className="group relative bg-white/80 backdrop-blur-xl border border-slate-200/60 rounded-2xl p-5 text-left hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:border-slate-300/80 transition-all duration-300 overflow-hidden"
+            className="group relative bg-white/80 backdrop-blur-xl border border-slate-200/60 rounded-[20px] p-5 text-left hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:border-slate-300/80 transition-all duration-300 overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-white/0 pointer-events-none" />
             <div className={cn("w-11 h-11 rounded-xl flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110", cat.bg)}>
@@ -89,7 +89,7 @@ export default function Guide() {
             </button>
           </div>
           
-          <div className="bg-white/80 backdrop-blur-xl border border-slate-200/60 rounded-2xl overflow-hidden shadow-[0_4px_20px_rgb(0,0,0,0.02)]">
+          <div className="bg-white/80 backdrop-blur-xl border border-slate-200/60 rounded-[20px] overflow-hidden shadow-[0_4px_20px_rgb(0,0,0,0.02)]">
             {articles.map((article, idx) => (
               <a 
                 href="#" 
@@ -123,7 +123,7 @@ export default function Guide() {
         <div className="space-y-4">
           <h2 className="text-xl font-bold text-slate-800 mb-5">Yordam kerakmi?</h2>
           
-          <div className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl p-5 text-white shadow-[0_8px_30px_rgba(16,185,129,0.2)] relative overflow-hidden group cursor-pointer">
+          <div className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-[20px] p-5 text-white shadow-[0_8px_30px_rgba(16,185,129,0.2)] relative overflow-hidden group cursor-pointer">
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-500" />
             <div className="relative z-10">
               <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-3">
@@ -137,7 +137,7 @@ export default function Guide() {
             </div>
           </div>
 
-          <div className="bg-white/80 backdrop-blur-xl border border-slate-200/60 rounded-2xl p-5 shadow-[0_4px_20px_rgb(0,0,0,0.02)] group hover:border-slate-300/80 transition-colors cursor-pointer">
+          <div className="bg-white/80 backdrop-blur-xl border border-slate-200/60 rounded-[20px] p-5 shadow-[0_4px_20px_rgb(0,0,0,0.02)] group hover:border-slate-300/80 transition-colors cursor-pointer">
             <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center mb-3 group-hover:bg-blue-50 group-hover:scale-110 transition-all duration-300">
               <MessageSquare className="w-5 h-5 text-slate-600 group-hover:text-blue-600" />
             </div>
