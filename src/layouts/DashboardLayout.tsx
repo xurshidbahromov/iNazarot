@@ -3,10 +3,14 @@ import { Outlet, Link, useLocation, useNavigate} from'react-router-dom';
 import {
   LayoutDashboard, Users, Package, Settings, ShoppingCart,
   DollarSign, RefreshCw, Layers, Bell, LogOut, ChevronDown,
-  Search, Command, User, Shield, ChevronRight, HelpCircle, BarChart2} from'lucide-react';
+  Search, Command, User, Shield, ChevronRight, HelpCircle, BarChart2,
+  AlertTriangle, Info, XCircle, X} from'lucide-react';
 import { cn} from'../utils/cn';
 import { useAuthStore} from'../store/useAuthStore';
 import { CommandPalette} from'../components/CommandPalette';
+import { getSystemAlerts } from'../utils/posUtils';
+import { useWarehouseStore } from '../store/useWarehouseStore';
+import { useFinanceStore } from '../store/useFinanceStore';
 
 type NavItem = {
   name: string;
@@ -80,18 +84,30 @@ export default function DashboardLayout() {
         initial[item.name] = true;}});
     return initial;});
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showAlerts, setShowAlerts] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [hoveredMenu, setHoveredMenu] = useState<string | null>(null);
   const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
+  const alertsRef = useRef<HTMLDivElement>(null);
   
   const [cmdOpen, setCmdOpen] = useState(false);
 
-  // Close user menu on outside click
+  const { products } = useWarehouseStore();
+  const { transactions } = useFinanceStore();
+  const alerts = getSystemAlerts(products, transactions);
+  const alertCount = alerts.length;
+
+  // Close user menu and alerts on outside click
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
-        setShowUserMenu(false);}};
+        setShowUserMenu(false);
+      }
+      if (alertsRef.current && !alertsRef.current.contains(e.target as Node)) {
+        setShowAlerts(false);
+      }
+    };
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);}, []);
 
@@ -388,14 +404,80 @@ export default function DashboardLayout() {
             <div className="w-px h-7 bg-slate-200 mx-1 hidden md:block" />
 
             {/* Notification bell */}
-            <button className="group relative p-2.5 rounded-xl text-slate-500 hover:bg-slate-100 :bg-slate-800 hover:text-slate-700 :text-slate-200 transition-all duration-200">
-              <Bell className="w-[18px] h-[18px] transition-transform group-hover:rotate-12 duration-300" strokeWidth={1.6} />
-              {/* Animated badge */}
-              <span className="absolute top-1.5 right-1.5 flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-              </span>
-            </button>
+            <div className="relative" ref={alertsRef}>
+              <button
+                onClick={() => setShowAlerts(p => !p)}
+                className="group relative p-2.5 rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-all duration-200"
+              >
+                <Bell className={cn("w-[18px] h-[18px] transition-transform duration-300", showAlerts ? "rotate-12 text-slate-700" : "group-hover:rotate-12")} strokeWidth={1.6} />
+                {/* Badge showing real alert count */}
+                {alertCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-60"></span>
+                    <span className="relative inline-flex rounded-full h-4 w-4 bg-red-500 text-white text-[9px] font-black items-center justify-center">{Math.min(alertCount, 9)}</span>
+                  </span>
+                )}
+              </button>
+
+              {/* Alerts Dropdown */}
+              {showAlerts && (
+                <div className="absolute top-full right-0 mt-3 w-80 bg-white rounded-2xl shadow-[0_20px_50px_rgba(15,23,42,0.12)] border border-slate-200/70 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                  {/* Header */}
+                  <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 bg-slate-50/70">
+                    <div className="flex items-center gap-2">
+                      <Bell className="w-4 h-4 text-slate-600" strokeWidth={2} />
+                      <span className="text-[13px] font-bold text-slate-800">Ogohlantirishlar</span>
+                      {alertCount > 0 && (
+                        <span className="text-[10px] font-black bg-red-100 text-red-600 px-1.5 py-0.5 rounded-full">{alertCount}</span>
+                      )}
+                    </div>
+                    <button onClick={() => setShowAlerts(false)} className="p-1 rounded-lg hover:bg-slate-200 text-slate-400 transition-colors">
+                      <X className="w-3.5 h-3.5" strokeWidth={2.5} />
+                    </button>
+                  </div>
+
+                  {/* Alert list */}
+                  <div className="max-h-80 overflow-y-auto divide-y divide-slate-50">
+                    {alerts.length === 0 ? (
+                      <div className="py-10 text-center">
+                        <Bell className="w-8 h-8 text-slate-200 mx-auto mb-2" strokeWidth={1.5} />
+                        <p className="text-sm font-medium text-slate-400">Hech qanday ogohlantirish yo'q</p>
+                      </div>
+                    ) : (
+                      alerts.map(alert => (
+                        <Link
+                          key={alert.id}
+                          to={alert.href}
+                          onClick={() => setShowAlerts(false)}
+                          className="flex items-start gap-3 px-4 py-3 hover:bg-slate-50 transition-colors group"
+                        >
+                          <div className={cn(
+                            "w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5",
+                            alert.type === 'error' ? 'bg-red-50 text-red-500' :
+                            alert.type === 'warning' ? 'bg-amber-50 text-amber-500' :
+                            'bg-blue-50 text-blue-500'
+                          )}>
+                            {alert.type === 'error' ? <XCircle className="w-4 h-4" strokeWidth={2} /> :
+                             alert.type === 'warning' ? <AlertTriangle className="w-4 h-4" strokeWidth={2} /> :
+                             <Info className="w-4 h-4" strokeWidth={2} />}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className={cn(
+                              "text-[12px] font-bold leading-tight",
+                              alert.type === 'error' ? 'text-red-700' :
+                              alert.type === 'warning' ? 'text-amber-700' :
+                              'text-blue-700'
+                            )}>{alert.title}</p>
+                            <p className="text-[11px] text-slate-500 mt-0.5 leading-snug">{alert.body}</p>
+                          </div>
+                          <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-slate-500 group-hover:translate-x-0.5 transition-all flex-shrink-0 mt-1" strokeWidth={2} />
+                        </Link>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* Divider */}
             <div className="w-px h-7 bg-slate-200 mx-1" />

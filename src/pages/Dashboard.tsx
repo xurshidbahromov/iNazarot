@@ -1,6 +1,6 @@
 import {
   TrendingUp, TrendingDown, DollarSign, Users, ShoppingCart, Package,
-  Activity, ArrowRight, LayoutDashboard} from'lucide-react';
+  Activity, ArrowRight, LayoutDashboard, Download} from'lucide-react';
 import { Link} from'react-router-dom';
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -9,25 +9,7 @@ import { useFinanceStore} from'../store/useFinanceStore';
 import { useCRMStore} from'../store/useCRMStore';
 import { useWarehouseStore} from'../store/useWarehouseStore';
 import { useHRStore} from'../store/useHRStore';
-
-// Dummy data for charts
-const salesData = [
-  { name:'Dush', tushum: 4000000, xarajat: 2400000},
-  { name:'Sesh', tushum: 3000000, xarajat: 1398000},
-  { name:'Chor', tushum: 2000000, xarajat: 9800000},
-  { name:'Pay', tushum: 2780000, xarajat: 3908000},
-  { name:'Juma', tushum: 1890000, xarajat: 4800000},
-  { name:'Shan', tushum: 2390000, xarajat: 3800000},
-  { name:'Yak', tushum: 3490000, xarajat: 4300000},
-];
-
-const categoryData = [
-  { name:'Qurilish m.', qiymat: 4000},
-  { name:'Metal prokat', qiymat: 3000},
-  { name:'Elektr jihoz', qiymat: 2000},
-  { name:'Santexnika', qiymat: 2780},
-  { name:'Boshqa', qiymat: 1890},
-];
+import { exportToCSV } from'../utils/posUtils';
 
 export default function Dashboard() {
   const { getBalance, transactions} = useFinanceStore();
@@ -40,22 +22,83 @@ export default function Dashboard() {
   const lowStock = products.filter(p => p.stock < 100).length;
   const activeEmployees = employees.filter(e => e.status ==='Faol').length;
 
+  // Real KPI calculations
+  const activeClients = clients.filter(c => c.status === 'Faol').length;
+  const inactiveClients = clients.filter(c => c.status !== 'Faol').length;
+  const clientChangeType = activeClients >= inactiveClients ? 'positive' : 'negative';
+  const clientChangeText = activeClients > 0
+    ? `${Math.round((activeClients / Math.max(clients.length, 1)) * 100)}% faol`
+    : "Mijoz yo'q";
+
+  const incomeTotal = transactions.filter(t => t.type === 'Kirim').reduce((a, t) => a + t.amount * t.rate, 0);
+  const expenseTotal = transactions.filter(t => t.type === 'Chiqim').reduce((a, t) => a + t.amount * t.rate, 0);
+  const profitRate = incomeTotal > 0 ? Math.round(((incomeTotal - expenseTotal) / incomeTotal) * 100) : 0;
+  const balanceChangeType = balance >= 0 ? 'positive' : 'negative';
+  const balanceChangeText = `${profitRate >= 0 ? '+' : ''}${profitRate}% rentabellik`;
+
+  const posTransactions = transactions.filter(t => t.description.includes('POS'));
+  const trxChangeType = posTransactions.length > 0 ? 'positive' : 'neutral';
+  const trxChangeText = `${posTransactions.length} ta POS savdo`;
+
+  // Build real weekly chart data from actual transactions
+  const dayNames = ['Yak', 'Dush', 'Sesh', 'Chor', 'Pay', 'Juma', 'Shan'];
+  const last7Days = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - (6 - i));
+    return d;
+  });
+  const salesData = last7Days.map(d => {
+    const dayStr = `${String(d.getDate()).padStart(2, '0')}.${String(d.getMonth() + 1).padStart(2, '0')}.${d.getFullYear()}`;
+    const dayTrx = transactions.filter(t => t.date.startsWith(dayStr));
+    return {
+      name: dayNames[d.getDay()],
+      tushum: dayTrx.filter(t => t.type === 'Kirim').reduce((a, t) => a + t.amount * t.rate, 0),
+      xarajat: dayTrx.filter(t => t.type === 'Chiqim').reduce((a, t) => a + t.amount * t.rate, 0),
+    };
+  });
+
+  // Categories from real products
+  const categoryMap: Record<string, number> = {};
+  products.forEach(p => {
+    categoryMap[p.category] = (categoryMap[p.category] || 0) + p.stock;
+  });
+  const categoryData = Object.entries(categoryMap)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([name, qiymat]) => ({ name: name.length > 12 ? name.slice(0, 12) + '…' : name, qiymat }));
+
+  const handleExportTransactions = () => {
+    exportToCSV(
+      transactions.map(t => ({
+        'Sana': t.date,
+        'Tur': t.type,
+        'Summa': t.amount,
+        'Valyuta': t.currency,
+        'Kurs': t.rate,
+        "Jami (UZS)": t.amount * t.rate,
+        'Izoh': t.description,
+        "To'lov usuli": t.method,
+      })),
+      'tranzaksiyalar'
+    );
+  };
+
   const stats = [
     {
       name:'Kassa Balansi',
       value:`${balance.toLocaleString()} UZS`,
       icon: DollarSign,
-      change:'+20.1%',
-      changeType:'positive',
+      change: balanceChangeText,
+      changeType: balanceChangeType,
       href:'/finance',
       bg:'bg-blue-50',
       iconColor:'text-blue-600',},
     {
       name:'Faol Mijozlar',
-      value: clients.filter(c => c.status ==='Faol').length.toString(),
+      value: activeClients.toString(),
       icon: Users,
-      change:'+15.5%',
-      changeType:'positive',
+      change: clientChangeText,
+      changeType: clientChangeType,
       href:'/crm',
       bg:'bg-violet-50',
       iconColor:'text-violet-600',},
@@ -63,8 +106,8 @@ export default function Dashboard() {
       name:'Jami Tranzaksiyalar',
       value: transactions.length.toString(),
       icon: ShoppingCart,
-      change:'-4.2%',
-      changeType:'negative',
+      change: trxChangeText,
+      changeType: trxChangeType === 'positive' ? 'positive' : 'negative',
       href:'/finance',
       bg:'bg-amber-50',
       iconColor:'text-amber-600',},
@@ -84,14 +127,23 @@ export default function Dashboard() {
   return (
     <div className="space-y-8 pb-8">
       {/* Header */}
-      <div>
-        <h3 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
-          <LayoutDashboard className="w-6 h-6 text-primary-600" />
-          Asosiy sahifa
-        </h3>
-        <p className="mt-1 text-sm text-slate-500">
-          {new Intl.DateTimeFormat('uz-UZ', { weekday:'long', year:'numeric', month:'long', day:'numeric'}).format(new Date())}
-        </p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h3 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
+            <LayoutDashboard className="w-6 h-6 text-primary-600" />
+            Asosiy sahifa
+          </h3>
+          <p className="mt-1 text-sm text-slate-500">
+            {new Intl.DateTimeFormat('uz-UZ', { weekday:'long', year:'numeric', month:'long', day:'numeric'}).format(new Date())}
+          </p>
+        </div>
+        <button
+          onClick={handleExportTransactions}
+          className="flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-600 hover:text-slate-900 hover:border-slate-300 hover:shadow-sm transition-all duration-150 active:scale-95"
+        >
+          <Download className="w-4 h-4" strokeWidth={2} />
+          CSV Eksport
+        </button>
       </div>
 
       {/* Stats Grid */}

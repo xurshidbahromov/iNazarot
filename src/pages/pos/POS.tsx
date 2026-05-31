@@ -1,10 +1,11 @@
-import { useState } from 'react';
-import { ShoppingCart, Search, CreditCard, Banknote, Plus, Minus, Trash2, PackageSearch, User, X, ScanBarcode, ChevronRight, Store } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { ShoppingCart, Search, CreditCard, Banknote, Plus, Minus, Trash2, PackageSearch, User, X, ScanBarcode, ChevronRight, Store, Printer, Check } from 'lucide-react';
 import { toast } from 'sonner';
 import { Input } from '../../components/ui/Input';
 import { useWarehouseStore } from '../../store/useWarehouseStore';
 import { useFinanceStore } from '../../store/useFinanceStore';
 import { cn } from '../../utils/cn';
+import { printReceipt } from '../../utils/posUtils';
 import POSLockScreen from './POSLockScreen';
 
 interface CartItem {
@@ -15,6 +16,14 @@ interface CartItem {
   quantity: number;
 }
 
+interface PaymentSuccessModal {
+  isOpen: boolean;
+  method: string;
+  total: number;
+  checkId: string;
+  items: CartItem[];
+}
+
 export default function POS() {
   const { products, updateStock } = useWarehouseStore();
   const { addTransaction } = useFinanceStore();
@@ -22,9 +31,12 @@ export default function POS() {
   const [isLocked, setIsLocked] = useState(true);
   const [search, setSearch] = useState('');
   const [cart, setCart] = useState<CartItem[]>([]);
+  const [successModal, setSuccessModal] = useState<PaymentSuccessModal>({
+    isOpen: false, method: '', total: 0, checkId: '', items: []
+  });
 
+  const searchRef = useRef<HTMLInputElement>(null);
 
-  
   const showToast = (message: string, type: 'success' | 'warning' | 'error' = 'success') => {
     if (type === 'success') toast.success(message);
     else if (type === 'error') toast.error(message);
@@ -78,7 +90,6 @@ export default function POS() {
   const handlePay = (method: string) => {
     if (cart.length === 0) return;
     
-    // eslint-disable-next-line react-hooks/purity
     const timestamp = Date.now().toString().slice(-6);
     
     // Ombordan zaxiralarni kamaytirish
@@ -96,12 +107,34 @@ export default function POS() {
       method: method === 'Naqd pul' ? 'Naqd' : 'Karta'
     });
 
-    showToast(`To'lov muvaffaqiyatli! Summa: ${total.toLocaleString()} UZS`, 'success');
+    // Show success modal
+    setSuccessModal({
+      isOpen: true,
+      method,
+      total,
+      checkId: timestamp,
+      items: [...cart]
+    });
+
     setCart([]);
   };
 
   const handleClose = () => {
     window.close();
+  };
+
+  const handlePrintAndClose = () => {
+    printReceipt({
+      items: successModal.items,
+      total: successModal.total,
+      method: successModal.method,
+      checkId: successModal.checkId,
+    });
+    setSuccessModal(prev => ({ ...prev, isOpen: false }));
+  };
+
+  const handleCloseModal = () => {
+    setSuccessModal(prev => ({ ...prev, isOpen: false }));
   };
 
   return (
@@ -110,6 +143,65 @@ export default function POS() {
       {/* Lock Screen Overlay */}
       {isLocked && (
         <POSLockScreen onUnlock={() => setIsLocked(false)} />
+      )}
+
+      {/* Payment Success Modal */}
+      {successModal.isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={handleCloseModal} />
+          <div className="relative bg-white rounded-[2rem] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.2)] w-full max-w-sm animate-in zoom-in-90 slide-in-from-bottom-4 duration-300">
+            {/* Success Header */}
+            <div className="bg-gradient-to-br from-emerald-500 to-teal-500 rounded-t-[2rem] p-8 text-center relative overflow-hidden">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.15),transparent)]" />
+              <div className="relative">
+                <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 ring-4 ring-white/30">
+                  <Check className="w-10 h-10 text-white" strokeWidth={3} />
+                </div>
+                <h2 className="text-2xl font-black text-white tracking-tight">To'lov qabul qilindi!</h2>
+                <p className="text-emerald-100 text-sm mt-1 font-medium">{successModal.method} orqali</p>
+              </div>
+            </div>
+
+            {/* Amount */}
+            <div className="p-6 text-center border-b border-slate-100">
+              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">Jami summa</p>
+              <p className="text-4xl font-black text-slate-900 tracking-tight">
+                {successModal.total.toLocaleString()}
+                <span className="text-lg font-bold text-slate-400 ml-2">UZS</span>
+              </p>
+              <p className="text-xs text-slate-400 mt-2 font-medium">Chek № POS-{successModal.checkId}</p>
+            </div>
+
+            {/* Items summary */}
+            <div className="p-4 max-h-36 overflow-y-auto">
+              {successModal.items.map(item => (
+                <div key={item.id} className="flex justify-between items-center py-1.5 px-2 rounded-xl hover:bg-slate-50 transition-colors">
+                  <span className="text-sm font-medium text-slate-700 truncate flex-1 mr-2">{item.name}</span>
+                  <span className="text-xs font-bold text-slate-500 whitespace-nowrap">
+                    {item.quantity} × {item.price.toLocaleString()}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {/* Actions */}
+            <div className="p-6 pt-3 grid grid-cols-2 gap-3">
+              <button
+                onClick={handleCloseModal}
+                className="h-14 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm transition-all duration-150 active:scale-95"
+              >
+                Yopish
+              </button>
+              <button
+                onClick={handlePrintAndClose}
+                className="h-14 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-sm transition-all duration-150 active:scale-95 flex items-center justify-center gap-2 shadow-[0_8px_20px_rgba(16,185,129,0.3)]"
+              >
+                <Printer className="w-4 h-4" strokeWidth={2.5} />
+                Chek chop et
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Standalone Terminal Header */}
@@ -182,6 +274,7 @@ export default function POS() {
               </div>
               {!isLocked && (
                 <Input
+                  ref={searchRef}
                   className="pl-14 h-14 text-lg rounded-2xl bg-slate-100/50 border-transparent hover:bg-slate-100 focus:bg-white focus:border-slate-300 transition-all placeholder:text-slate-400 font-medium"
                   placeholder="Mahsulot qidirish yoki shtrix kod skanerlash..."
                   value={search}
