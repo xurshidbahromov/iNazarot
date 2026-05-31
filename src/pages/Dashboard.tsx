@@ -11,8 +11,8 @@ import { useWarehouseStore } from '../store/useWarehouseStore';
 import { useHRStore } from '../store/useHRStore';
 import { useActivityStore } from '../store/useActivityStore';
 import { exportToCSV } from '../utils/posUtils';
-import { formatDistanceToNow } from 'date-fns';
-import { uz } from 'date-fns/locale';
+import { formatDistanceToNow } from 'date-fns/formatDistanceToNow';
+import { uz } from 'date-fns/locale/uz';
 
 export default function Dashboard() {
   const { getBalance, transactions } = useFinanceStore();

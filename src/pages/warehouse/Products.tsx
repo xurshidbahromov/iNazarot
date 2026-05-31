@@ -1,9 +1,9 @@
-import { useState} from'react';
-import { Plus, Search, Download, Package, AlertCircle, TrendingDown, Box} from'lucide-react';
-import { Button} from'../../components/ui/Button';
-import { Input} from'../../components/ui/Input';
-import { Table} from'../../components/ui/Table';
-import { Modal} from'../../components/ui/Modal';
+import { useState } from 'react';
+import { Plus, Search, Download, Package, AlertCircle, TrendingDown, Box, Image as ImageIcon, X } from 'lucide-react';
+import { Button } from '../../components/ui/Button';
+import { Input } from '../../components/ui/Input';
+import { Table } from '../../components/ui/Table';
+import { Modal } from '../../components/ui/Modal';
 import { useWarehouseStore } from '../../store/useWarehouseStore';
 import { useActivityStore } from '../../store/useActivityStore';
 import { exportToExcel } from '../../utils/exportToExcel';
@@ -14,22 +14,39 @@ export default function Products() {
   const [search, setSearch] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form, setForm] = useState({
-    name:'',
-    category:'',
-    unit:'',
+    name: '',
+    category: '',
+    unit: '',
     price: 0,
     stock: 0,
     minStock: 0,
-    sku:'',
-    boxType:'',
+    sku: '',
+    boxType: '',
     boxQuantity: 0,
-    features:''});
+    features: '',
+    image: ''
+  });
 
   const filtered = products.filter(p =>
     p.name.toLowerCase().includes(search.toLowerCase()) ||
     (p.sku && p.sku.toLowerCase().includes(search.toLowerCase())) ||
     p.category.toLowerCase().includes(search.toLowerCase())
   );
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        alert("Rasm hajmi 2MB dan kam bo'lishi kerak!");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setForm(prev => ({ ...prev, image: reader.result as string }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,7 +60,9 @@ export default function Products() {
       sku: form.sku || undefined,
       boxType: form.boxType || undefined,
       boxQuantity: form.boxQuantity ? Number(form.boxQuantity) : undefined,
-      features: form.features || undefined});
+      features: form.features || undefined,
+      image: form.image || undefined
+    });
 
     addActivity({
       type: 'product',
@@ -53,17 +72,20 @@ export default function Products() {
     });
 
     setForm({
-      name:'',
-      category:'',
-      unit:'',
+      name: '',
+      category: '',
+      unit: '',
       price: 0,
       stock: 0,
       minStock: 0,
-      sku:'',
-      boxType:'',
+      sku: '',
+      boxType: '',
       boxQuantity: 0,
-      features:''});
-    setIsModalOpen(false);};
+      features: '',
+      image: ''
+    });
+    setIsModalOpen(false);
+  };
 
   const totalProducts = products.length;
   const lowStockProducts = products.filter(p => {
@@ -166,9 +188,17 @@ export default function Products() {
             <>
               <td className="py-4 pl-4 pr-3 text-[14px] sm:pl-6 max-w-[280px]">
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 mt-0.5 flex-shrink-0">
-                    <Package className="w-4 h-4" strokeWidth={1.6} />
-                  </div>
+                  {product.image ? (
+                    <img
+                      src={product.image}
+                      className="w-8 h-8 rounded-lg object-cover mt-0.5 flex-shrink-0 border border-slate-100 shadow-sm"
+                      alt={product.name}
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 mt-0.5 flex-shrink-0">
+                      <Package className="w-4 h-4" strokeWidth={1.6} />
+                    </div>
+                  )}
                   <div>
                     <h5 className="font-bold text-slate-900 leading-tight">{product.name}</h5>
                     <div className="flex flex-wrap items-center gap-2 mt-1 text-[11px] font-medium text-slate-400">
@@ -222,9 +252,41 @@ export default function Products() {
         />
       </div>
 
-      {/* Add Product Modal */}
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Yangi mahsulot qo'shish">
         <form onSubmit={handleSubmit} className="space-y-4 max-h-[80vh] overflow-y-auto p-1">
+          {/* Rasm yuklash maydoni */}
+          <div className="space-y-1.5">
+            <label className="block text-[13px] font-semibold text-slate-700">Mahsulot rasmi</label>
+            {form.image ? (
+              <div className="relative w-full h-36 rounded-xl overflow-hidden border-2 border-dashed border-slate-200 bg-slate-50 flex items-center justify-center">
+                <img src={form.image} className="h-full w-full object-contain animate-in fade-in duration-200" alt="Mahsulot preview" />
+                <button
+                  type="button"
+                  onClick={() => setForm(prev => ({ ...prev, image: '' }))}
+                  className="absolute top-2 right-2 p-1.5 bg-black/60 hover:bg-black/80 text-white rounded-full transition-colors active:scale-90"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <label className="flex flex-col items-center justify-center w-full h-36 rounded-xl border-2 border-dashed border-slate-300 hover:border-primary-500 bg-slate-50 hover:bg-slate-100/50 cursor-pointer transition-all duration-150 group">
+                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                  <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm border border-slate-100 text-slate-400 group-hover:text-primary-500 transition-colors mb-2">
+                    <ImageIcon className="w-5 h-5" strokeWidth={1.8} />
+                  </div>
+                  <p className="text-xs font-bold text-slate-700">Rasm yuklash</p>
+                  <p className="text-[10px] text-slate-400 mt-1">PNG, JPG (Max. 2MB)</p>
+                </div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+              </label>
+            )}
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="sm:col-span-2">
               <Input

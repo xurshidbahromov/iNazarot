@@ -309,8 +309,16 @@ export default function POS() {
                 onClick={() => addToCart(p)}
                 className="group flex flex-col bg-white border border-slate-100 rounded-[1.5rem] p-4 cursor-pointer hover:border-slate-200 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] transition-all duration-150 active:scale-[0.94] active:translate-y-0.5 select-none"
               >
-                <div className="h-32 bg-slate-50/80 rounded-2xl mb-4 flex items-center justify-center group-hover:bg-slate-100 transition-colors relative overflow-hidden">
-                  <PackageSearch className="text-slate-300 w-10 h-10 group-hover:text-slate-400 group-hover:scale-110 transition-all duration-300" strokeWidth={1.5} />
+                <div className="h-32 rounded-2xl mb-4 flex items-center justify-center relative overflow-hidden flex-shrink-0 bg-slate-50 group-hover:bg-slate-100 transition-colors">
+                  {p.image ? (
+                    <img src={p.image} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={p.name} />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-tr from-slate-100 to-slate-50 flex flex-col items-center justify-center relative group-hover:scale-105 transition-transform duration-300">
+                      <div className="w-12 h-12 rounded-xl bg-white shadow-sm flex items-center justify-center text-slate-400 font-extrabold text-lg border border-slate-100/50">
+                        {p.name.charAt(0).toUpperCase()}
+                      </div>
+                    </div>
+                  )}
                 </div>
                 
                 <div className="flex-1 flex flex-col px-1">

@@ -13,6 +13,7 @@ export interface Product {
   boxType?: string;
   boxQuantity?: number;
   features?: string;
+  image?: string; // Base64 kodlangan rasm
 }
 
 export interface Location {
