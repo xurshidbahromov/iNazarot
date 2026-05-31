@@ -2,27 +2,26 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
+import { toast } from 'sonner';
 
 export default function Login() {
   const navigate = useNavigate();
   const { login} = useAuthStore();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [form, setForm] = useState({ email:'admin@inazorat.uz', password:''});
-  const [error, setError] = useState('');
+  const [form, setForm] = useState({ email: '', password: '' });
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
     if (!form.email || !form.password) {
-      setError('Email va parolni kiriting');
+      toast.error('Email va parolni kiriting');
       return;}
     setLoading(true);
     setTimeout(() => {
       if (form.email ==='admin@inazorat.uz' && form.password ==='admin123') {
         login({ id:'1', name:'Admin User', email: form.email, role:'Administrator'});
         navigate('/');} else {
-        setError("Login yoki parol noto'g'ri. admin@inazorat.uz / admin123");
+        toast.error("Login yoki parol noto'g'ri");
         setLoading(false);}}, 800);};
 
   return (
@@ -117,11 +116,7 @@ export default function Login() {
               </div>
             </div>
 
-            {error && (
-              <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-2.5 text-sm text-red-600">
-                {error}
-              </div>
-            )}
+
 
             <div className="flex items-center justify-between py-1">
               <label className="flex items-center gap-2 cursor-pointer">
