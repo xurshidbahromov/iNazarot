@@ -96,10 +96,10 @@ export default function Products() {
   const totalValue = products.reduce((acc, p) => acc + (p.price * p.stock), 0);
 
   const stats = [
-    { title:'Jami turlar', value: totalProducts.toString(), icon: Package, color:'text-blue-500', bg:'bg-blue-50'},
-    { title:'Umumiy qiymat', value:`${(totalValue / 1000000).toFixed(1)}M UZS`, icon: Box, color:'text-emerald-500', bg:'bg-emerald-50'},
-    { title:'Chegara oshganlar', value: lowStockProducts.toString(), icon: TrendingDown, color:'text-amber-500', bg:'bg-amber-50'},
-    { title:'Tugaganlar', value: outOfStockProducts.toString(), icon: AlertCircle, color:'text-red-500', bg:'bg-red-50'},
+    { title:'Jami turlar', value: totalProducts.toString(), icon: Package, color:'text-blue-500 dark:text-blue-400', bg:'bg-blue-50 dark:bg-blue-950/30'},
+    { title:'Umumiy qiymat', value:`${(totalValue / 1000000).toFixed(1)}M UZS`, icon: Box, color:'text-emerald-500 dark:text-emerald-400', bg:'bg-emerald-50 dark:bg-emerald-950/30'},
+    { title:'Chegara oshganlar', value: lowStockProducts.toString(), icon: TrendingDown, color:'text-amber-500 dark:text-amber-400', bg:'bg-amber-50 dark:bg-amber-950/30'},
+    { title:'Tugaganlar', value: outOfStockProducts.toString(), icon: AlertCircle, color:'text-red-500 dark:text-red-400', bg:'bg-red-50 dark:bg-red-950/30'},
   ];
 
   // Inline minStock editing handler
@@ -115,24 +115,24 @@ export default function Products() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h3 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
-            <Package className="w-6 h-6 text-primary-600" />
+          <h3 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 flex items-center gap-2">
+            <Package className="w-6 h-6 text-[#20c997]" />
             Mahsulotlar ombori
           </h3>
-          <p className="mt-1.5 text-sm text-slate-500">
+          <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">
             Barcha tovarlar qoldig'i, o'lchamlari va narxlari ro'yxatini boshqarish.
           </p>
         </div>
         <div className="flex flex-wrap gap-2.5">
           <Button
             variant="outline"
-            className="rounded-xl h-10 px-4 bg-white border-slate-200 hover:bg-slate-50  :bg-slate-800/50 text-slate-700 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] transition-all"
+            className="rounded-xl h-10 px-4 bg-white dark:bg-white/5 border border-slate-200 dark:border-transparent text-slate-600 dark:text-slate-100 hover:text-slate-900 hover:border-slate-300 hover:shadow-sm dark:hover:bg-white/10 transition-all duration-150 active:scale-95"
             onClick={() => exportToExcel(products,'Ombor_qoldiqlari')}
           >
-            <Download className="w-4 h-4 mr-2 text-slate-400" strokeWidth={1.6} /> Excel yuklash
+            <Download className="w-4 h-4 mr-2 text-slate-400 dark:text-slate-500" strokeWidth={1.6} /> Excel yuklash
           </Button>
           <Button 
-            className="rounded-xl h-10 px-4 bg-primary-600 hover:bg-primary-700 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] transition-all"
+            className="rounded-xl h-10 px-4 bg-primary-600 hover:bg-primary-700 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.4)] transition-all"
             onClick={() => setIsModalOpen(true)}
           >
             <Plus className="w-4 h-4 mr-2" strokeWidth={2} /> Mahsulot qo'shish
@@ -143,27 +143,30 @@ export default function Products() {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, idx) => (
-          <div key={idx} className="bg-white/80 backdrop-blur-sm p-5 rounded-[20px] border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] flex items-center gap-4 hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.06)] transition-shadow">
-            <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${stat.bg}`}>
-              <stat.icon className={`w-6 h-6 ${stat.color}`} strokeWidth={1.6} />
+          <div 
+            key={idx} 
+            className="group bg-white/80 dark:bg-white/[0.04] backdrop-blur-sm p-5 rounded-[20px] border border-slate-200/60 dark:border-white/5 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.4)] hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.06)] transition-all duration-300"
+          >
+            <div className={`w-10 h-10 flex items-center justify-center ${stat.bg} rounded-xl transition-all duration-300 group-hover:scale-105`}>
+              <stat.icon className={`h-5 w-5 ${stat.color}`} strokeWidth={1.6} />
             </div>
-            <div>
-              <p className="text-[13px] font-medium text-slate-500 mb-0.5">{stat.title}</p>
-              <h4 className="text-xl font-bold text-slate-900">{stat.value}</h4>
+            <div className="mt-4">
+              <h4 className="text-xl font-bold text-slate-900 dark:text-slate-100 truncate">{stat.value}</h4>
+              <p className="mt-0.5 text-[13px] font-medium text-slate-500 dark:text-slate-400">{stat.title}</p>
             </div>
           </div>
         ))}
       </div>
 
       {/* Search and Table Area */}
-      <div className="bg-white/80 backdrop-blur-sm rounded-[20px] border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
-        <div className="p-5 border-b border-slate-200 bg-slate-50/50">
+      <div className="bg-white/80 dark:bg-white/[0.04] backdrop-blur-sm rounded-[20px] border border-slate-200/60 dark:border-white/5 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.4)] overflow-hidden">
+        <div className="p-5 border-b border-slate-200 dark:border-transparent bg-slate-50/50 dark:bg-white/5">
           <div className="max-w-md relative">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-              <Search className="h-4 w-4 text-slate-400" strokeWidth={1.6} />
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 z-10">
+              <Search className="h-4 w-4 text-slate-400 dark:text-slate-500" strokeWidth={1.6} />
             </div>
             <Input
-              className="pl-10 rounded-xl bg-white h-10"
+              className="pl-10 pr-4 py-2 bg-white dark:bg-white/[0.08] border border-slate-200 dark:border-transparent rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 w-full transition-all h-10"
               placeholder="Nomi, SKU yoki kategoriyasi..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -191,39 +194,39 @@ export default function Products() {
                   {product.image ? (
                     <img
                       src={product.image}
-                      className="w-8 h-8 rounded-lg object-cover mt-0.5 flex-shrink-0 border border-slate-100 shadow-sm"
+                      className="w-8 h-8 rounded-lg object-cover mt-0.5 flex-shrink-0 border border-slate-100 dark:border-transparent shadow-sm"
                       alt={product.name}
                     />
                   ) : (
-                    <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 mt-0.5 flex-shrink-0">
+                    <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-white/[0.06] flex items-center justify-center text-slate-400 dark:text-slate-500 mt-0.5 flex-shrink-0">
                       <Package className="w-4 h-4" strokeWidth={1.6} />
                     </div>
                   )}
                   <div>
-                    <h5 className="font-bold text-slate-900 leading-tight">{product.name}</h5>
-                    <div className="flex flex-wrap items-center gap-2 mt-1 text-[11px] font-medium text-slate-400">
-                      <span className="bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono">{product.sku ||'SKU-yoq'}</span>
+                    <h5 className="font-bold text-slate-900 dark:text-slate-100 leading-tight">{product.name}</h5>
+                    <div className="flex flex-wrap items-center gap-2 mt-1 text-[11px] font-medium text-slate-400 dark:text-slate-500">
+                      <span className="bg-slate-100 dark:bg-white/[0.06] text-slate-600 dark:text-slate-400 px-1.5 py-0.5 rounded font-mono">{product.sku ||'SKU-yoq'}</span>
                       {product.features && <span className="truncate max-w-[150px] italic">({product.features})</span>}
                     </div>
                   </div>
                 </div>
               </td>
-              <td className="whitespace-nowrap px-3 py-4 text-[14px] text-slate-500 font-semibold">{product.category}</td>
-              <td className="whitespace-nowrap px-3 py-4 text-[14px] text-slate-500">{product.unit}</td>
-              <td className="whitespace-nowrap px-3 py-4 text-[14px] font-bold text-slate-700">
-                {product.price.toLocaleString()} <span className="text-[12px] text-slate-400 font-medium">UZS</span>
+              <td className="whitespace-nowrap px-3 py-4 text-[14px] text-slate-500 dark:text-slate-400 font-semibold">{product.category}</td>
+              <td className="whitespace-nowrap px-3 py-4 text-[14px] text-slate-500 dark:text-slate-400">{product.unit}</td>
+              <td className="whitespace-nowrap px-3 py-4 text-[14px] font-bold text-slate-700 dark:text-slate-300">
+                {product.price.toLocaleString()} <span className="text-[12px] text-slate-400 dark:text-slate-500 font-medium">UZS</span>
               </td>
-              <td className="whitespace-nowrap px-3 py-4 text-sm text-slate-500">
+              <td className="whitespace-nowrap px-3 py-4 text-sm text-slate-500 dark:text-slate-400">
                 {(() => {
                   const threshold = product.minStock ?? 0;
                   const isOut = product.stock === 0;
                   const isLow = !isOut && threshold > 0 && product.stock <= threshold;
                   const colorClass = isOut
-                    ? 'bg-red-50 text-red-700 border-red-200'
+                    ? 'bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-400 border-red-200/60 dark:border-red-900/30'
                     : isLow
-                      ? 'bg-amber-50 text-amber-700 border-amber-200'
-                      : 'bg-emerald-50 text-emerald-700 border-emerald-200';
-                  const dotClass = isOut ? 'bg-red-500' : isLow ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500';
+                      ? 'bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 border-amber-200/60 dark:border-amber-900/30'
+                      : 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 border-emerald-200/60 dark:border-emerald-900/30';
+                  const dotClass = isOut ? 'bg-red-500 dark:bg-red-400' : isLow ? 'bg-amber-500 dark:bg-amber-400 animate-pulse' : 'bg-emerald-500 dark:bg-emerald-400';
                   return (
                     <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[12px] font-semibold border ${colorClass}`}>
                       <span className={`w-1.5 h-1.5 rounded-full ${dotClass}`} />
@@ -242,9 +245,9 @@ export default function Products() {
                     placeholder="—"
                     onBlur={(e) => handleMinStockChange(product.id, e.target.value)}
                     onKeyDown={(e) => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur(); }}
-                    className="w-20 px-2 py-1.5 text-[13px] font-bold text-slate-700 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-amber-400 focus:bg-white transition-colors"
+                    className="w-20 px-2 py-1.5 text-[13px] font-bold text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-transparent rounded-lg focus:outline-none focus:border-amber-400 focus:bg-white dark:bg-white/[0.08] transition-colors"
                   />
-                  <span className="text-[11px] text-slate-400 font-medium">{product.unit}</span>
+                  <span className="text-[11px] text-slate-400 dark:text-slate-500 font-medium">{product.unit}</span>
                 </div>
               </td>
             </>
@@ -256,9 +259,9 @@ export default function Products() {
         <form onSubmit={handleSubmit} className="space-y-4 max-h-[80vh] overflow-y-auto p-1">
           {/* Rasm yuklash maydoni */}
           <div className="space-y-1.5">
-            <label className="block text-[13px] font-semibold text-slate-700">Mahsulot rasmi</label>
+            <label className="block text-[13px] font-semibold text-slate-700 dark:text-slate-300">Mahsulot rasmi</label>
             {form.image ? (
-              <div className="relative w-full h-36 rounded-xl overflow-hidden border-2 border-dashed border-slate-200 bg-slate-50 flex items-center justify-center">
+              <div className="relative w-full h-36 rounded-xl overflow-hidden border-2 border-dashed border-slate-200 dark:border-transparent bg-slate-50 dark:bg-white/5 flex items-center justify-center">
                 <img src={form.image} className="h-full w-full object-contain animate-in fade-in duration-200" alt="Mahsulot preview" />
                 <button
                   type="button"
@@ -269,13 +272,13 @@ export default function Products() {
                 </button>
               </div>
             ) : (
-              <label className="flex flex-col items-center justify-center w-full h-36 rounded-xl border-2 border-dashed border-slate-300 hover:border-primary-500 bg-slate-50 hover:bg-slate-100/50 cursor-pointer transition-all duration-150 group">
+              <label className="flex flex-col items-center justify-center w-full h-36 rounded-xl border-2 border-dashed border-slate-300 dark:border-transparent hover:border-primary-500 bg-slate-50 dark:bg-white/5 hover:bg-slate-100/50 cursor-pointer transition-all duration-150 group">
                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                  <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm border border-slate-100 text-slate-400 group-hover:text-primary-500 transition-colors mb-2">
+                  <div className="w-10 h-10 bg-white dark:bg-white/[0.08] rounded-xl flex items-center justify-center shadow-sm border border-slate-100 dark:border-transparent text-slate-400 dark:text-slate-500 group-hover:text-primary-500 transition-colors mb-2">
                     <ImageIcon className="w-5 h-5" strokeWidth={1.8} />
                   </div>
-                  <p className="text-xs font-bold text-slate-700">Rasm yuklash</p>
-                  <p className="text-[10px] text-slate-400 mt-1">PNG, JPG (Max. 2MB)</p>
+                  <p className="text-xs font-bold text-slate-700 dark:text-slate-300">Rasm yuklash</p>
+                  <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-1">PNG, JPG (Max. 2MB)</p>
                 </div>
                 <input
                   type="file"
@@ -371,31 +374,31 @@ export default function Products() {
           </div>
 
           {/* Min stock threshold */}
-          <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl">
-            <label className="block text-[13px] font-bold text-amber-800 mb-1">⚠️ Minimal zaxira chegarasi</label>
-            <p className="text-[11px] text-amber-600 mb-3">Qoldiq bu raqamdan tushsa bildirishnoma keladi. Bo'sh qoldirsangiz 50 ta qabul qilinadi.</p>
+          <div className="p-4 bg-amber-50 dark:bg-amber-950/10 border border-amber-200/60 dark:border-amber-900/30 rounded-xl">
+            <label className="block text-[13px] font-bold text-amber-800 dark:text-amber-400 mb-1">⚠️ Minimal zaxira chegarasi</label>
+            <p className="text-[11px] text-amber-600/90 dark:text-amber-400/80 mb-3">Qoldiq bu raqamdan tushsa bildirishnoma keladi. Bo'sh qoldirsangiz 50 ta qabul qilinadi.</p>
             <Input
               type="number"
               min={0}
               placeholder="Masalan: 30"
-              value={form.minStock ||''}
+              value={form.minStock || ''}
               onChange={(e) => setForm({ ...form, minStock: Number(e.target.value)})}
-              className="rounded-xl font-bold bg-white"
+              className="rounded-xl font-bold bg-white dark:bg-white/[0.08]"
             />
           </div>
 
           <div>
-            <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">Tovar xususiyatlari / Tafsiloti</label>
+            <label className="block text-[13px] font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Tovar xususiyatlari / Tafsiloti</label>
             <textarea
               placeholder="Masalan: M-400 markali sement, 50kg lik qoplarda, namlikka chidamli"
               value={form.features}
               onChange={(e) => setForm({ ...form, features: e.target.value})}
-              className="w-full px-3 py-2 bg-white/80 backdrop-blur-md border border-slate-300 rounded-xl text-[14px] focus:outline-none resize-none"
+              className="w-full px-3 py-2 bg-white/80 dark:bg-white/[0.04] backdrop-blur-md border border-slate-300 dark:border-transparent rounded-xl text-[14px] focus:outline-none resize-none"
               rows={2}
             />
           </div>
 
-          <div className="flex gap-3 justify-end pt-4 mt-2 border-t border-slate-100">
+          <div className="flex gap-3 justify-end pt-4 mt-2 border-t border-slate-100 dark:border-transparent">
             <Button type="button" variant="outline" className="rounded-xl px-5" onClick={() => setIsModalOpen(false)}>
               Bekor qilish
             </Button>

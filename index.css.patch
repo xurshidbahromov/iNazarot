@@ -1,0 +1,121 @@
+diff --git a/src/index.css b/src/index.css
+index 6cdfe24..a66a863 100644
+--- a/src/index.css
++++ b/src/index.css
+@@ -4,9 +4,75 @@
+ 
+ @layer base {
+   body {
+-    @apply bg-slate-50 text-slate-900 antialiased transition-colors duration-300;
++    @apply antialiased transition-colors duration-300;
++    background-color: var(--bg-body);
++    color: var(--text-primary);
+   }
+-  
++
++  /* ─── Light Theme (default) ─── */
++  :root {
++    --bg-body: #f8fafc;
++    --bg-surface: rgba(255, 255, 255, 0.8);
++    --bg-surface-solid: #ffffff;
++    --bg-surface-hover: rgba(248, 250, 252, 0.8);
++    --bg-sidebar: rgba(248, 250, 252, 0.8);
++    --bg-input: rgba(248, 250, 252, 0.5);
++    --bg-elevated: rgba(255, 255, 255, 0.6);
++    --bg-muted: #f1f5f9;
++
++    --border-primary: #f1f2f4;
++    --border-subtle: rgba(241, 242, 244, 1);
++    --border-input: rgba(226, 232, 240, 0.6);
++    --border-sidebar: rgba(226, 232, 240, 0.6);
++
++    --text-primary: #0f172a;
++    --text-secondary: #64748b;
++    --text-muted: #94a3b8;
++    --text-inverted: #ffffff;
++
++    --shadow-card: 0 4px 20px -4px rgba(0, 0, 0, 0.05);
++    --shadow-card-hover: 0 8px 24px -4px rgba(0, 0, 0, 0.06);
++    --shadow-dropdown: 0 20px 50px rgba(15, 23, 42, 0.12);
++
++    --chart-grid: #f1f5f9;
++    --chart-tick: #94a3b8;
++
++    --glow-emerald: rgba(16, 185, 129, 0.05);
++    --glow-emerald-strong: rgba(16, 185, 129, 0.1);
++  }
++
++  /* ─── Dark Theme ─── */
++  .dark {
++    --bg-body: #040d0b;
++    --bg-surface: rgba(8, 20, 18, 0.8);
++    --bg-surface-solid: #081412;
++    --bg-surface-hover: rgba(12, 28, 25, 0.6);
++    --bg-sidebar: rgba(5, 16, 14, 0.92);
++    --bg-input: rgba(10, 24, 21, 0.5);
++    --bg-elevated: rgba(12, 28, 25, 0.6);
++    --bg-muted: #0b1a17;
++
++    --border-primary: rgba(16, 185, 129, 0.12);
++    --border-subtle: rgba(16, 185, 129, 0.07);
++    --border-input: rgba(16, 185, 129, 0.15);
++    --border-sidebar: rgba(16, 185, 129, 0.25);
++
++    --text-primary: #f1f5f9;
++    --text-secondary: #94a3b8;
++    --text-muted: #64748b;
++    --text-inverted: #010302;
++
++    --shadow-card: 0 4px 20px -4px rgba(0, 0, 0, 0.5);
++    --shadow-card-hover: 0 8px 24px -4px rgba(0, 0, 0, 0.6);
++    --shadow-dropdown: 0 20px 50px rgba(0, 0, 0, 0.6);
++
++    --chart-grid: #162623;
++    --chart-tick: #64748b;
++
++    --glow-emerald: rgba(16, 185, 129, 0.06);
++    --glow-emerald-strong: rgba(16, 185, 129, 0.12);
++  }
++
+   /* Premium Global Icon Styling */
+   .lucide {
+     stroke-width: 1.6px !important;
+@@ -15,7 +81,10 @@
+ 
+   /* Global Glassmorphism Border & Card */
+   .glass-border {
+-    @apply border border-white bg-white/60 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.04),inset_0_1px_2px_rgba(255,255,255,0.9),inset_0_0_0_1px_rgba(255,255,255,0.5)];
++    @apply border backdrop-blur-xl;
++    border-color: var(--border-primary);
++    background: var(--bg-surface);
++    box-shadow: var(--shadow-card);
+   }
+ }
+ 
+@@ -65,4 +134,26 @@
+   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+     background: rgba(148, 163, 184, 0.45);
+   }
++
++  /* Dark scrollbar */
++  .dark .custom-scrollbar::-webkit-scrollbar-track {
++    background: rgba(15, 23, 42, 0.3);
++  }
++  .dark .custom-scrollbar::-webkit-scrollbar-thumb {
++    background: rgba(100, 116, 139, 0.3);
++  }
++  .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
++    background: rgba(100, 116, 139, 0.5);
++  }
++
++  /* Dark mode card utility */
++  .card-surface {
++    background: var(--bg-surface);
++    border-color: var(--border-primary);
++    box-shadow: var(--shadow-card);
++    transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
++  }
++  .card-surface:hover {
++    box-shadow: var(--shadow-card-hover);
++  }
+ }

@@ -9,11 +9,11 @@ import type { Order, OrderItem} from'../../store/useCRMStore';
 import { useWarehouseStore} from'../../store/useWarehouseStore';
 
 const statusMap: Record<string, { label: string; cls: string}> = {
-  yangi: { label:'Yangi', cls:'bg-blue-50 text-blue-700 border-blue-200'},
-  tayyorlanmoqda: { label:'Tayyorlanmoqda', cls:'bg-amber-50 text-amber-700 border-amber-200'},
-  yetkazilmoqda: { label:'Yetkazilmoqda', cls:'bg-indigo-50 text-indigo-700 border-indigo-200'},
-  yakunlandi: { label:'Yakunlandi', cls:'bg-emerald-50 text-emerald-700 border-emerald-200'},
-  bekor_qilingan: { label:'Bekor qilingan', cls:'bg-rose-50 text-rose-700 border-rose-200'},};
+  yangi: { label:'Yangi', cls:'bg-blue-50 dark:bg-blue-950/50 text-blue-700 border-blue-200'},
+  tayyorlanmoqda: { label:'Tayyorlanmoqda', cls:'bg-amber-50 dark:bg-amber-950/50 text-amber-700 border-amber-200'},
+  yetkazilmoqda: { label:'Yetkazilmoqda', cls:'bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 border-indigo-200'},
+  yakunlandi: { label:'Yakunlandi', cls:'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 border-emerald-200'},
+  bekor_qilingan: { label:'Bekor qilingan', cls:'bg-rose-50 dark:bg-rose-950/50 text-rose-700 border-rose-200'},};
 
 const paymentStatusMap: Record<string, { label: string; cls: string}> = {
   paid: { label:'To\'langan', cls:'bg-emerald-100 text-emerald-800'},
@@ -150,13 +150,13 @@ export default function Orders() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h3 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
-            <ShoppingBag className="w-6 h-6 text-primary-600" />
+          <h3 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 flex items-center gap-2">
+            <ShoppingBag className="w-6 h-6 text-[#20c997]" />
             Buyurtmalar boshqaruvi
           </h3>
-          <p className="mt-1.5 text-sm text-slate-500">Mijozlar buyurtmalari, nasiya muddatlari va yetkazib berish jarayonini nazorat qilish.</p>
+          <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">Mijozlar buyurtmalari, nasiya muddatlari va yetkazib berish jarayonini nazorat qilish.</p>
         </div>
-        <Button className="rounded-xl h-10 px-4 bg-primary-600 hover:bg-primary-700 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]" onClick={() => {
+        <Button className="rounded-xl h-10 px-4 bg-primary-600 hover:bg-primary-700 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.4)]" onClick={() => {
           setIsAddModalOpen(true);
           handleAddProductItem(); // Dastlabki bir dona mahsulot qatorini qo'shish
         }}>
@@ -166,60 +166,64 @@ export default function Orders() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white/80 backdrop-blur-sm p-5 rounded-[20px] border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] flex items-center gap-4 hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.06)] transition-shadow">
-          <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 bg-blue-50">
-            <ShoppingBag className="w-6 h-6 text-blue-500" strokeWidth={1.6} />
+        {/* Jami Buyurtmalar */}
+        <div className="group bg-white/80 dark:bg-white/[0.04] backdrop-blur-sm p-5 rounded-[20px] border border-slate-200/60 dark:border-white/5 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.4)] hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.06)] transition-all duration-300">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-blue-50 dark:bg-blue-950/30 transition-all duration-300 group-hover:scale-105">
+            <ShoppingBag className="w-5 h-5 text-blue-500 dark:text-blue-400" strokeWidth={1.6} />
           </div>
-          <div>
-            <p className="text-[13px] font-medium text-slate-500 mb-0.5">Jami Buyurtmalar</p>
-            <h4 className="text-xl font-bold text-slate-900">{orders.length} ta</h4>
-          </div>
-        </div>
-
-        <div className="bg-white/80 backdrop-blur-sm p-5 rounded-[20px] border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] flex items-center gap-4 hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.06)] transition-shadow">
-          <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 bg-emerald-50">
-            <TrendingUp className="w-6 h-6 text-emerald-500" strokeWidth={1.6} />
-          </div>
-          <div>
-            <p className="text-[13px] font-medium text-slate-500 mb-0.5">Jami Savdo</p>
-            <h4 className="text-xl font-bold text-slate-900">{totalSales.toLocaleString()} UZS</h4>
+          <div className="mt-4">
+            <h4 className="text-xl font-bold text-slate-900 dark:text-slate-100 truncate">{orders.length} ta</h4>
+            <p className="mt-0.5 text-[13px] font-medium text-slate-500 dark:text-slate-400">Jami Buyurtmalar</p>
           </div>
         </div>
 
-        <div className="bg-white/80 backdrop-blur-sm p-5 rounded-[20px] border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] flex items-center gap-4 hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.06)] transition-shadow">
-          <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 bg-red-50">
-            <Wallet className="w-6 h-6 text-red-500" strokeWidth={1.6} />
+        {/* Jami Savdo */}
+        <div className="group bg-white/80 dark:bg-white/[0.04] backdrop-blur-sm p-5 rounded-[20px] border border-slate-200/60 dark:border-white/5 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.4)] hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.06)] transition-all duration-300">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-emerald-50 dark:bg-emerald-950/30 transition-all duration-300 group-hover:scale-105">
+            <TrendingUp className="w-5 h-5 text-emerald-500 dark:text-emerald-400" strokeWidth={1.6} />
           </div>
-          <div>
-            <p className="text-[13px] font-medium text-slate-500 mb-0.5">Nasiya Summasi</p>
-            <h4 className="text-xl font-bold text-slate-900">{totalDebt.toLocaleString()} UZS</h4>
+          <div className="mt-4">
+            <h4 className="text-xl font-bold text-slate-900 dark:text-slate-100 truncate">{totalSales.toLocaleString()} UZS</h4>
+            <p className="mt-0.5 text-[13px] font-medium text-slate-500 dark:text-slate-400">Jami Savdo</p>
           </div>
         </div>
 
-        <div className="bg-white/80 backdrop-blur-sm p-5 rounded-[20px] border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] flex items-center gap-4 hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.06)] transition-shadow">
-          <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 bg-amber-50">
-            <Clock className="w-6 h-6 text-amber-500" strokeWidth={1.6} />
+        {/* Nasiya Summasi */}
+        <div className="group bg-white/80 dark:bg-white/[0.04] backdrop-blur-sm p-5 rounded-[20px] border border-slate-200/60 dark:border-white/5 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.4)] hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.06)] transition-all duration-300">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-red-50 dark:bg-red-950/30 transition-all duration-300 group-hover:scale-105">
+            <Wallet className="w-5 h-5 text-red-500 dark:text-red-400" strokeWidth={1.6} />
           </div>
-          <div>
-            <p className="text-[13px] font-medium text-slate-500 mb-0.5">Aktiv buyurtmalar</p>
-            <h4 className="text-xl font-bold text-slate-900">{activeOrdersCount} ta</h4>
+          <div className="mt-4">
+            <h4 className="text-xl font-bold text-slate-900 dark:text-slate-100 truncate">{totalDebt.toLocaleString()} UZS</h4>
+            <p className="mt-0.5 text-[13px] font-medium text-slate-500 dark:text-slate-400">Nasiya Summasi</p>
+          </div>
+        </div>
+
+        {/* Aktiv buyurtmalar */}
+        <div className="group bg-white/80 dark:bg-white/[0.04] backdrop-blur-sm p-5 rounded-[20px] border border-slate-200/60 dark:border-white/5 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.4)] hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.06)] transition-all duration-300">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-amber-50 dark:bg-amber-950/30 transition-all duration-300 group-hover:scale-105">
+            <Clock className="w-5 h-5 text-amber-500 dark:text-amber-400" strokeWidth={1.6} />
+          </div>
+          <div className="mt-4">
+            <h4 className="text-xl font-bold text-slate-900 dark:text-slate-100 truncate">{activeOrdersCount} ta</h4>
+            <p className="mt-0.5 text-[13px] font-medium text-slate-500 dark:text-slate-400">Aktiv buyurtmalar</p>
           </div>
         </div>
       </div>
 
       {/* Filter and Table */}
-      <div className="bg-white/80 backdrop-blur-sm rounded-[20px] border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
-        <div className="p-5 border-b border-slate-200 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="bg-white/80 dark:bg-white/[0.04] backdrop-blur-sm rounded-[20px] border-2 border-[#f1f2f4] dark:border-transparent shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.4)] overflow-hidden">
+        <div className="p-5 border-b border-slate-200 dark:border-transparent bg-slate-50/50 dark:bg-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="max-w-md relative flex-1">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-              <Search className="h-4 w-4 text-slate-400" strokeWidth={1.6} />
+            <div className="z-10 pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
+              <Search className="h-4 w-4 text-slate-400 dark:text-slate-500" strokeWidth={1.6} />
             </div>
-            <Input className="pl-10 rounded-xl bg-white h-10 border-slate-200" placeholder="Kodi yoki mijoz bo'yicha qidiring..."
+            <Input className="pl-10 rounded-xl bg-white dark:bg-white/[0.08] h-10 border-slate-200 dark:border-transparent" placeholder="Kodi yoki mijoz bo'yicha qidiring..."
               value={search} onChange={(e) => setSearch(e.target.value)} />
           </div>
           <div className="flex gap-2">
             <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}
-              className="h-10 px-3 bg-white/80 backdrop-blur-md border border-slate-300 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary-500/20">
+              className="h-10 px-3 bg-white/80 dark:bg-white/[0.04] backdrop-blur-md border border-slate-300 dark:border-transparent rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-primary-500/20">
               <option value="all">Barcha holatlar</option>
               <option value="yangi">Yangi</option>
               <option value="tayyorlanmoqda">Tayyorlanmoqda</option>
@@ -247,12 +251,12 @@ export default function Orders() {
             const unpaid = order.totalAmount - order.paidAmount;
             return (
               <>
-                <td className="whitespace-nowrap py-4 pl-4 pr-3 text-[14px] font-bold text-slate-900 sm:pl-6">{order.orderNumber}</td>
-                <td className="whitespace-nowrap px-3 py-4 text-[14px] font-semibold text-slate-700">{order.clientName}</td>
-                <td className="whitespace-nowrap px-3 py-4 text-[13px] text-slate-500">{order.date}</td>
-                <td className="whitespace-nowrap px-3 py-4 text-[14px] font-extrabold text-slate-900">{order.totalAmount.toLocaleString()} UZS</td>
+                <td className="whitespace-nowrap py-4 pl-4 pr-3 text-[14px] font-bold text-slate-900 dark:text-slate-100 sm:pl-6">{order.orderNumber}</td>
+                <td className="whitespace-nowrap px-3 py-4 text-[14px] font-semibold text-slate-700 dark:text-slate-300">{order.clientName}</td>
+                <td className="whitespace-nowrap px-3 py-4 text-[13px] text-slate-500 dark:text-slate-400">{order.date}</td>
+                <td className="whitespace-nowrap px-3 py-4 text-[14px] font-extrabold text-slate-900 dark:text-slate-100">{order.totalAmount.toLocaleString()} UZS</td>
                 <td className="whitespace-nowrap px-3 py-4 text-[13px]">
-                  <div className="font-semibold text-emerald-600">{order.paidAmount.toLocaleString()} UZS</div>
+                  <div className="font-semibold text-emerald-600 dark:text-emerald-400">{order.paidAmount.toLocaleString()} UZS</div>
                   {unpaid > 0 && <div className="text-[11px] text-rose-500 font-bold mt-0.5">Qarz: {unpaid.toLocaleString()} UZS</div>}
                 </td>
                 <td className="whitespace-nowrap px-3 py-4">
@@ -267,7 +271,7 @@ export default function Orders() {
                   </span>
                 </td>
                 <td className="whitespace-nowrap px-3 py-4 text-right text-xs font-medium space-x-2">
-                  <Button variant="outline" size="sm" className="h-8 px-2 rounded-lg text-slate-600 border-slate-200 hover:bg-slate-50  :bg-slate-800/50" onClick={() => handleViewDetails(order)}>
+                  <Button variant="outline" size="sm" className="h-8 px-2 rounded-lg text-slate-600 dark:text-slate-400 border-slate-200 dark:border-transparent hover:bg-slate-50 dark:bg-white/5  :bg-slate-800/50" onClick={() => handleViewDetails(order)}>
                     <Eye className="w-3.5 h-3.5 mr-1" /> Batafsil
                   </Button>
                   {unpaid > 0 && order.status !=='bekor_qilingan' && (
@@ -286,9 +290,9 @@ export default function Orders() {
       <Modal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} title="Yangi buyurtma yaratish">
         <form onSubmit={handleCreateOrder} className="space-y-4 max-h-[80vh] overflow-y-auto p-1">
           <div>
-            <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">Mijoz tanlang *</label>
+            <label className="block text-[13px] font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Mijoz tanlang *</label>
             <select value={newOrderClientId} onChange={(e) => setNewOrderClientId(e.target.value)}
-              className="w-full h-11 px-3 bg-white/80 backdrop-blur-md border border-slate-300 rounded-xl text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-colors" required>
+              className="w-full h-11 px-3 bg-white/80 dark:bg-white/[0.04] backdrop-blur-md border border-slate-300 dark:border-transparent rounded-xl text-[14px] text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-colors" required>
               <option value="">Mijozni tanlang...</option>
               {clients.map(c => <option key={c.id} value={c.id}>{c.name} (Balans: {c.balance.toLocaleString()} UZS)</option>)}
             </select>
@@ -296,19 +300,19 @@ export default function Orders() {
 
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="text-[13px] font-semibold text-slate-700">Mahsulotlar *</label>
-              <Button type="button" variant="outline" size="sm" className="h-8 rounded-lg text-[12px] border-slate-200" onClick={handleAddProductItem}>
+              <label className="text-[13px] font-semibold text-slate-700 dark:text-slate-300">Mahsulotlar *</label>
+              <Button type="button" variant="outline" size="sm" className="h-8 rounded-lg text-[12px] border-slate-200 dark:border-transparent" onClick={handleAddProductItem}>
                 + Mahsulot qo'shish
               </Button>
             </div>
             
             <div className="space-y-3">
               {newOrderItems.map((item, index) => (
-                <div key={index} className="flex flex-col sm:flex-row gap-3 bg-slate-50 p-3 rounded-xl border-2 border-[#f1f2f4]">
+                <div key={index} className="flex flex-col sm:flex-row gap-3 bg-slate-50 dark:bg-white/5 p-3 rounded-xl border-2 border-[#f1f2f4] dark:border-transparent">
                   <div className="flex-1">
-                    <label className="block text-[11px] font-semibold text-slate-400 mb-1">Mahsulot</label>
+                    <label className="block text-[11px] font-semibold text-slate-400 dark:text-slate-500 mb-1">Mahsulot</label>
                     <select value={item.productId} onChange={(e) => handleItemChange(index,'productId', Number(e.target.value))}
-                      className="w-full h-9 px-2 bg-white border border-slate-300 rounded-lg text-[13px] text-slate-800 focus:outline-none">
+                      className="w-full h-9 px-2 bg-white dark:bg-white/[0.08] border border-slate-300 dark:border-transparent rounded-lg text-[13px] text-slate-800 dark:text-slate-200 focus:outline-none">
                       {products.map(p => <option key={p.id} value={p.id}>{p.name} (Zaxira: {p.stock})</option>)}
                     </select>
                   </div>
@@ -324,7 +328,7 @@ export default function Orders() {
                   </div>
 
                   <div className="flex items-end justify-end">
-                    <Button type="button" variant="outline" size="sm" className="h-9 w-9 p-0 border-rose-200 text-rose-500 hover:bg-rose-50 rounded-lg"
+                    <Button type="button" variant="outline" size="sm" className="h-9 w-9 p-0 border-rose-200 text-rose-500 hover:bg-rose-50 dark:bg-rose-950/50 rounded-lg"
                       onClick={() => handleRemoveProductItem(index)} disabled={newOrderItems.length === 1}>
                       <Trash2 className="w-4 h-4" />
                     </Button>
@@ -334,12 +338,12 @@ export default function Orders() {
             </div>
           </div>
 
-          <div className="bg-slate-100 p-4 rounded-xl flex flex-col gap-2 border-2 border-[#f1f2f4]">
-            <div className="flex justify-between text-sm font-semibold text-slate-600">
+          <div className="bg-slate-100 dark:bg-white/[0.06] p-4 rounded-xl flex flex-col gap-2 border-2 border-[#f1f2f4] dark:border-transparent">
+            <div className="flex justify-between text-sm font-semibold text-slate-600 dark:text-slate-400">
               <span>Umumiy miqdor:</span>
               <span>{newOrderItems.reduce((acc, curr) => acc + curr.quantity, 0)} dona</span>
             </div>
-            <div className="flex justify-between text-base font-extrabold text-slate-900 border-t border-slate-200 pt-2">
+            <div className="flex justify-between text-base font-extrabold text-slate-900 dark:text-slate-100 border-t border-slate-200 dark:border-transparent pt-2">
               <span>Jami Summa:</span>
               <span>{calculateNewOrderTotal().toLocaleString()} UZS</span>
             </div>
@@ -349,12 +353,12 @@ export default function Orders() {
             <div>
               <Input label="To'langan Summa (UZS)" type="number" min={0} max={calculateNewOrderTotal()} value={newOrderPaidAmount ||''}
                 onChange={(e) => setNewOrderPaidAmount(Number(e.target.value))} className="rounded-xl font-bold" />
-              <p className="mt-1 text-[11px] text-slate-400">Qolgan summa mijoz qarziga yoziladi.</p>
+              <p className="mt-1 text-[11px] text-slate-400 dark:text-slate-500">Qolgan summa mijoz qarziga yoziladi.</p>
             </div>
             <div>
-              <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">Nasiya muddati (oyda)</label>
+              <label className="block text-[13px] font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Nasiya muddati (oyda)</label>
               <select value={newOrderInstallmentTerm} onChange={(e) => setNewOrderInstallmentTerm(Number(e.target.value))}
-                className="w-full h-11 px-3 bg-white/80 backdrop-blur-md border border-slate-300 rounded-xl text-[14px] focus:outline-none"
+                className="w-full h-11 px-3 bg-white/80 dark:bg-white/[0.04] backdrop-blur-md border border-slate-300 dark:border-transparent rounded-xl text-[14px] focus:outline-none"
                 disabled={newOrderPaidAmount === calculateNewOrderTotal()}>
                 <option value={0}>Nasiya emas (bir martalik to'lov)</option>
                 <option value={1}>1 oy</option>
@@ -366,13 +370,13 @@ export default function Orders() {
           </div>
 
           <div>
-            <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">Izohlar / Yetkazib berish manzili</label>
+            <label className="block text-[13px] font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Izohlar / Yetkazib berish manzili</label>
             <textarea value={newOrderNotes} onChange={(e) => setNewOrderNotes(e.target.value)}
               placeholder="Masalan: Yetkazish bepul, manzil: Toshkent sh, 1-uy"
-              className="w-full px-3 py-2 bg-white/80 backdrop-blur-md border border-slate-300 rounded-xl text-[14px] focus:outline-none resize-none" rows={2} />
+              className="w-full px-3 py-2 bg-white/80 dark:bg-white/[0.04] backdrop-blur-md border border-slate-300 dark:border-transparent rounded-xl text-[14px] focus:outline-none resize-none" rows={2} />
           </div>
 
-          <div className="flex gap-3 justify-end pt-4 border-t border-slate-100">
+          <div className="flex gap-3 justify-end pt-4 border-t border-slate-100 dark:border-transparent">
             <Button type="button" variant="outline" className="rounded-xl px-5" onClick={() => setIsAddModalOpen(false)}>Bekor qilish</Button>
             <Button type="submit" className="rounded-xl px-6">Buyurtmani saqlash</Button>
           </div>
@@ -383,24 +387,24 @@ export default function Orders() {
       <Modal isOpen={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen(false)} title="Qarz uchun to'lov qabul qilish">
         <form onSubmit={handleSavePayment} className="space-y-4 p-1">
           {selectedOrder && (
-            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
-              <div className="flex justify-between text-xs font-semibold text-slate-500">
+            <div className="bg-slate-50 dark:bg-white/5 p-4 rounded-xl border border-slate-100 dark:border-transparent space-y-2">
+              <div className="flex justify-between text-xs font-semibold text-slate-500 dark:text-slate-400">
                 <span>Buyurtma:</span>
                 <span>{selectedOrder.orderNumber}</span>
               </div>
-              <div className="flex justify-between text-xs font-semibold text-slate-500">
+              <div className="flex justify-between text-xs font-semibold text-slate-500 dark:text-slate-400">
                 <span>Mijoz:</span>
                 <span>{selectedOrder.clientName}</span>
               </div>
-              <div className="flex justify-between text-xs font-semibold text-slate-500">
+              <div className="flex justify-between text-xs font-semibold text-slate-500 dark:text-slate-400">
                 <span>Umumiy summa:</span>
-                <span className="font-bold text-slate-800">{selectedOrder.totalAmount.toLocaleString()} UZS</span>
+                <span className="font-bold text-slate-800 dark:text-slate-200">{selectedOrder.totalAmount.toLocaleString()} UZS</span>
               </div>
-              <div className="flex justify-between text-xs font-semibold text-slate-500">
+              <div className="flex justify-between text-xs font-semibold text-slate-500 dark:text-slate-400">
                 <span>To'langan:</span>
-                <span className="font-bold text-emerald-600">{selectedOrder.paidAmount.toLocaleString()} UZS</span>
+                <span className="font-bold text-emerald-600 dark:text-emerald-400">{selectedOrder.paidAmount.toLocaleString()} UZS</span>
               </div>
-              <div className="flex justify-between text-sm font-extrabold text-rose-500 border-t border-slate-200 pt-2">
+              <div className="flex justify-between text-sm font-extrabold text-rose-500 border-t border-slate-200 dark:border-transparent pt-2">
                 <span>Qolgan qarz:</span>
                 <span>{(selectedOrder.totalAmount - selectedOrder.paidAmount).toLocaleString()} UZS</span>
               </div>
@@ -410,7 +414,7 @@ export default function Orders() {
           <Input label="Qabul qilinayotgan summa (UZS) *" type="number" min={1} max={selectedOrder ? selectedOrder.totalAmount - selectedOrder.paidAmount : 0}
             value={paymentAmount ||''} onChange={(e) => setPaymentAmount(Number(e.target.value))} className="rounded-xl font-extrabold" required />
 
-          <div className="flex gap-3 justify-end pt-4 mt-2 border-t border-slate-100">
+          <div className="flex gap-3 justify-end pt-4 mt-2 border-t border-slate-100 dark:border-transparent">
             <Button type="button" variant="outline" className="rounded-xl px-5" onClick={() => setIsPaymentModalOpen(false)}>Bekor qilish</Button>
             <Button type="submit" className="rounded-xl px-6 bg-emerald-600 hover:bg-emerald-700 text-white">To'lovni saqlash</Button>
           </div>
@@ -422,10 +426,10 @@ export default function Orders() {
         {selectedOrder && (
           <div className="space-y-5 p-1 max-h-[80vh] overflow-y-auto">
             {/* Header info */}
-            <div className="flex justify-between items-start border-b border-slate-100 pb-3">
+            <div className="flex justify-between items-start border-b border-slate-100 dark:border-transparent pb-3">
               <div>
-                <h4 className="text-base font-black text-slate-900">{selectedOrder.orderNumber}</h4>
-                <p className="text-xs text-slate-400 mt-1 flex items-center gap-1">
+                <h4 className="text-base font-black text-slate-900 dark:text-slate-100">{selectedOrder.orderNumber}</h4>
+                <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 flex items-center gap-1">
                   <Calendar className="w-3 h-3" /> {selectedOrder.date}
                 </p>
               </div>
@@ -436,15 +440,15 @@ export default function Orders() {
             </div>
 
             {/* Status change actions */}
-            <div className="bg-slate-50 p-4 rounded-xl border-2 border-[#f1f2f4] space-y-2">
-              <label className="block text-xs font-bold text-slate-500 mb-1">Buyurtma holatini o'zgartirish</label>
+            <div className="bg-slate-50 dark:bg-white/5 p-4 rounded-xl border-2 border-[#f1f2f4] dark:border-transparent space-y-2">
+              <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Buyurtma holatini o'zgartirish</label>
               <div className="flex flex-wrap gap-2">
                 {Object.keys(statusMap).map((st) => (
                   <button key={st} type="button" onClick={() => updateOrderStatus(selectedOrder.id, st as Order['status'])}
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors ${
                       selectedOrder.status === st
-                        ?'bg-primary-600 border-primary-600 text-white shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]'
-                        :'bg-white border-slate-200 text-slate-600 hover:bg-slate-50  :bg-slate-800/50'}`}>
+                        ?'bg-primary-600 border-primary-600 text-white shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.4)]'
+                        :'bg-white dark:bg-white/[0.08] border-slate-200 dark:border-transparent text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:bg-white/5  :bg-slate-800/50'}`}>
                     {statusMap[st].label}
                   </button>
                 ))}
@@ -453,38 +457,38 @@ export default function Orders() {
 
             {/* Client info */}
             <div>
-              <h5 className="text-[13px] font-bold text-slate-400 uppercase tracking-wider mb-2">Mijoz haqida</h5>
-              <div className="bg-white/80 backdrop-blur-md border-2 border-[#f1f2f4] p-3 rounded-xl flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-500 text-sm">
+              <h5 className="text-[13px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">Mijoz haqida</h5>
+              <div className="bg-white/80 dark:bg-white/[0.04] backdrop-blur-md border-2 border-[#f1f2f4] dark:border-transparent p-3 rounded-xl flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-white/[0.06] flex items-center justify-center font-bold text-slate-500 dark:text-slate-400 text-sm">
                   {selectedOrder.clientName.substring(0, 2).toUpperCase()}
                 </div>
                 <div>
-                  <h6 className="text-[14px] font-bold text-slate-900">{selectedOrder.clientName}</h6>
-                  <p className="text-xs text-slate-500 mt-0.5">ID: {selectedOrder.clientId}</p>
+                  <h6 className="text-[14px] font-bold text-slate-900 dark:text-slate-100">{selectedOrder.clientName}</h6>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">ID: {selectedOrder.clientId}</p>
                 </div>
               </div>
             </div>
 
             {/* Products List */}
             <div>
-              <h5 className="text-[13px] font-bold text-slate-400 uppercase tracking-wider mb-2">Mahsulotlar</h5>
-              <div className="border-2 border-[#f1f2f4] rounded-xl overflow-hidden">
-                <table className="min-w-full divide-y divide-slate-200">
-                  <thead className="bg-slate-50">
+              <h5 className="text-[13px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">Mahsulotlar</h5>
+              <div className="border-2 border-[#f1f2f4] dark:border-transparent rounded-xl overflow-hidden">
+                <table className="min-w-full divide-y divide-slate-200 dark:divide-transparent">
+                  <thead className="bg-slate-50 dark:bg-white/5">
                     <tr>
-                      <th className="py-2 pl-3 pr-2 text-left text-xs font-semibold text-slate-500">Mahsulot</th>
-                      <th className="py-2 px-2 text-left text-xs font-semibold text-slate-500">Narx</th>
-                      <th className="py-2 px-2 text-left text-xs font-semibold text-slate-500">Soni</th>
-                      <th className="py-2 px-3 text-right text-xs font-semibold text-slate-500">Jami</th>
+                      <th className="py-2 pl-3 pr-2 text-left text-xs font-semibold text-slate-500 dark:text-slate-400">Mahsulot</th>
+                      <th className="py-2 px-2 text-left text-xs font-semibold text-slate-500 dark:text-slate-400">Narx</th>
+                      <th className="py-2 px-2 text-left text-xs font-semibold text-slate-500 dark:text-slate-400">Soni</th>
+                      <th className="py-2 px-3 text-right text-xs font-semibold text-slate-500 dark:text-slate-400">Jami</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 bg-white">
+                  <tbody className="divide-y divide-slate-100 dark:divide-transparent bg-white dark:bg-white/[0.08]">
                     {selectedOrder.products.map((p, idx) => (
                       <tr key={idx} className="text-xs">
-                        <td className="py-2.5 pl-3 pr-2 font-bold text-slate-800">{p.name}</td>
-                        <td className="py-2.5 px-2 text-slate-500">{p.price.toLocaleString()} UZS</td>
-                        <td className="py-2.5 px-2 font-semibold text-slate-600">{p.quantity}</td>
-                        <td className="py-2.5 px-3 text-right font-bold text-slate-800">{(p.quantity * p.price).toLocaleString()} UZS</td>
+                        <td className="py-2.5 pl-3 pr-2 font-bold text-slate-800 dark:text-slate-200">{p.name}</td>
+                        <td className="py-2.5 px-2 text-slate-500 dark:text-slate-400">{p.price.toLocaleString()} UZS</td>
+                        <td className="py-2.5 px-2 font-semibold text-slate-600 dark:text-slate-400">{p.quantity}</td>
+                        <td className="py-2.5 px-3 text-right font-bold text-slate-800 dark:text-slate-200">{(p.quantity * p.price).toLocaleString()} UZS</td>
                       </tr>
                     ))}
                   </tbody>
@@ -493,24 +497,24 @@ export default function Orders() {
             </div>
 
             {/* Financial summary */}
-            <div className="bg-slate-100 p-4 rounded-xl border-2 border-[#f1f2f4] space-y-2">
-              <div className="flex justify-between text-xs font-bold text-slate-500">
+            <div className="bg-slate-100 dark:bg-white/[0.06] p-4 rounded-xl border-2 border-[#f1f2f4] dark:border-transparent space-y-2">
+              <div className="flex justify-between text-xs font-bold text-slate-500 dark:text-slate-400">
                 <span>Jami summa:</span>
-                <span className="text-slate-800">{selectedOrder.totalAmount.toLocaleString()} UZS</span>
+                <span className="text-slate-800 dark:text-slate-200">{selectedOrder.totalAmount.toLocaleString()} UZS</span>
               </div>
-              <div className="flex justify-between text-xs font-bold text-slate-500">
+              <div className="flex justify-between text-xs font-bold text-slate-500 dark:text-slate-400">
                 <span>To'langan summa:</span>
-                <span className="text-emerald-600">{selectedOrder.paidAmount.toLocaleString()} UZS</span>
+                <span className="text-emerald-600 dark:text-emerald-400">{selectedOrder.paidAmount.toLocaleString()} UZS</span>
               </div>
               {selectedOrder.installmentTerm ? (
-                <div className="flex justify-between text-xs font-bold text-slate-500">
+                <div className="flex justify-between text-xs font-bold text-slate-500 dark:text-slate-400">
                   <span>Nasiya muddati:</span>
-                  <span className="text-indigo-600">{selectedOrder.installmentTerm} oy</span>
+                  <span className="text-indigo-600 dark:text-indigo-400">{selectedOrder.installmentTerm} oy</span>
                 </div>
               ) : null}
-              <div className="flex justify-between text-sm font-extrabold text-slate-900 border-t border-slate-200 pt-2">
+              <div className="flex justify-between text-sm font-extrabold text-slate-900 dark:text-slate-100 border-t border-slate-200 dark:border-transparent pt-2">
                 <span>Qolgan qarz:</span>
-                <span className={selectedOrder.totalAmount - selectedOrder.paidAmount > 0 ?"text-rose-600" :"text-slate-800"}>
+                <span className={selectedOrder.totalAmount - selectedOrder.paidAmount > 0 ?"text-rose-600" :"text-slate-800 dark:text-slate-200"}>
                   {(selectedOrder.totalAmount - selectedOrder.paidAmount).toLocaleString()} UZS
                 </span>
               </div>
@@ -518,7 +522,7 @@ export default function Orders() {
 
             {/* Notes */}
             {selectedOrder.notes && (
-              <div className="bg-amber-50 border border-amber-100 p-3 rounded-xl">
+              <div className="bg-amber-50 dark:bg-amber-950/50 border border-amber-100 p-3 rounded-xl">
                 <h6 className="text-xs font-bold text-amber-800 mb-1 flex items-center gap-1">
                   <FileText className="w-3.5 h-3.5" /> Izoh va eslatmalar:
                 </h6>
@@ -526,7 +530,7 @@ export default function Orders() {
               </div>
             )}
 
-            <div className="flex justify-end pt-2 border-t border-slate-100">
+            <div className="flex justify-end pt-2 border-t border-slate-100 dark:border-transparent">
               <Button type="button" className="rounded-xl px-6" onClick={() => setIsViewModalOpen(false)}>Yopish</Button>
             </div>
           </div>

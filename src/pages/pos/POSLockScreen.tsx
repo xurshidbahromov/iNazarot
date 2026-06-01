@@ -83,16 +83,16 @@ function ChangePinModal({ onClose }: ChangePinModalProps) {
   }, [pin]);
 
   return (
-    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-slate-900/60 backdrop-blur-xl">
+    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-slate-900/40 dark:bg-black/60 backdrop-blur-xl">
       <div className={cn(
-        "relative bg-white/10 backdrop-blur-3xl rounded-[2.5rem] p-10 shadow-[0_30px_60px_rgba(0,0,0,0.4)] border border-white/20 w-full max-w-[380px] flex flex-col items-center transition-all duration-300",
+        "relative bg-white/90 dark:bg-white/[0.03] backdrop-blur-3xl rounded-[2.5rem] p-10 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] dark:shadow-[0_30px_60px_rgba(0,0,0,0.4)] border border-slate-200/60 dark:border-white/10 w-full max-w-[380px] flex flex-col items-center transition-all duration-300",
         error && "animate-shake border-red-500/50",
         success && "border-emerald-500/60"
       )}>
         {/* Close */}
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 p-2.5 bg-white/10 hover:bg-white/20 text-white rounded-full transition-all"
+          className="absolute top-5 right-5 p-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/20 text-slate-700 dark:text-white rounded-full transition-all"
         >
           <X className="w-5 h-5" />
         </button>
@@ -101,7 +101,7 @@ function ChangePinModal({ onClose }: ChangePinModalProps) {
         {step !== 'current' && !success && (
           <button
             onClick={() => { setStep(step === 'confirm' ? 'new' : 'current'); setPin(''); }}
-            className="absolute top-5 left-5 p-2.5 bg-white/10 hover:bg-white/20 text-white rounded-full transition-all"
+            className="absolute top-5 left-5 p-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/20 text-slate-700 dark:text-white rounded-full transition-all"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
@@ -114,7 +114,7 @@ function ChangePinModal({ onClose }: ChangePinModalProps) {
               key={i}
               className={cn(
                 "h-1.5 rounded-full transition-all duration-300",
-                step === s ? "w-6 bg-white" : success ? "w-3 bg-emerald-400" : "w-3 bg-white/30"
+                step === s ? "w-6 bg-slate-800 dark:bg-white" : success ? "w-3 bg-emerald-400" : "w-3 bg-slate-300 dark:bg-white/30"
               )}
             />
           ))}
@@ -123,7 +123,7 @@ function ChangePinModal({ onClose }: ChangePinModalProps) {
         {/* Icon */}
         <div className={cn(
           "w-20 h-20 rounded-full flex items-center justify-center mb-5 shadow-inner transition-all duration-300",
-          success ? "bg-emerald-500 text-white" : "bg-white/10 text-white border border-white/20"
+          success ? "bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400" : "bg-slate-100 dark:bg-white/10 text-slate-800 dark:text-white border border-slate-200 dark:border-white/10"
         )}>
           {success ? (
             <ShieldCheck className="w-10 h-10 animate-in zoom-in duration-300" />
@@ -132,10 +132,10 @@ function ChangePinModal({ onClose }: ChangePinModalProps) {
           )}
         </div>
 
-        <h2 className="text-xl font-bold text-white mb-1.5 text-center">
+        <h2 className="text-xl font-bold text-slate-850 dark:text-white mb-1.5 text-center">
           {success ? "PIN muvaffaqiyatli o'zgartirildi!" : stepLabels[step]}
         </h2>
-        <p className="text-white/55 text-sm mb-9 text-center font-medium max-w-[240px] leading-relaxed">
+        <p className="text-slate-500 dark:text-white/55 text-sm mb-9 text-center font-medium max-w-[240px] leading-relaxed">
           {success ? "Yangi PIN-kodingiz saqlandi" : stepSubtitels[step]}
         </p>
 
@@ -147,12 +147,12 @@ function ChangePinModal({ onClose }: ChangePinModalProps) {
               className={cn(
                 "transition-all duration-300",
                 showPin && pin.length > i
-                  ? "text-white text-2xl font-black -mt-1 leading-none"
+                  ? "text-slate-800 dark:text-white text-2xl font-black -mt-1 leading-none"
                   : pin.length > i
-                    ? (error ? "w-4 h-4 rounded-full bg-red-500 scale-110 shadow-[0_0_15px_rgba(239,68,68,0.5)]"
-                      : success ? "w-4 h-4 rounded-full bg-emerald-400 scale-125 shadow-[0_0_15px_rgba(52,211,153,0.5)]"
-                        : "w-4 h-4 rounded-full bg-white scale-125 shadow-[0_0_15px_rgba(255,255,255,0.5)]")
-                    : "w-4 h-4 rounded-full bg-white/20"
+                    ? (error ? "w-4 h-4 rounded-full bg-red-500 scale-110"
+                      : success ? "w-4 h-4 rounded-full bg-emerald-400 scale-125"
+                        : "w-4 h-4 rounded-full bg-slate-800 dark:bg-white scale-125")
+                    : "w-4 h-4 rounded-full bg-slate-200 dark:bg-white/20"
               )}
             >
               {showPin && pin.length > i ? pin[i] : null}
@@ -161,7 +161,7 @@ function ChangePinModal({ onClose }: ChangePinModalProps) {
           {/* Show/Hide toggle */}
           <button
             onClick={() => setShowPin(v => !v)}
-            className="absolute -right-10 text-white/40 hover:text-white/80 transition-colors"
+            className="absolute -right-10 text-slate-400 dark:text-white/40 hover:text-slate-600 dark:hover:text-white/80 transition-colors"
           >
             {showPin ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
           </button>
@@ -174,7 +174,7 @@ function ChangePinModal({ onClose }: ChangePinModalProps) {
               <button
                 key={num}
                 onClick={() => handleKeyClick(num.toString())}
-                className="h-16 w-16 mx-auto rounded-full bg-white/5 hover:bg-white/20 active:bg-white/30 text-2xl font-medium text-white transition-all duration-100 active:scale-[0.90] active:translate-y-px"
+                className="h-16 w-16 mx-auto rounded-full bg-slate-100 hover:bg-slate-200 active:bg-slate-300 dark:bg-white/5 dark:hover:bg-white/20 dark:active:bg-white/30 text-2xl font-medium text-slate-800 dark:text-white transition-all duration-100 active:scale-[0.90] active:translate-y-px"
               >
                 {num}
               </button>
@@ -182,13 +182,13 @@ function ChangePinModal({ onClose }: ChangePinModalProps) {
             <div className="h-16 w-16 mx-auto" />
             <button
               onClick={() => handleKeyClick('0')}
-              className="h-16 w-16 mx-auto rounded-full bg-white/5 hover:bg-white/20 active:bg-white/30 text-2xl font-medium text-white transition-all duration-100 active:scale-[0.90] active:translate-y-px"
+              className="h-16 w-16 mx-auto rounded-full bg-slate-100 hover:bg-slate-200 active:bg-slate-300 dark:bg-white/5 dark:hover:bg-white/20 dark:active:bg-white/30 text-2xl font-medium text-slate-800 dark:text-white transition-all duration-100 active:scale-[0.90] active:translate-y-px"
             >
               0
             </button>
             <button
               onClick={handleBackspace}
-              className="h-16 w-16 mx-auto rounded-full bg-white/5 hover:bg-white/20 active:bg-white/30 text-white/80 hover:text-white transition-all duration-100 flex items-center justify-center active:scale-[0.90] active:translate-y-px"
+              className="h-16 w-16 mx-auto rounded-full bg-slate-100 hover:bg-slate-200 active:bg-slate-300 dark:bg-white/5 dark:hover:bg-white/20 dark:active:bg-white/30 text-slate-600 hover:text-slate-800 dark:text-white/80 dark:hover:text-white transition-all duration-100 flex items-center justify-center active:scale-[0.90] active:translate-y-px"
             >
               <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z" />
@@ -237,19 +237,19 @@ export default function POSLockScreen({ onUnlock }: POSLockScreenProps) {
 
   return (
     <div className={cn(
-      "fixed inset-0 z-[100] bg-slate-900/40 backdrop-blur-2xl flex flex-col items-center justify-center transition-opacity duration-500",
+      "fixed inset-0 z-[100] bg-slate-100/60 dark:bg-[#0b0f19]/90 backdrop-blur-3xl flex flex-col items-center justify-center transition-opacity duration-500",
       unlocked ? "opacity-0 pointer-events-none" : "opacity-100"
     )}>
       
-      {/* Dynamic Background */}
-      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-slate-900/80 to-slate-800/90 mix-blend-multiply" />
+      {/* Dynamic Background Patterns */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden select-none">
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-slate-200/30 to-slate-100/20 dark:from-slate-950/40 dark:to-[#0b0f19]/80 mix-blend-multiply" />
       </div>
 
       {/* Close button */}
       <button
         onClick={() => window.close()}
-        className="absolute top-8 right-8 p-3 bg-white/10 hover:bg-white/20 text-white rounded-full backdrop-blur-md transition-all hover:scale-110 active:scale-95 z-20"
+        className="absolute top-8 right-8 p-3 bg-white/80 dark:bg-white/10 hover:bg-slate-100 dark:hover:bg-white/20 text-slate-700 dark:text-white border border-slate-200/60 dark:border-transparent rounded-full backdrop-blur-md transition-all hover:scale-110 active:scale-95 z-20 shadow-sm"
         title="Oynani yopish"
       >
         <X className="w-6 h-6" />
@@ -258,21 +258,21 @@ export default function POSLockScreen({ onUnlock }: POSLockScreenProps) {
       {/* Change PIN button */}
       <button
         onClick={() => setIsChangePinOpen(true)}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2 px-5 py-2.5 bg-white/10 hover:bg-white/20 text-white/70 hover:text-white rounded-full backdrop-blur-md transition-all text-sm font-medium z-20"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2 px-5 py-2.5 bg-white/80 dark:bg-white/10 hover:bg-slate-100 dark:hover:bg-white/20 text-slate-600 hover:text-slate-800 dark:text-white/70 dark:hover:text-white border border-slate-200/60 dark:border-transparent rounded-full backdrop-blur-md transition-all text-sm font-medium z-20 shadow-sm"
       >
         <KeyRound className="w-4 h-4" />
         PIN-kodni o'zgartirish
       </button>
 
       <div className={cn(
-        "relative z-10 bg-white/10 backdrop-blur-3xl rounded-[2.5rem] p-10 shadow-[0_30px_60px_rgba(0,0,0,0.4)] border border-white/20 w-full max-w-[380px] flex flex-col items-center transition-all duration-500",
+        "relative z-10 bg-white/90 dark:bg-white/[0.03] backdrop-blur-3xl rounded-[2.5rem] p-10 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] dark:shadow-[0_30px_60px_rgba(0,0,0,0.4)] border border-slate-200/60 dark:border-white/10 w-full max-w-[380px] flex flex-col items-center transition-all duration-500",
         unlocked ? "scale-110 opacity-0 blur-md" : "scale-100",
-        error ? "animate-shake border-red-500/50 shadow-red-500/20" : ""
+        error ? "animate-shake border-red-500/50" : ""
       )}>
         
         <div className={cn(
           "w-20 h-20 rounded-full flex items-center justify-center mb-6 shadow-inner transition-colors duration-300",
-          unlocked ? "bg-emerald-500 text-white" : "bg-white/10 text-white border border-white/20"
+          unlocked ? "bg-emerald-50 dark:bg-emerald-950/50 text-white" : "bg-slate-100 dark:bg-white/10 text-slate-800 dark:text-white border border-slate-200 dark:border-white/10"
         )}>
           {unlocked ? (
             <ShieldCheck className="w-10 h-10 animate-in zoom-in duration-300" />
@@ -281,8 +281,8 @@ export default function POSLockScreen({ onUnlock }: POSLockScreenProps) {
           )}
         </div>
 
-        <h2 className="text-2xl font-bold text-white mb-2 text-center tracking-wide">POS Terminal</h2>
-        <p className="text-white/60 text-sm mb-10 text-center font-medium">Tizimga kirish uchun PIN-kodni kiriting</p>
+        <h2 className="text-2xl font-bold text-slate-850 dark:text-white mb-2 text-center tracking-wide">POS Terminal</h2>
+        <p className="text-slate-500 dark:text-white/60 text-sm mb-10 text-center font-medium">Tizimga kirish uchun PIN-kodni kiriting</p>
 
         {/* PIN Indicators */}
         <div className="flex gap-5 mb-10">
@@ -292,8 +292,8 @@ export default function POSLockScreen({ onUnlock }: POSLockScreenProps) {
               className={cn(
                 "w-4 h-4 rounded-full transition-all duration-300",
                 pin.length > i
-                  ? (error ? "bg-red-500 scale-110 shadow-[0_0_15px_rgba(239,68,68,0.5)]" : "bg-white scale-125 shadow-[0_0_15px_rgba(255,255,255,0.5)]")
-                  : "bg-white/20"
+                  ? (error ? "bg-red-500 scale-110" : "bg-slate-800 dark:bg-white scale-125")
+                  : "bg-slate-200 dark:bg-white/20"
               )}
             />
           ))}
@@ -305,7 +305,7 @@ export default function POSLockScreen({ onUnlock }: POSLockScreenProps) {
             <button
               key={num}
               onClick={() => handleKeyClick(num.toString())}
-              className="h-16 w-16 mx-auto rounded-full bg-white/5 hover:bg-white/20 active:bg-white/30 text-2xl font-medium text-white transition-all duration-100 active:scale-[0.90] active:translate-y-px"
+              className="h-16 w-16 mx-auto rounded-full bg-slate-100 hover:bg-slate-200 active:bg-slate-300 dark:bg-white/5 dark:hover:bg-white/20 dark:active:bg-white/30 text-2xl font-medium text-slate-800 dark:text-white transition-all duration-100 active:scale-[0.90] active:translate-y-px"
             >
               {num}
             </button>
@@ -313,13 +313,13 @@ export default function POSLockScreen({ onUnlock }: POSLockScreenProps) {
           <div className="h-16 w-16 mx-auto"></div>
           <button
             onClick={() => handleKeyClick('0')}
-            className="h-16 w-16 mx-auto rounded-full bg-white/5 hover:bg-white/20 active:bg-white/30 text-2xl font-medium text-white transition-all duration-100 active:scale-[0.90] active:translate-y-px"
+            className="h-16 w-16 mx-auto rounded-full bg-slate-100 hover:bg-slate-200 active:bg-slate-300 dark:bg-white/5 dark:hover:bg-white/20 dark:active:bg-white/30 text-2xl font-medium text-slate-800 dark:text-white transition-all duration-100 active:scale-[0.90] active:translate-y-px"
           >
             0
           </button>
           <button
             onClick={handleBackspace}
-            className="h-16 w-16 mx-auto rounded-full bg-white/5 hover:bg-white/20 active:bg-white/30 text-white/80 hover:text-white transition-all duration-100 flex items-center justify-center active:scale-[0.90] active:translate-y-px"
+            className="h-16 w-16 mx-auto rounded-full bg-slate-100 hover:bg-slate-200 active:bg-slate-300 dark:bg-white/5 dark:hover:bg-white/20 dark:active:bg-white/30 text-slate-600 hover:text-slate-850 dark:text-white/80 dark:hover:text-white transition-all duration-100 flex items-center justify-center active:scale-[0.90] active:translate-y-px"
           >
             <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z" />

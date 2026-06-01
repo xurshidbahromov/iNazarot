@@ -29,15 +29,15 @@ export function Modal({ isOpen, onClose, title, children, className }: ModalProp
       
       {/* Modal content */}
       <div 
-        className={cn("relative z-50 w-full max-w-lg rounded-3xl bg-white/80 backdrop-blur-2xl p-6 shadow-2xl transition-all",
+        className={cn("relative z-50 w-full max-w-lg rounded-3xl bg-white/80 dark:bg-white/[0.04] backdrop-blur-2xl p-6 shadow-2xl transition-all",
           className
         )}
       >
         <div className="flex items-center justify-between mb-5">
-          <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{title}</h3>
           <button
             onClick={onClose}
-            className="rounded-full p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
+            className="rounded-full p-1 text-slate-400 dark:text-slate-500 hover:bg-slate-100 dark:bg-white/[0.06] hover:text-slate-600 dark:text-slate-400 transition-colors"
           >
             <X className="h-5 w-5" />
           </button>

@@ -25,13 +25,14 @@ const mockScheduled: ScheduledItem[] = [
 ];
 
 const typeConfig: Record<string, { label: string; color: string; bg: string; border: string}> = {
-  kirim: { label:'Kirim', color:'text-emerald-700', bg:'bg-emerald-50', border:'border-emerald-200'},
-  chiqim: { label:'Chiqim', color:'text-red-700', bg:'bg-red-50', border:'border-red-200'},"ko'chirish": { label:"Ko'chirish", color:'text-blue-700', bg:'bg-blue-50', border:'border-blue-200'},};
+  kirim: { label:'Kirim', color:'text-emerald-700', bg:'bg-emerald-50 dark:bg-emerald-950/50', border:'border-emerald-200'},
+  chiqim: { label:'Chiqim', color:'text-red-700', bg:'bg-red-50 dark:bg-red-950/50', border:'border-red-200'},"ko'chirish": { label:"Ko'chirish", color:'text-blue-700', bg:'bg-blue-50 dark:bg-blue-950/50', border:'border-blue-200'},};
 
 const statusConfig: Record<string, { label: string; color: string; bg: string; border: string; dot: string}> = {
-  active: { label:'Faol', color:'text-emerald-700', bg:'bg-emerald-50', border:'border-emerald-200', dot:'bg-emerald-500'},
-  paused: { label:"To'xtatilgan", color:'text-amber-700', bg:'bg-amber-50', border:'border-amber-200', dot:'bg-amber-500'},
-  completed: { label:'Tugallangan', color:'text-slate-600', bg:'bg-slate-50', border:'border-slate-200', dot:'bg-slate-400'},};
+  active: { label: 'Faol', color: 'text-emerald-700 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-950/30', border: 'border-emerald-200/60 dark:border-emerald-900/30', dot: 'bg-emerald-500' },
+  paused: { label: "To'xtatilgan", color: 'text-amber-700 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-950/30', border: 'border-amber-200/60 dark:border-amber-900/30', dot: 'bg-amber-500' },
+  completed: { label: 'Tugallangan', color: 'text-slate-600 dark:text-slate-400', bg: 'bg-slate-50 dark:bg-white/5', border: 'border-slate-200/60 dark:border-white/5', dot: 'bg-slate-400' },
+};
 
 const freqConfig: Record<string, { label: string; Icon: React.ElementType}> = {'bir marta': { label:'Bir marta', Icon: Hash},
   haftalik: { label:'Haftalik', Icon: RefreshCw},
@@ -76,15 +77,15 @@ export default function WarehouseScheduled() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
-              <Calendar className="w-5 h-5 text-emerald-600" strokeWidth={1.8} />
+          <h3 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 flex items-center justify-center flex-shrink-0">
+              <Calendar className="w-5 h-5 text-[#20c997]" strokeWidth={1.8} />
             </div>
             Rejalashtirilgan operatsiyalar
           </h3>
-          <p className="text-sm text-slate-500 mt-1">Muntazam va bir martalik ombor operatsiyalarini boshqaring</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Muntazam va bir martalik ombor operatsiyalarini boshqaring</p>
         </div>
-        <button className="group flex items-center gap-2 px-4 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-semibold hover:bg-emerald-700 transition-all shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-emerald-200 hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.06)]">
+        <button className="group flex items-center gap-2 px-4 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-semibold hover:bg-emerald-700 transition-all shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.4)] hover:shadow-emerald-200 hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.06)]">
           <Plus className="w-4 h-4 transition-transform group-hover:rotate-90 duration-300" strokeWidth={1.6} />
           Yangi rejalashtirish
         </button>
@@ -92,16 +93,16 @@ export default function WarehouseScheduled() {
 
       {/* Upcoming Alert */}
       {upcomingToday.length > 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-[20px] p-4 flex items-start gap-3">
-          <div className="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
-            <Bell className="w-5 h-5 text-amber-600" strokeWidth={1.6} />
+        <div className="bg-amber-50/50 dark:bg-amber-950/10 border border-amber-200/60 dark:border-amber-900/30 rounded-[20px] p-4 flex items-start gap-3">
+          <div className="w-9 h-9 rounded-xl bg-amber-100 dark:bg-amber-900/20 flex items-center justify-center flex-shrink-0">
+            <Bell className="w-5 h-5 text-amber-600 dark:text-amber-400" strokeWidth={1.6} />
           </div>
           <div>
-            <p className="font-semibold text-amber-800 text-sm">Yaqin 3 kunda {upcomingToday.length} ta operatsiya rejalashtirilgan</p>
+            <p className="font-bold text-amber-800 dark:text-amber-400 text-sm">Yaqin 3 kunda {upcomingToday.length} ta operatsiya rejalashtirilgan</p>
             <div className="flex flex-wrap gap-2 mt-2">
               {upcomingToday.map(item => (
-                <span key={item.id} className="text-xs bg-amber-100 border border-amber-200 text-amber-700 px-2.5 py-1 rounded-lg font-medium">
-                  {item.title} — {getDaysUntil(item.nextDate) === 0 ?'Bugun' :`${getDaysUntil(item.nextDate)} kun`}
+                <span key={item.id} className="text-[12px] bg-amber-100/65 dark:bg-amber-900/20 border border-amber-200/50 dark:border-amber-800/30 text-amber-700 dark:text-amber-300 px-2.5 py-1 rounded-lg font-semibold">
+                  {item.title} — {getDaysUntil(item.nextDate) === 0 ? 'Bugun' : `${getDaysUntil(item.nextDate)} kun`}
                 </span>
               ))}
             </div>
@@ -109,16 +110,24 @@ export default function WarehouseScheduled() {
         </div>
       )}
 
-      {/* Stats */}
-      <div className="grid grid-cols-3 gap-4">
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
-          { label:'Faol rejalar', value: counts.active, color:'text-emerald-600', bg:'bg-emerald-50', border:'border-emerald-200'},
-          { label:"To'xtatilgan", value: counts.paused, color:'text-amber-600', bg:'bg-amber-50', border:'border-amber-200'},
-          { label:'Tugallangan', value: counts.completed, color:'text-slate-600', bg:'bg-slate-50', border:'border-slate-200'},
-        ].map(stat => (
-          <div key={stat.label} className={cn('rounded-[20px] border p-4 text-center', stat.bg, stat.border)}>
-            <p className={cn('text-3xl font-bold', stat.color)}>{stat.value}</p>
-            <p className="text-sm text-slate-600 mt-1">{stat.label}</p>
+          { label: 'Faol rejalar', value: counts.active.toString(), icon: Play, color: 'text-emerald-500 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-950/30' },
+          { label: "To'xtatilgan", value: counts.paused.toString(), icon: Pause, color: 'text-amber-500 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-950/30' },
+          { label: 'Tugallangan', value: counts.completed.toString(), icon: CheckCircle, color: 'text-slate-500 dark:text-slate-400', bg: 'bg-slate-50 dark:bg-white/5' },
+        ].map((stat, idx) => (
+          <div 
+            key={idx} 
+            className="group bg-white/80 dark:bg-white/[0.04] backdrop-blur-sm p-5 rounded-[20px] border border-slate-200/60 dark:border-white/5 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.4)] hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.06)] transition-all duration-300"
+          >
+            <div className={`w-10 h-10 flex items-center justify-center ${stat.bg} rounded-xl transition-all duration-300 group-hover:scale-105`}>
+              <stat.icon className={`h-5 w-5 ${stat.color}`} strokeWidth={1.6} />
+            </div>
+            <div className="mt-4">
+              <h4 className="text-xl font-bold text-slate-900 dark:text-slate-100 truncate">{stat.value}</h4>
+              <p className="mt-0.5 text-[13px] font-medium text-slate-500 dark:text-slate-400">{stat.label}</p>
+            </div>
           </div>
         ))}
       </div>
@@ -126,23 +135,25 @@ export default function WarehouseScheduled() {
       {/* Filters */}
       <div className="flex gap-3 flex-wrap">
         {[
-          { key:'all', label:'Barchasi', count: counts.all},
-          { key:'active', label:'Faol', count: counts.active},
-          { key:'paused', label:"To'xtatilgan", count: counts.paused},
-          { key:'completed', label:'Tugallangan', count: counts.completed},
+          { key: 'all', label: 'Barchasi', count: counts.all },
+          { key: 'active', label: 'Faol', count: counts.active },
+          { key: 'paused', label: "To'xtatilgan", count: counts.paused },
+          { key: 'completed', label: 'Tugallangan', count: counts.completed },
         ].map(tab => (
           <button
             key={tab.key}
             onClick={() => setFilterStatus(tab.key)}
-            className={cn('flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all border',
+            className={cn('flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all border border-transparent',
               filterStatus === tab.key
-                ?'bg-white border-slate-300 text-slate-900 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]'
-                :'bg-transparent border-transparent text-slate-500 hover:text-slate-700'
+                ? 'bg-slate-200 text-slate-800 dark:bg-white/15 dark:text-white shadow-sm'
+                : 'bg-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
             )}
           >
             {tab.label}
             <span className={cn('text-xs px-1.5 py-0.5 rounded-md font-bold',
-              filterStatus === tab.key ?'bg-emerald-100 text-emerald-700' :'bg-slate-100 text-slate-500'
+              filterStatus === tab.key 
+                ? 'bg-slate-300 text-slate-900 dark:bg-white/20 dark:text-white' 
+                : 'bg-slate-100 dark:bg-white/[0.06] text-slate-500 dark:text-slate-400'
             )}>
               {tab.count}
             </span>
@@ -151,13 +162,15 @@ export default function WarehouseScheduled() {
 
         {/* Search */}
         <div className="relative flex-1 min-w-48">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" strokeWidth={1.6} />
+          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 z-10">
+            <Search className="h-4 w-4 text-slate-400 dark:text-slate-500" strokeWidth={1.6} />
+          </div>
           <input
             type="text"
             placeholder="Qidirish..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-white/80 backdrop-blur-md border-2 border-[#f1f2f4] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-300 transition-all placeholder:text-slate-400"
+            className="w-full pl-10 pr-4 py-2 bg-white dark:bg-white/[0.08] border border-slate-200 dark:border-transparent rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500 text-slate-900 dark:text-slate-100 h-10 shadow-sm"
           />
         </div>
       </div>
@@ -174,8 +187,8 @@ export default function WarehouseScheduled() {
           return (
             <div
               key={item.id}
-              className={cn('group bg-white border rounded-[20px] p-5 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.06)] hover:border-slate-200 transition-all duration-200',
-                isUrgent ?'border-amber-300 hover:border-amber-400' :'border-slate-200'
+              className={cn('group bg-white/80 dark:bg-white/[0.04] border rounded-[20px] p-5 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.4)] hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.06)] transition-all duration-200',
+                isUrgent ? 'border-amber-300/80 dark:border-amber-500/30' : 'border-slate-200/60 dark:border-white/5'
               )}
             >
               <div className="flex items-start justify-between gap-4">
@@ -188,7 +201,7 @@ export default function WarehouseScheduled() {
                       <span className={cn('w-1.5 h-1.5 rounded-full', status.dot)} />
                       {status.label}
                     </span>
-                    <span className="text-xs text-slate-500 flex items-center gap-1.5 bg-slate-50 border-2 border-[#f1f2f4] px-2.5 py-1 rounded-lg">
+                    <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5 bg-slate-50 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 px-2.5 py-1 rounded-lg">
                       <freq.Icon className="w-3 h-3" strokeWidth={1.6} />
                       {freq.label}
                     </span>
@@ -200,34 +213,34 @@ export default function WarehouseScheduled() {
                     )}
                   </div>
 
-                  <h4 className="font-semibold text-slate-900 text-[15px]">{item.title}</h4>
+                  <h4 className="font-semibold text-slate-900 dark:text-slate-100 text-[15px]">{item.title}</h4>
 
                   <div className="flex flex-wrap gap-3 mt-3">
-                    <span className="flex items-center gap-1.5 text-xs text-slate-500 bg-slate-50 border-2 border-[#f1f2f4] rounded-lg px-2.5 py-1">
-                      <Clock className="w-3.5 h-3.5 text-slate-400" strokeWidth={1.6} />
-                      Keyingi: <strong className="text-slate-700 ml-0.5">{item.nextDate}</strong>
+                    <span className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 rounded-lg px-2.5 py-1">
+                      <Clock className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" strokeWidth={1.6} />
+                      Keyingi: <strong className="text-slate-700 dark:text-slate-300 ml-0.5">{item.nextDate}</strong>
                     </span>
                     {item.lastRun && (
-                      <span className="flex items-center gap-1.5 text-xs text-slate-500 bg-emerald-50 border border-emerald-200 rounded-lg px-2.5 py-1">
-                        <CheckCircle className="w-3.5 h-3.5 text-emerald-500" strokeWidth={1.6} />
+                      <span className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 rounded-lg px-2.5 py-1">
+                        <CheckCircle className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" strokeWidth={1.6} />
                         Oxirgi: {item.lastRun}
                       </span>
                     )}
-                    <span className="flex items-center gap-1.5 text-xs text-slate-500 bg-slate-50 border-2 border-[#f1f2f4] rounded-lg px-2.5 py-1">
-                      <Package className="w-3.5 h-3.5 text-slate-400" strokeWidth={1.6} />
+                    <span className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 rounded-lg px-2.5 py-1">
+                      <Package className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" strokeWidth={1.6} />
                       {item.products} mahsulot
                     </span>
                     {item.totalValue > 0 && (
-                      <span className="flex items-center gap-1.5 text-xs text-slate-500 bg-slate-50 border-2 border-[#f1f2f4] rounded-lg px-2.5 py-1">
-                        <DollarSign className="w-3.5 h-3.5 text-slate-400" strokeWidth={1.6} />
+                      <span className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 rounded-lg px-2.5 py-1">
+                        <DollarSign className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" strokeWidth={1.6} />
                         {item.totalValue.toLocaleString()} UZS
                       </span>
                     )}
-                    <span className="flex items-center gap-1.5 text-xs text-slate-500 bg-slate-50 border-2 border-[#f1f2f4] rounded-lg px-2.5 py-1">
-                      <User className="w-3.5 h-3.5 text-slate-400" strokeWidth={1.6} />
+                    <span className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 rounded-lg px-2.5 py-1">
+                      <User className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" strokeWidth={1.6} />
                       {item.assignedTo}
                     </span>
-                    <span className="flex items-center gap-1.5 text-xs text-slate-500 bg-blue-50 border border-blue-200 rounded-lg px-2.5 py-1">
+                    <span className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 bg-blue-50 dark:bg-blue-950/50 border border-blue-200 rounded-lg px-2.5 py-1">
                       <CheckCircle className="w-3.5 h-3.5 text-blue-400" strokeWidth={1.6} />
                       {item.completedCount} marta bajarilgan
                     </span>
@@ -240,8 +253,8 @@ export default function WarehouseScheduled() {
                       onClick={() => toggleStatus(item.id)}
                       className={cn('p-2 rounded-xl transition-all hover:scale-110 duration-200',
                         item.status ==='active'
-                          ?'hover:bg-amber-50 text-amber-500'
-                          :'hover:bg-emerald-50 text-emerald-500'
+                          ?'hover:bg-amber-50 dark:bg-amber-950/50 text-amber-500 dark:text-amber-400'
+                          :'hover:bg-emerald-50 dark:bg-emerald-950/50 text-emerald-500 dark:text-emerald-400'
                       )}
                       title={item.status ==='active' ?"To'xtatish" :'Davom ettirish'}
                     >
@@ -250,7 +263,7 @@ export default function WarehouseScheduled() {
                         : <Play className="w-4 h-4" strokeWidth={1.6} />}
                     </button>
                   )}
-                  <button className="p-2 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition-all hover:scale-110 duration-200">
+                  <button className="p-2 rounded-xl hover:bg-slate-100 dark:bg-white/[0.06] text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:text-slate-300 transition-all hover:scale-110 duration-200">
                     <ChevronRight className="w-4 h-4" strokeWidth={1.6} />
                   </button>
                 </div>
@@ -259,12 +272,12 @@ export default function WarehouseScheduled() {
           );})}
 
         {filtered.length === 0 && (
-          <div className="text-center py-16 bg-white/80 backdrop-blur-sm rounded-[20px] border-2 border-[#f1f2f4] border-dashed">
-            <div className="w-16 h-16 bg-slate-100 rounded-[20px] flex items-center justify-center mx-auto mb-4">
+          <div className="text-center py-16 bg-white/80 dark:bg-white/[0.04] backdrop-blur-sm rounded-[20px] border border-slate-200/60 dark:border-white/5 border-dashed">
+            <div className="w-16 h-16 bg-slate-100 dark:bg-white/[0.06] rounded-[20px] flex items-center justify-center mx-auto mb-4">
               <Calendar className="w-8 h-8 text-slate-300" strokeWidth={1.6} />
             </div>
-            <p className="font-semibold text-slate-500">Rejalashtirilgan operatsiyalar topilmadi</p>
-            <p className="text-sm text-slate-400 mt-1">Qidiruv yoki filtrni o'zgartiring</p>
+            <p className="font-semibold text-slate-500 dark:text-slate-400">Rejalashtirilgan operatsiyalar topilmadi</p>
+            <p className="text-sm text-slate-400 dark:text-slate-500 mt-1">Qidiruv yoki filtrni o'zgartiring</p>
           </div>
         )}
       </div>

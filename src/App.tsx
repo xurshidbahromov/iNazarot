@@ -46,11 +46,17 @@ import POSLauncher from './pages/pos/POSLauncher';
 import POS from './pages/pos/POS';
 const queryClient = new QueryClient();
 
-
-
 import { Toaster } from 'sonner';
+import { useThemeStore } from './store/useThemeStore';
+
+import { useEffect } from 'react';
 
 function App() {
+  const { theme, initTheme } = useThemeStore();
+
+  useEffect(() => {
+    initTheme();
+  }, [initTheme]);
 
   return (
     <>
@@ -117,17 +123,26 @@ function App() {
 
     </QueryClientProvider>
     <Toaster 
-      position="top-right" 
+      position="top-right"
+      theme={theme}
       toastOptions={{
         style: {
           borderRadius: '16px',
         },
         classNames: {
           toast: '!backdrop-blur-2xl !shadow-[0_8px_30px_rgba(0,0,0,0.05)] !rounded-[20px]',
-          success: '!bg-emerald-50/90 !border !border-emerald-200/80 !text-emerald-900',
-          error: '!bg-red-50/90 !border !border-red-200/80 !text-red-900',
-          warning: '!bg-amber-50/90 !border !border-amber-200/80 !text-amber-900',
-          info: '!bg-blue-50/90 !border !border-blue-200/80 !text-blue-900',
+          success: theme === 'dark' 
+            ? '!bg-emerald-950/90 !border !border-emerald-800/60 !text-emerald-100'
+            : '!bg-emerald-50/90 !border !border-emerald-200/80 !text-emerald-900',
+          error: theme === 'dark'
+            ? '!bg-red-950/90 !border !border-red-800/60 !text-red-100'
+            : '!bg-red-50/90 !border !border-red-200/80 !text-red-900',
+          warning: theme === 'dark'
+            ? '!bg-amber-950/90 !border !border-amber-800/60 !text-amber-100'
+            : '!bg-amber-50/90 !border !border-amber-200/80 !text-amber-900',
+          info: theme === 'dark'
+            ? '!bg-blue-950/90 !border !border-blue-800/60 !text-blue-100'
+            : '!bg-blue-50/90 !border !border-blue-200/80 !text-blue-900',
           title: '!font-semibold !text-[14px] !text-inherit',
           description: '!text-[13px] opacity-80',
         }
@@ -138,3 +153,4 @@ function App() {
 }
 
 export default App;
+

@@ -21,11 +21,12 @@ const mockRequests: Request[] = [
   { id: 3, date:'2026-05-25', product:'Gipskarton', quantity: 30, unit:'dona', reason:'Devor qoplash', status:'yangi'},
 ];
 
-const statusMap: Record<string, { label: string; cls: string}> = {
-  yangi: { label:'Yangi', cls:'bg-blue-50 text-blue-700 border-blue-200'},
-  korib_chiqilmoqda: { label:"Ko'rib chiqilmoqda", cls:'bg-amber-50 text-amber-700 border-amber-200'},
-  tasdiqlangan: { label:'Tasdiqlangan', cls:'bg-emerald-50 text-emerald-700 border-emerald-200'},
-  bekor_qilingan: { label:'Bekor qilingan', cls:'bg-red-50 text-red-700 border-red-200'},};
+const statusMap: Record<string, { label: string; cls: string }> = {
+  yangi: { label: 'Yangi', cls: 'bg-blue-50 dark:bg-blue-950/20 text-blue-700 dark:text-blue-400 border-blue-200/60 dark:border-blue-900/30' },
+  korib_chiqilmoqda: { label: "Ko'rib chiqilmoqda", cls: 'bg-amber-50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 border-amber-200/60 dark:border-amber-900/30' },
+  tasdiqlangan: { label: 'Tasdiqlangan', cls: 'bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 border-emerald-200/60 dark:border-emerald-900/30' },
+  bekor_qilingan: { label: 'Bekor qilingan', cls: 'bg-red-50 dark:bg-red-950/20 text-red-700 dark:text-red-400 border-red-200/60 dark:border-red-900/30' },
+};
 
 export default function Requests() {
   const { products} = useWarehouseStore();
@@ -53,25 +54,29 @@ export default function Requests() {
     <div className="space-y-6 pb-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h3 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
-            <FileText className="w-6 h-6 text-primary-600" />
+          <h3 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 flex items-center gap-2">
+            <FileText className="w-6 h-6 text-[#20c997]" />
             Sotib olish so'rovlari
           </h3>
-          <p className="mt-1.5 text-sm text-slate-500">Xodimlardan kelgan xarid so'rovnomalarini boshqarish.</p>
+          <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">Xodimlardan kelgan xarid so'rovnomalarini boshqarish.</p>
         </div>
-        <Button className="rounded-xl h-10 px-4 bg-primary-600 hover:bg-primary-700 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]" onClick={() => setIsModalOpen(true)}>
+        <Button className="rounded-xl h-10 px-4 bg-primary-600 hover:bg-primary-700 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.4)]" onClick={() => setIsModalOpen(true)}>
           <Plus className="w-4 h-4 mr-2" strokeWidth={2} /> So'rov yaratish
         </Button>
       </div>
 
-      <div className="bg-white/80 backdrop-blur-sm rounded-[20px] border-2 border-[#f1f2f4] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
-        <div className="p-5 border-b border-slate-200 bg-slate-50/50">
+      <div className="bg-white/80 dark:bg-white/[0.04] backdrop-blur-sm rounded-[20px] border border-slate-200/60 dark:border-white/5 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.4)] overflow-hidden">
+        <div className="p-5 border-b border-slate-200 dark:border-transparent bg-slate-50/50 dark:bg-white/5">
           <div className="max-w-md relative">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-              <Search className="h-4 w-4 text-slate-400" strokeWidth={1.6} />
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 z-10">
+              <Search className="h-4 w-4 text-slate-400 dark:text-slate-500" strokeWidth={1.6} />
             </div>
-            <Input className="pl-10 rounded-xl bg-white h-10" placeholder="Mahsulot nomi yoki sabab..."
-              value={search} onChange={(e) => setSearch(e.target.value)} />
+            <Input 
+              className="pl-10 pr-4 py-2 bg-white dark:bg-white/[0.08] border border-slate-200 dark:border-transparent rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 w-full transition-all h-10 shadow-sm" 
+              placeholder="Mahsulot nomi yoki sabab..."
+              value={search} 
+              onChange={(e) => setSearch(e.target.value)} 
+            />
           </div>
         </div>
 
@@ -87,19 +92,19 @@ export default function Requests() {
           data={filtered}
           renderRow={(req) => (
             <>
-              <td className="whitespace-nowrap py-4 pl-4 pr-3 text-[14px] text-slate-500 sm:pl-6">{req.date}</td>
-              <td className="whitespace-nowrap px-3 py-4 text-[14px] font-semibold text-slate-900">
+              <td className="whitespace-nowrap py-4 pl-4 pr-3 text-[14px] text-slate-500 dark:text-slate-400 sm:pl-6">{req.date}</td>
+              <td className="whitespace-nowrap px-3 py-4 text-[14px] font-semibold text-slate-900 dark:text-slate-100">
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-indigo-50 flex items-center justify-center">
+                  <div className="w-7 h-7 rounded-lg bg-indigo-50 dark:bg-indigo-950/30 flex items-center justify-center">
                     <FileText className="w-3.5 h-3.5 text-indigo-500" />
                   </div>
                   {req.product}
                 </div>
               </td>
-              <td className="whitespace-nowrap px-3 py-4 text-[14px] font-bold text-slate-800">
-                {req.quantity} <span className="text-[12px] text-slate-400 font-normal">{req.unit}</span>
+              <td className="whitespace-nowrap px-3 py-4 text-[14px] font-bold text-slate-800 dark:text-slate-200">
+                {req.quantity} <span className="text-[12px] text-slate-400 dark:text-slate-500 font-normal">{req.unit}</span>
               </td>
-              <td className="px-3 py-4 text-[14px] text-slate-500 max-w-[200px] truncate">{req.reason}</td>
+              <td className="px-3 py-4 text-[14px] text-slate-500 dark:text-slate-400 max-w-[200px] truncate">{req.reason}</td>
               <td className="whitespace-nowrap px-3 py-4">
                 <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[12px] font-semibold border ${statusMap[req.status].cls}`}>
                   <span className="w-1.5 h-1.5 rounded-full bg-current" />
@@ -114,9 +119,9 @@ export default function Requests() {
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Yangi so'rovnoma yaratish">
         <form onSubmit={handleSubmit} className="space-y-4 p-1">
           <div>
-            <label className="block text-[13px] font-medium text-slate-700 mb-1.5">Mahsulot nomi *</label>
+            <label className="block text-[13px] font-medium text-slate-700 dark:text-slate-300 mb-1.5">Mahsulot nomi *</label>
             <select value={form.product} onChange={(e) => setForm({ ...form, product: e.target.value})}
-              className="w-full h-10 px-3 bg-white/80 backdrop-blur-md border border-slate-300 rounded-xl text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-colors" required>
+              className="w-full h-10 px-3 py-2 bg-white dark:bg-[#0b0f19] border border-slate-200 dark:border-white/10 rounded-xl text-[14px] text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-colors" required>
               <option value="">Tanlang yoki qidiring...</option>
               {products.map(p => <option key={p.id} value={p.name}>{p.name}</option>)}
             </select>
@@ -128,13 +133,13 @@ export default function Requests() {
               onChange={(e) => setForm({ ...form, unit: e.target.value})} className="rounded-xl" required />
           </div>
           <div>
-            <label className="block text-[13px] font-medium text-slate-700 mb-1.5">Sabab / Izoh</label>
+            <label className="block text-[13px] font-medium text-slate-700 dark:text-slate-300 mb-1.5">Sabab / Izoh</label>
             <textarea value={form.reason} onChange={(e) => setForm({ ...form, reason: e.target.value})}
               placeholder="Nima uchun kerak ekanligi haqida qisqacha yozing..."
-              className="w-full px-3 py-2 bg-white/80 backdrop-blur-md border border-slate-300 rounded-xl text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-colors resize-none"
+              className="w-full px-3 py-2 bg-white dark:bg-[#0b0f19] border border-slate-200 dark:border-white/10 rounded-xl text-[14px] text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-colors resize-none"
               rows={3} />
           </div>
-          <div className="flex gap-3 justify-end pt-4 mt-2 border-t border-slate-100">
+          <div className="flex gap-3 justify-end pt-4 mt-2 border-t border-slate-100 dark:border-transparent">
             <Button type="button" variant="outline" className="rounded-xl px-5" onClick={() => setIsModalOpen(false)}>Bekor qilish</Button>
             <Button type="submit" className="rounded-xl px-6">Yuborish</Button>
           </div>

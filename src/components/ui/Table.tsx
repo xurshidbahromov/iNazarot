@@ -64,18 +64,18 @@ export function Table<T extends Record<string, unknown> | { id?: string | number
   return (
     <div className={cn(
       variant ==='standalone'
-        ?"overflow-hidden border-2 border-[#f1f2f4] bg-white/80 backdrop-blur-sm rounded-[20px] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]"
-        :"overflow-hidden bg-white/70",
+        ?"overflow-hidden border border-slate-200/60 dark:border-white/5 bg-white/80 dark:bg-white/[0.04] backdrop-blur-sm rounded-[20px] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.4)]"
+        :"overflow-hidden bg-white/70 dark:bg-white/[0.03]",
       className
     )}>
-      <table className="min-w-full divide-y divide-slate-200">
-        <thead className="bg-slate-50/80">
+      <table className="min-w-full divide-y divide-slate-200 dark:divide-transparent">
+        <thead className="bg-slate-50/80 dark:bg-white/[0.02] border-b border-slate-200/80 dark:border-white/10">
           <tr>
             {selectable && (
               <th scope="col" className="w-12 px-4 py-3.5 text-center">
                 <input
                   type="checkbox"
-                  className="rounded border-slate-300 text-primary-600 focus:ring-primary-600 transition-colors cursor-pointer w-4 h-4"
+                  className="rounded border-slate-300 dark:border-transparent text-primary-600 focus:ring-primary-600 transition-colors cursor-pointer w-4 h-4"
                   checked={data.length > 0 && selectedIds.size === data.length}
                   onChange={toggleAll}
                 />
@@ -86,8 +86,8 @@ export function Table<T extends Record<string, unknown> | { id?: string | number
                 key={col.key}
                 scope="col"
                 onClick={() => col.sortable && handleSort(col.key)}
-                className={cn("py-3.5 px-4 text-left text-[13px] font-semibold text-slate-600 uppercase tracking-wider select-none",
-                  col.sortable &&"cursor-pointer hover:bg-slate-100  :bg-slate-800 transition-colors",
+                className={cn("py-3.5 px-4 text-left text-[13px] font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider select-none",
+                  col.sortable &&"cursor-pointer hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-colors",
                   col.className,
                   !selectable && col === columns[0] &&"pl-6"
                 )}
@@ -105,7 +105,7 @@ export function Table<T extends Record<string, unknown> | { id?: string | number
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-100 bg-white/40">
+        <tbody className="divide-y divide-slate-100 dark:divide-transparent bg-white/40 dark:bg-transparent">
           {sortedData.map((item, index) => {
             const id = (item as any).id ?? index;
             const isSelected = selectedIds.has(id);
@@ -113,14 +113,14 @@ export function Table<T extends Record<string, unknown> | { id?: string | number
               <tr 
                 key={id} 
                 className={cn("transition-colors group",
-                  isSelected ?"bg-primary-50/50" :"hover:bg-slate-50/70 :bg-slate-800/50"
+                  isSelected ?"bg-primary-50/50" :"hover:bg-slate-50/70 dark:hover:bg-white/[0.02]"
                 )}
               >
                 {selectable && (
                   <td className="w-12 px-4 py-3 text-center align-middle whitespace-nowrap">
                     <input
                       type="checkbox"
-                      className="rounded border-slate-300 text-primary-600 focus:ring-primary-600 transition-colors cursor-pointer w-4 h-4"
+                      className="rounded border-slate-300 dark:border-transparent text-primary-600 focus:ring-primary-600 transition-colors cursor-pointer w-4 h-4"
                       checked={isSelected}
                       onChange={() => toggleSelection(id)}
                     />
@@ -131,13 +131,13 @@ export function Table<T extends Record<string, unknown> | { id?: string | number
             );})}
           {sortedData.length === 0 && (
             <tr>
-              <td colSpan={columns.length + (selectable ? 1 : 0)} className="py-12 text-center text-sm text-slate-500">
+              <td colSpan={columns.length + (selectable ? 1 : 0)} className="py-12 text-center text-sm text-slate-500 dark:text-slate-400">
                 <div className="flex flex-col items-center justify-center">
-                  <div className="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center mb-3 border border-slate-100">
-                    <div className="w-5 h-5 border-2 border-slate-300 rounded" />
+                  <div className="w-12 h-12 rounded-full bg-slate-50 dark:bg-white/5 flex items-center justify-center mb-3 border border-slate-100 dark:border-transparent">
+                    <div className="w-5 h-5 border-2 border-slate-300 dark:border-transparent rounded" />
                   </div>
-                  <p className="font-medium text-slate-600">Ma'lumot topilmadi</p>
-                  <p className="text-xs text-slate-400  mt-0.5">Jadval hozircha bo'sh</p>
+                  <p className="font-medium text-slate-600 dark:text-slate-400">Ma'lumot topilmadi</p>
+                  <p className="text-xs text-slate-400 dark:text-slate-500  mt-0.5">Jadval hozircha bo'sh</p>
                 </div>
               </td>
             </tr>

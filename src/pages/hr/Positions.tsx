@@ -15,16 +15,18 @@ export default function Positions() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
-            <Award className="w-6 h-6 text-primary-600" />
+          <h3 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 flex items-center gap-2">
+            <Award className="w-6 h-6 text-[#20c997]" />
             Lavozimlar
           </h3>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
             Kompaniyadagi mavjud lavozimlar va ularning oylik stavkalari.
           </p>
         </div>
-        <Button size="sm">
-          <Plus className="w-4 h-4 mr-2" /> Lavozim qo'shish
+        <Button 
+          className="rounded-xl h-10 px-4 bg-primary-600 hover:bg-primary-700 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.4)] transition-all text-white text-sm font-semibold flex items-center gap-2"
+        >
+          <Plus className="w-4 h-4" strokeWidth={2} /> Lavozim qo'shish
         </Button>
       </div>
 
@@ -37,11 +39,11 @@ export default function Positions() {
         data={mockPositions}
         renderRow={(pos) => (
           <>
-            <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-slate-900 sm:pl-6">
+            <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-slate-900 dark:text-slate-100 sm:pl-6">
               {pos.name}
             </td>
-            <td className="whitespace-nowrap px-3 py-4 text-sm text-slate-500">{pos.department}</td>
-            <td className="whitespace-nowrap px-3 py-4 text-sm text-slate-500">{pos.baseSalary}</td>
+            <td className="whitespace-nowrap px-3 py-4 text-sm text-slate-500 dark:text-slate-400">{pos.department}</td>
+            <td className="whitespace-nowrap px-3 py-4 text-sm text-slate-500 dark:text-slate-400">{pos.baseSalary}</td>
           </>
         )}
       />
