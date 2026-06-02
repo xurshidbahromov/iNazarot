@@ -12,6 +12,7 @@ import { CommandPalette} from'../components/CommandPalette';
 import { getSystemAlerts } from'../utils/posUtils';
 import { useWarehouseStore } from '../store/useWarehouseStore';
 import { useFinanceStore } from '../store/useFinanceStore';
+import { reports } from '../data/reportsData';
 
 type NavItem = {
   name: string;
@@ -144,7 +145,30 @@ export default function DashboardLayout() {
     if (item.href === location.pathname) currentPageName = item.name;
     if (item.children) {
       item.children.forEach(child => {
-        if (child.href === location.pathname) currentPageName = child.name;});}});
+        if (child.href === location.pathname || location.pathname.startsWith(child.href + '/')) currentPageName = child.name;});}});
+
+  if (location.pathname.startsWith('/reports/')) {
+    const reportId = Number(location.pathname.split('/').pop());
+    const report = reports.find(r => r.id === reportId);
+    if (report) {
+      currentPageName = `Hisobotlar > ${report.name}`;
+    } else {
+      currentPageName = 'Hisobotlar';
+    }
+  }
+
+  const getBreadcrumbPath = (part: string): string | null => {
+    if (part === 'Hisobotlar') return '/reports';
+    for (const item of navigation) {
+      if (item.name === part && item.href) return item.href;
+      if (item.children) {
+        for (const child of item.children) {
+          if (child.name === part) return child.href;
+        }
+      }
+    }
+    return null;
+  };
 
   const { theme, toggleTheme } = useThemeStore();
 
@@ -203,8 +227,8 @@ export default function DashboardLayout() {
           {navigation.map((item) => {
             const hasChildren = item.children && item.children.length > 0;
             const isOpen = openMenus[item.name] && !isCollapsed;
-            const isDirectActive = item.href && location.pathname === item.href;
-            const isChildActive = hasChildren && item.children!.some(c => location.pathname === c.href);
+            const isDirectActive = item.href && (location.pathname === item.href || (item.href !== '/' && location.pathname.startsWith(`${item.href}/`)));
+            const isChildActive = hasChildren && item.children!.some(c => location.pathname === c.href || location.pathname.startsWith(`${c.href}/`));
             const isActive = isDirectActive || (isChildActive && !hasChildren);
             const isHovered = hoveredMenu === item.name;
 
@@ -374,9 +398,38 @@ export default function DashboardLayout() {
             </button>
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1.5 text-sm">
-                <span className="text-slate-400 dark:text-slate-500 font-medium">iNazorat</span>
+                <span className="text-slate-400 dark:text-slate-500 font-medium select-none">iNazorat</span>
                 <ChevronRight className="w-3.5 h-3.5 text-slate-300 dark:text-slate-600" strokeWidth={1.6} />
-                <span className="font-semibold text-slate-800 dark:text-slate-200">{currentPageName}</span>
+                <div key={location.pathname} className="flex items-center gap-1.5 animate-fade-in-scale">
+                  {currentPageName.split(' > ').map((part, index, array) => {
+                    const isLast = index === array.length - 1;
+                    const path = isLast ? null : getBreadcrumbPath(part);
+                    return (
+                      <span key={index} className="flex items-center gap-1.5">
+                        {path ? (
+                          <Link
+                            to={path}
+                            className="text-slate-400 dark:text-slate-500 font-medium hover:text-slate-800 dark:hover:text-slate-200 transition-colors duration-200"
+                          >
+                            {part}
+                          </Link>
+                        ) : (
+                          <span className={cn(
+                            "transition-colors duration-200",
+                            isLast 
+                              ? "font-semibold text-slate-800 dark:text-slate-200" 
+                              : "text-slate-400 dark:text-slate-500 font-medium"
+                          )}>
+                            {part}
+                          </span>
+                        )}
+                        {!isLast && (
+                          <ChevronRight className="w-3.5 h-3.5 text-slate-300 dark:text-slate-600" strokeWidth={1.6} />
+                        )}
+                      </span>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>

@@ -107,11 +107,11 @@ export default function ReportView() {
 
       {/* Data Table */}
       <div className="mt-6">
-        {[2].includes(Number(id)) && <FinanceReport reportId={Number(id)} />}
-        {[1, 28].includes(Number(id)) && <CRMReport reportId={Number(id)} />}
-        {[18].includes(Number(id)) && <WarehouseReport reportId={Number(id)} />}
+        {[2, 3].includes(Number(id)) && <FinanceReport reportId={Number(id)} />}
+        {[1, 6, 28].includes(Number(id)) && <CRMReport reportId={Number(id)} />}
+        {[18, 22].includes(Number(id)) && <WarehouseReport reportId={Number(id)} />}
 
-        {![1, 2, 18, 28].includes(Number(id)) && (
+        {![1, 2, 3, 6, 18, 22, 28].includes(Number(id)) && (
           <div className="bg-white/80 dark:bg-white/5 backdrop-blur-sm border-2 border-[#f1f2f4] dark:border-transparent rounded-[20px] overflow-hidden shadow-sm dark:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.4)]">
             <table className="w-full text-left border-collapse">
               <thead>
