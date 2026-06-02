@@ -16,6 +16,7 @@ import Login from './pages/auth/Login';
 
 import ReportsLayout from './pages/reports/ReportsLayout';
 import ReportsList from './pages/reports/ReportsList';
+import ReportView from './pages/reports/ReportView';
 
 import CRMLayout from './pages/crm/CRMLayout';
 import Clients from './pages/crm/Clients';
@@ -78,6 +79,7 @@ function App() {
               <Route path="/pos" element={<POSLauncher />} />
               <Route path="/reports" element={<ReportsLayout />}>
                 <Route index element={<ReportsList />} />
+                <Route path=":id" element={<ReportView />} />
               </Route>
               <Route path="/crm" element={<CRMLayout />}>
                 <Route index element={<Navigate to="clients" replace />} />
