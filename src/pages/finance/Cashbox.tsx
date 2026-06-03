@@ -41,6 +41,20 @@ export default function Cashbox() {
     t.method.toLowerCase().includes(search.toLowerCase())
   );
 
+  const handleExport = () => {
+    const data = filtered.map(t => ({
+      "Sana": t.date,
+      "Turi (Kirim/Chiqim)": t.type,
+      "Summa": t.amount,
+      "Valyuta": t.currency,
+      "Kurs": t.rate,
+      "Ekvivalenti (UZS)": t.amount * t.rate,
+      "Izoh": t.description,
+      "To'lov usuli": t.method
+    }));
+    exportToExcel(data, 'Kassa_tranzaksiyalari');
+  };
+
   const openModal = (type:'Kirim' |'Chiqim') => {
     setModalType(type);
     setForm({
@@ -96,7 +110,7 @@ export default function Cashbox() {
           <Button
             variant="outline"
             className="rounded-xl h-10 px-4 bg-white dark:bg-white/[0.08] border-slate-200 dark:border-transparent hover:bg-slate-50 dark:hover:bg-white/10 text-slate-700 dark:text-slate-300 transition-all font-medium"
-            onClick={() => exportToExcel(transactions,'Kassa_tranzaksiyalari')}
+            onClick={handleExport}
           >
             <Download className="w-4 h-4 mr-2 text-slate-400 dark:text-slate-500" strokeWidth={1.6} /> Excel yuklash
           </Button>

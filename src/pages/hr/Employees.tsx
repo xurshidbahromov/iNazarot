@@ -1,10 +1,11 @@
 import { useState} from'react';
-import { Plus, Search, Filter, Trash2, Edit, Users, UserCheck, Coffee, UserMinus} from'lucide-react';
+import { Plus, Search, Filter, Trash2, Edit, Users, UserCheck, Coffee, UserMinus, Download} from'lucide-react';
 import { Button} from'../../components/ui/Button';
 import { Input} from'../../components/ui/Input';
 import { Table} from'../../components/ui/Table';
 import { Modal} from'../../components/ui/Modal';
 import { useHRStore} from'../../store/useHRStore';
+import { exportToExcel } from '../../utils/exportToExcel';
 
 export default function Employees() {
   const { employees, addEmployee, deleteEmployee} = useHRStore();
@@ -17,6 +18,17 @@ export default function Employees() {
     e.position.toLowerCase().includes(search.toLowerCase()) ||
     e.phone.includes(search)
   );
+
+  const handleExport = () => {
+    const exportData = filtered.map(emp => ({
+      "F.I.Sh.": emp.name,
+      "Lavozimi": emp.position,
+      "Bo'limi": emp.department,
+      "Telefon raqami": emp.phone,
+      "Holati": emp.status
+    }));
+    exportToExcel(exportData, "Xodimlar");
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,6 +57,13 @@ export default function Employees() {
           </p>
         </div>
         <div className="flex gap-2.5">
+          <Button 
+            variant="outline" 
+            onClick={handleExport}
+            className="flex items-center gap-2 h-10 px-4 bg-white dark:bg-white/5 border border-slate-200 dark:border-transparent text-slate-600 dark:text-slate-100 hover:text-slate-900 hover:border-slate-300 hover:shadow-sm dark:hover:bg-white/10 rounded-xl text-sm font-medium transition-all duration-150 active:scale-95"
+          >
+            <Download className="w-4 h-4 mr-2 text-slate-400 dark:text-slate-500" strokeWidth={1.6} /> Eksport (.xlsx)
+          </Button>
           <Button 
             variant="outline" 
             className="flex items-center gap-2 h-10 px-4 bg-white dark:bg-white/5 border border-slate-200 dark:border-transparent text-slate-600 dark:text-slate-100 hover:text-slate-900 hover:border-slate-300 hover:shadow-sm dark:hover:bg-white/10 rounded-xl text-sm font-medium transition-all duration-150 active:scale-95"

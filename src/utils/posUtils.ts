@@ -204,3 +204,123 @@ export function getSystemAlerts(products: Product[], transactions: Transaction[]
 
   return alerts;
 }
+
+interface PrintShiftReportOptions {
+  shiftId: string;
+  cashierName: string;
+  openTime: string;
+  openingCash: number;
+  cashSales: number;
+  cardSales: number;
+}
+
+export function printShiftReport({
+  shiftId,
+  cashierName,
+  openTime,
+  openingCash,
+  cashSales,
+  cardSales
+}: PrintShiftReportOptions) {
+  const now = new Intl.DateTimeFormat('uz-UZ', {
+    day: '2-digit', month: '2-digit', year: 'numeric',
+    hour: '2-digit', minute: '2-digit', second: '2-digit'
+  }).format(new Date());
+
+  const openedStr = new Intl.DateTimeFormat('uz-UZ', {
+    day: '2-digit', month: '2-digit', year: 'numeric',
+    hour: '2-digit', minute: '2-digit'
+  }).format(new Date(openTime));
+
+  const totalSales = cashSales + cardSales;
+  const expectedCashInBox = openingCash + cashSales;
+
+  const reportHtml = `
+    <!DOCTYPE html>
+    <html lang="uz">
+    <head>
+      <meta charset="UTF-8" />
+      <title>Smena hisoboti — ${shiftId}</title>
+      <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Courier New', Courier, monospace; background: #fff; color: #1e293b; }
+        .receipt { width: 320px; margin: 0 auto; padding: 20px 16px; }
+        .header { text-align: center; margin-bottom: 16px; border-bottom: 2px dashed #cbd5e1; padding-bottom: 16px; }
+        .logo { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; color: #0f172a; }
+        .logo span { color: #10b981; }
+        .subtitle { font-size: 11px; color: #64748b; margin-top: 4px; letter-spacing: 1px; text-transform: uppercase; }
+        .check-id { font-size: 12px; font-weight: 700; color: #0f172a; margin-top: 8px; }
+        .row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px dashed #e2e8f0; }
+        .row span:first-child { font-size: 12px; color: #64748b; }
+        .row span:last-child { font-size: 12px; font-weight: 750; color: #1e293b; text-align: right; }
+        .total-section { border-top: 2px dashed #cbd5e1; padding-top: 12px; margin-top: 8px; }
+        .grand-total span:first-child { font-size: 14px; font-weight: 900; color: #0f172a; }
+        .grand-total span:last-child { font-size: 16px; font-weight: 900; color: #10b981; }
+        .footer { text-align: center; margin-top: 20px; border-top: 2px dashed #cbd5e1; padding-top: 16px; }
+        .footer p { font-size: 11px; color: #94a3b8; line-height: 1.6; }
+        @media print {
+          body { background: white; }
+          .receipt { width: 100%; max-width: 320px; }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="receipt">
+        <div class="header">
+          <div class="logo">i<span>Nazorat</span></div>
+          <div class="subtitle">Smena Xisoboti</div>
+          <div class="check-id">${shiftId}</div>
+          <div style="font-size:11px; color:#94a3b8; margin-top:2px;">Bosilgan vaqt: ${now}</div>
+        </div>
+
+        <div class="row">
+          <span>Kassir:</span>
+          <span>${cashierName}</span>
+        </div>
+        <div class="row">
+          <span>Ochilgan vaqt:</span>
+          <span>${openedStr}</span>
+        </div>
+        <div class="row">
+          <span>Boshlang'ich naqd pul:</span>
+          <span>${openingCash.toLocaleString()} UZS</span>
+        </div>
+        <div class="row">
+          <span>Naqd savdolar:</span>
+          <span>${cashSales.toLocaleString()} UZS</span>
+        </div>
+        <div class="row">
+          <span>Karta savdolari:</span>
+          <span>${cardSales.toLocaleString()} UZS</span>
+        </div>
+
+        <div class="total-section">
+          <div class="row" style="border-bottom: none;">
+            <span>Jami Savdolar:</span>
+            <span style="font-weight: 900; color: #0f172a;">${totalSales.toLocaleString()} UZS</span>
+          </div>
+          <div class="row grand-total" style="margin-top:6px; padding-top:6px; border-top:1px dashed #e2e8f0; border-bottom: none;">
+            <span>Kassadagi kutilgan naqd:</span>
+            <span>${expectedCashInBox.toLocaleString()} UZS</span>
+          </div>
+        </div>
+
+        <div class="footer">
+          <p>Smena muvaffaqiyatli yakunlandi.</p>
+          <p>iNazorat ERP • www.inazorat.uz</p>
+        </div>
+      </div>
+      <script>
+        window.onload = () => { window.print(); }
+      </script>
+    </body>
+    </html>
+  `;
+
+  const printWindow = window.open('', '_blank', 'width=400,height=600,toolbar=0,menubar=0,scrollbars=1');
+  if (printWindow) {
+    printWindow.document.write(reportHtml);
+    printWindow.document.close();
+  }
+}
+

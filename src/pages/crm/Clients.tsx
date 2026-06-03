@@ -20,6 +20,17 @@ export default function Clients() {
     c.phone.includes(search)
   );
 
+  const handleExport = () => {
+    const data = filtered.map(c => ({
+      "Mijoz nomi": c.name,
+      "Telefon raqami": c.phone,
+      "Oxirgi savdo": c.lastPurchase,
+      "Balans": c.balance,
+      "Holati": c.status
+    }));
+    exportToExcel(data, 'Mijozlar_Hisoboti');
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     addClient(form);
@@ -63,7 +74,7 @@ export default function Clients() {
           <Button
             variant="outline"
             className="rounded-xl h-10 px-4 bg-white dark:bg-white/5 border border-slate-200 dark:border-transparent text-slate-600 dark:text-slate-100 hover:text-slate-900 hover:border-slate-300 hover:shadow-sm dark:hover:bg-white/10 transition-all duration-150 active:scale-95"
-            onClick={() => exportToExcel(clients,'Mijozlar_qarz_va_balans')}
+            onClick={handleExport}
           >
             <Download className="w-4 h-4 mr-2 text-slate-400 dark:text-slate-500" strokeWidth={1.6} /> Excel yuklash
           </Button>

@@ -1,13 +1,15 @@
-import { useState, useRef } from 'react';
-import { ShoppingCart, Search, CreditCard, Banknote, Plus, Minus, Trash2, PackageSearch, Package, User, X, ScanBarcode, ChevronRight, Store, Printer, Check } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { ShoppingCart, Search, CreditCard, Banknote, Plus, Minus, Trash2, PackageSearch, Package, User, X, ScanBarcode, ChevronRight, Store, Printer, Check, XCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { Input } from '../../components/ui/Input';
 import { useWarehouseStore } from '../../store/useWarehouseStore';
 import { useFinanceStore } from '../../store/useFinanceStore';
 import { useActivityStore } from '../../store/useActivityStore';
 import { useCRMStore } from '../../store/useCRMStore';
+import { useShiftStore } from '../../store/useShiftStore';
+import { useAuthStore } from '../../store/useAuthStore';
 import { cn } from '../../utils/cn';
-import { printReceipt } from '../../utils/posUtils';
+import { printReceipt, printShiftReport } from '../../utils/posUtils';
 import POSLockScreen from './POSLockScreen';
 
 interface CartItem {
@@ -31,6 +33,8 @@ export default function POS() {
   const { addTransaction } = useFinanceStore();
   const { addActivity } = useActivityStore();
   const { clients, addOrder } = useCRMStore();
+  const { currentShift, openShift, closeShift, addSaleToShift } = useShiftStore();
+  const { user } = useAuthStore();
   
   const [isLocked, setIsLocked] = useState(true);
   const [search, setSearch] = useState('');
@@ -40,6 +44,9 @@ export default function POS() {
   const [successModal, setSuccessModal] = useState<PaymentSuccessModal>({
     isOpen: false, method: '', total: 0, checkId: '', items: []
   });
+  const [openingCashStr, setOpeningCashStr] = useState('');
+  const [showCloseShiftModal, setShowCloseShiftModal] = useState(false);
+  const [showVirtualScanner, setShowVirtualScanner] = useState(false);
 
   const searchRef = useRef<HTMLInputElement>(null);
 
@@ -49,8 +56,77 @@ export default function POS() {
     else toast.warning(message);
   };
 
+  // Keyboard Barcode Scanner Listener
+  useEffect(() => {
+    let buffer = '';
+    let lastKeyTime = Date.now();
+
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      // Smena yopiq bo'lsa yoki ekran bloklangan bo'lsa skaner ishlamaydi
+      if (isLocked || !currentShift || currentShift.status !== 'open') return;
+
+      // Boshqa inputlar fokusda bo'lsa (qidiruv maydonidan tashqari) skanerlashni chetlab o'tamiz
+      if (document.activeElement?.tagName === 'INPUT' && document.activeElement !== searchRef.current) {
+        return;
+      }
+
+      const currentTime = Date.now();
+      
+      // Skaner tugmalarni juda tez bosadi (< 35ms oralig'ida)
+      if (currentTime - lastKeyTime > 100) {
+        buffer = '';
+      }
+      
+      lastKeyTime = currentTime;
+
+      if (e.key === 'Enter') {
+        if (buffer.length > 2) {
+          const barcode = buffer.trim().toUpperCase();
+          const product = products.find(p => p.sku === barcode);
+          if (product) {
+            addToCart(product);
+            showToast(`"${product.name}" shtrix-kod orqali qo'shildi!`, 'success');
+            setSearch('');
+          } else {
+            showToast("Shtrix-kod bo'yicha mahsulot topilmadi: " + barcode, 'error');
+          }
+          buffer = '';
+          e.preventDefault();
+        }
+      } else if (e.key.length === 1) {
+        buffer += e.key;
+      }
+    };
+
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+  }, [products, isLocked, currentShift]);
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const query = search.trim().toUpperCase();
+      const product = products.find(p => p.sku === query);
+      if (product) {
+        addToCart(product);
+        setSearch('');
+        showToast(`"${product.name}" savatga qo'shildi!`, 'success');
+      } else {
+        const filteredList = products.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
+        if (filteredList.length === 1) {
+          addToCart(filteredList[0]);
+          setSearch('');
+          showToast(`"${filteredList[0].name}" savatga qo'shildi!`, 'success');
+        } else {
+          showToast("Mahsulot topilmadi!", 'error');
+        }
+      }
+    }
+  };
+
   const filtered = products.filter(p =>
-    p.name.toLowerCase().includes(search.toLowerCase())
+    p.name.toLowerCase().includes(search.toLowerCase()) ||
+    (p.sku && p.sku.toLowerCase().includes(search.toLowerCase()))
   );
 
   const addToCart = (product: typeof products[0]) => {
@@ -92,7 +168,6 @@ export default function POS() {
   const removeFromCart = (id: number) => setCart(prev => prev.filter(c => c.id !== id));
 
   const total = cart.reduce((acc, c) => acc + c.price * c.quantity, 0);
-
   const handlePay = (method: string) => {
     if (cart.length === 0) return;
     
@@ -112,6 +187,9 @@ export default function POS() {
       description: `Savdo (POS Chek: POS-${timestamp})`,
       method: method === 'Naqd pul' ? 'Naqd' : 'Karta'
     });
+
+    // Smenadagi savdolar summasini oshirish
+    addSaleToShift(total, method === 'Naqd pul' ? 'Naqd' : 'Karta');
 
     // CRM da buyurtma yaratish
     if (selectedClient) {
@@ -165,10 +243,10 @@ export default function POS() {
       total: successModal.total,
       method: successModal.method,
       checkId: successModal.checkId,
+      cashierName: user?.name || 'Kassir'
     });
     setSuccessModal(prev => ({ ...prev, isOpen: false }));
   };
-
   const handleCloseModal = () => {
     setSuccessModal(prev => ({ ...prev, isOpen: false }));
   };
@@ -179,6 +257,41 @@ export default function POS() {
       {/* Lock Screen Overlay */}
       {isLocked && (
         <POSLockScreen onUnlock={() => setIsLocked(false)} />
+      )}
+
+      {/* Smenani ochish modali */}
+      {!isLocked && (!currentShift || currentShift.status === 'closed') && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 dark:bg-black/80 backdrop-blur-2xl p-4">
+          <div className="bg-white dark:bg-slate-800 rounded-[2.5rem] p-10 shadow-2xl border border-slate-200/60 dark:border-white/10 w-full max-w-[400px] flex flex-col items-center">
+            <div className="w-20 h-20 bg-emerald-50 dark:bg-emerald-950/40 rounded-full flex items-center justify-center mb-6 text-emerald-600 dark:text-emerald-400">
+              <Store className="w-10 h-10" />
+            </div>
+            <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-2 text-center">Yangi smena ochish</h2>
+            <p className="text-slate-500 dark:text-slate-400 text-sm mb-6 text-center leading-relaxed">
+              Sotuvlarni boshlash uchun kassa g'aladonidagi boshlang'ich naqd pul qoldig'ini kiriting.
+            </p>
+            <div className="w-full mb-6">
+              <label className="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">Boshlang'ich naqd pul (UZS)</label>
+              <input
+                type="number"
+                className="w-full h-14 px-5 rounded-2xl bg-slate-100 dark:bg-white/5 border-transparent focus:border-slate-350 dark:focus:border-white/20 text-lg font-bold text-slate-800 dark:text-white focus:outline-none"
+                placeholder="Masalan: 500000"
+                value={openingCashStr}
+                onChange={e => setOpeningCashStr(e.target.value)}
+              />
+            </div>
+            <button
+              onClick={() => {
+                const val = parseFloat(openingCashStr) || 0;
+                openShift(user?.id || '1', user?.name || 'Kassir', val);
+                showToast("Smena muvaffaqiyatli ochildi!", 'success');
+              }}
+              className="h-14 w-full rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition-all active:scale-95"
+            >
+              Smenani ochish
+            </button>
+          </div>
+        </div>
       )}
 
       {/* Payment Success Modal */}
@@ -241,7 +354,7 @@ export default function POS() {
       {/* Standalone Terminal Header */}
       <header className={cn(
         "h-20 bg-white/80 dark:bg-white/[0.04] backdrop-blur-xl border-b border-slate-200/60 dark:border-transparent flex items-center justify-between px-8 flex-shrink-0 z-10 transition-all duration-500",
-        isLocked ? "blur-sm scale-[0.99] opacity-50" : ""
+        isLocked || (!currentShift || currentShift.status === 'closed') ? "blur-sm scale-[0.99] opacity-50 pointer-events-none" : ""
       )}>
         <div className="flex items-center gap-4">
         {/* Free logo — no box */}
@@ -269,13 +382,23 @@ export default function POS() {
         </div>
         
         <div className="flex items-center gap-6">
+          {currentShift && currentShift.status === 'open' && (
+            <button
+              onClick={() => setShowCloseShiftModal(true)}
+              className="flex items-center gap-2 px-4 h-11 bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:hover:bg-red-950/60 text-red-600 dark:text-red-400 rounded-xl font-bold text-xs transition-all active:scale-95 border border-red-100 dark:border-transparent"
+            >
+              <XCircle className="w-4 h-4" />
+              Smenani yopish
+            </button>
+          )}
+
           <div className="flex items-center gap-3 bg-slate-100 dark:bg-white/[0.06] rounded-[20px] px-5 py-2.5">
             <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-white/10 flex items-center justify-center">
               <User className="w-4 h-4 text-slate-600 dark:text-slate-400" />
             </div>
             <div className="text-sm">
-              <p className="font-bold text-slate-800 dark:text-slate-200 leading-none">Kassir 01</p>
-              <p className="text-slate-500 dark:text-slate-400 text-xs font-medium mt-1">Onlayn rejim</p>
+              <p className="font-bold text-slate-800 dark:text-slate-200 leading-none">{user?.name || 'Kassir'}</p>
+              <p className="text-slate-500 dark:text-slate-400 text-xs font-medium mt-1">Smena: {currentShift?.id || 'Yopiq'}</p>
             </div>
           </div>
           <button 
@@ -291,7 +414,7 @@ export default function POS() {
       {/* Main POS Layout */}
       <div className={cn(
         "flex-1 flex gap-6 p-6 overflow-hidden transition-all duration-700 delay-100",
-        isLocked ? "blur-md scale-[0.98] opacity-40 pointer-events-none" : "blur-0 scale-100 opacity-100"
+        isLocked || (!currentShift || currentShift.status === 'closed') ? "blur-md scale-[0.98] opacity-40 pointer-events-none" : "blur-0 scale-100 opacity-100"
       )}>
         
         {/* Products Section */}
@@ -306,19 +429,29 @@ export default function POS() {
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-5 z-10">
                 <Search className="h-5 w-5 text-slate-400 dark:text-slate-500" strokeWidth={2} />
               </div>
-              {!isLocked && (
+              {!isLocked && currentShift && currentShift.status === 'open' && (
                 <Input
                   ref={searchRef}
                   className="pl-14 h-14 text-lg rounded-[20px] bg-slate-100/50 border-transparent hover:bg-slate-100 dark:bg-white/[0.06] focus:bg-white dark:bg-white/[0.08] focus:border-slate-300 dark:border-transparent transition-all placeholder:text-slate-400 dark:text-slate-500 font-medium"
                   placeholder="Mahsulot qidirish yoki shtrix kod skanerlash..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
+                  onKeyDown={handleSearchKeyDown}
                 />
               )}
               <div className="absolute inset-y-0 right-0 flex items-center pr-4">
-                <div className="p-2 bg-white dark:bg-white/[0.08] rounded-xl shadow-sm border border-slate-100 dark:border-transparent text-slate-400 dark:text-slate-500">
+                <button
+                  onClick={() => setShowVirtualScanner(p => !p)}
+                  className={cn(
+                    "p-2 rounded-xl shadow-sm border transition-all active:scale-90",
+                    showVirtualScanner 
+                      ? "bg-emerald-500 border-emerald-500 text-white shadow-emerald-500/20" 
+                      : "bg-white dark:bg-white/[0.08] border-slate-100 dark:border-transparent text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-200"
+                  )}
+                  title="Virtual skaner simulyatori"
+                >
                   <ScanBarcode className="w-5 h-5" />
-                </div>
+                </button>
               </div>
             </div>
           </div>
@@ -511,6 +644,111 @@ export default function POS() {
           </div>
         </div>
       </div>
+      {/* Smenani yopish modali */}
+      {showCloseShiftModal && currentShift && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 dark:bg-black/80 backdrop-blur-2xl p-4 animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-slate-800 rounded-[2.5rem] p-8 shadow-2xl border border-slate-200 dark:border-white/10 w-full max-w-md animate-in zoom-in-95 duration-300">
+            <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-6 text-center">Smenani yopish</h2>
+            
+            <div className="space-y-4 mb-6">
+              <div className="flex justify-between py-2 border-b border-slate-100 dark:border-white/5">
+                <span className="text-slate-500 dark:text-slate-400">Smena ID:</span>
+                <span className="font-bold text-slate-800 dark:text-white">{currentShift.id}</span>
+              </div>
+              <div className="flex justify-between py-2 border-b border-slate-100 dark:border-white/5">
+                <span className="text-slate-500 dark:text-slate-400">Ochilgan vaqti:</span>
+                <span className="font-medium text-slate-850 dark:text-white">{new Date(currentShift.openTime).toLocaleTimeString('uz-UZ')}</span>
+              </div>
+              <div className="flex justify-between py-2 border-b border-slate-100 dark:border-white/5">
+                <span className="text-slate-500 dark:text-slate-400">Boshlang'ich naqd:</span>
+                <span className="font-bold text-slate-800 dark:text-white">{currentShift.openingCash.toLocaleString()} UZS</span>
+              </div>
+              <div className="flex justify-between py-2 border-b border-slate-100 dark:border-white/5">
+                <span className="text-slate-500 dark:text-slate-400">Naqd savdolar:</span>
+                <span className="font-bold text-emerald-600 dark:text-emerald-400">+{currentShift.cashSales.toLocaleString()} UZS</span>
+              </div>
+              <div className="flex justify-between py-2 border-b border-slate-100 dark:border-white/5">
+                <span className="text-slate-500 dark:text-slate-400">Karta savdolari:</span>
+                <span className="font-bold text-blue-600 dark:text-blue-400">+{currentShift.cardSales.toLocaleString()} UZS</span>
+              </div>
+              <div className="flex justify-between py-3 border-b-2 border-double border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 px-3 rounded-xl">
+                <span className="font-bold text-slate-800 dark:text-white">Kassadagi kutilgan naqd:</span>
+                <span className="font-black text-slate-900 dark:text-white">{(currentShift.openingCash + currentShift.cashSales).toLocaleString()} UZS</span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <button
+                onClick={() => setShowCloseShiftModal(false)}
+                className="h-14 rounded-2xl bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-slate-350 font-bold transition-all"
+              >
+                Orqaga
+              </button>
+              <button
+                onClick={() => {
+                  printShiftReport({
+                    shiftId: currentShift.id,
+                    cashierName: currentShift.cashierName,
+                    openTime: currentShift.openTime,
+                    openingCash: currentShift.openingCash,
+                    cashSales: currentShift.cashSales,
+                    cardSales: currentShift.cardSales
+                  });
+                  // Kassaga yakuniy xabarni log qilish
+                  addTransaction({
+                    type: 'Kirim',
+                    amount: currentShift.cashSales + currentShift.cardSales,
+                    currency: 'UZS',
+                    rate: 1,
+                    description: `POS Smena savdo yakuni (${currentShift.id})`,
+                    method: 'Naqd'
+                  });
+                  closeShift();
+                  setIsLocked(true);
+                  setShowCloseShiftModal(false);
+                  showToast("Smena yopildi va hisobot chop etildi!", 'success');
+                }}
+                className="h-14 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-bold transition-all shadow-lg shadow-red-500/20 active:scale-95"
+              >
+                Smenani yopish
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Virtual Barcode Scanner Simulator Panel */}
+      {showVirtualScanner && (
+        <div className="fixed bottom-6 right-6 z-40 bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl border border-slate-200/60 dark:border-white/10 rounded-3xl p-5 shadow-2xl max-w-sm w-full animate-in slide-in-from-bottom-5 duration-300">
+          <div className="flex justify-between items-center mb-3">
+            <div className="flex items-center gap-2">
+              <ScanBarcode className="w-5 h-5 text-emerald-500" />
+              <span className="text-sm font-bold text-slate-850 dark:text-white">Virtual Skaner</span>
+            </div>
+            <button onClick={() => setShowVirtualScanner(false)} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-white/10 text-slate-400">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mb-3.5 leading-relaxed">
+            Skanerlashni simulyatsiya qilish uchun mahsulotning SKU kodini bosing:
+          </p>
+          <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto custom-scrollbar pr-1">
+            {products.filter(p => p.sku).map(p => (
+              <button
+                key={p.id}
+                onClick={() => {
+                  addToCart(p);
+                  showToast(`"${p.name}" virtual skaner orqali qo'shildi!`, 'success');
+                }}
+                className="p-2.5 bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-transparent hover:border-emerald-500 dark:hover:border-emerald-500 rounded-xl text-left transition-all active:scale-95 group"
+              >
+                <p className="text-[10px] font-bold text-slate-400 group-hover:text-emerald-500">{p.sku}</p>
+                <p className="text-xs font-semibold text-slate-700 dark:text-slate-350 truncate mt-0.5">{p.name}</p>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

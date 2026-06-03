@@ -4,15 +4,23 @@ import {
   LayoutDashboard, Users, Package, Settings, ShoppingCart,
   DollarSign, RefreshCw, Layers, Bell, LogOut, ChevronDown,
   Search, Command, User, Shield, ChevronRight, HelpCircle, BarChart2,
-  AlertTriangle, Info, XCircle, X, Moon, Sun } from 'lucide-react';
+  AlertTriangle, Info, XCircle, X, Moon, Sun, Factory, Truck, CheckCircle2 } from 'lucide-react';
 import { cn} from'../utils/cn';
-import { useAuthStore} from'../store/useAuthStore';
+import { useAuthStore } from '../store/useAuthStore';
 import { useThemeStore } from '../store/useThemeStore';
+import { useNotificationStore } from '../store/useNotificationStore';
 import { CommandPalette} from'../components/CommandPalette';
-import { getSystemAlerts } from'../utils/posUtils';
-import { useWarehouseStore } from '../store/useWarehouseStore';
-import { useFinanceStore } from '../store/useFinanceStore';
 import { reports } from '../data/reportsData';
+
+// Rolga qarab ruxsat etilgan yo'nalishlar (marshrutlarning boshlang'ich qismi)
+const ROLE_PERMISSIONS: Record<string, string[]> = {
+  admin: ['*'],
+  administrator: ['*'],
+  menejer: ['/', '/crm', '/warehouse', '/supply', '/production', '/distribution', '/reports', '/settings', '/pos'],
+  omborchi: ['/', '/warehouse', '/supply', '/production', '/settings'],
+  kasir: ['/', '/finance', '/crm', '/pos', '/settings'],
+  hr: ['/', '/hr', '/settings'],
+};
 
 type NavItem = {
   name: string;
@@ -52,6 +60,20 @@ const navigation: NavItem[] = [
       { name:'Yetkazib beruvchilar', href:'/supply/suppliers'},
       { name:"Sotib olish so'rovlari", href:'/supply/requests'},
       { name:'Qaytarishlar', href:'/supply/returns'}
+    ]},
+  {
+    name: 'Ishlab chiqarish',
+    icon: Factory,
+    children: [
+      { name: 'Jarayonlar', href: '/production/orders' },
+      { name: 'Retseptlar (BOM)', href: '/production/formulas' }
+    ]},
+  {
+    name: 'Logistika',
+    icon: Truck,
+    children: [
+      { name: 'Yetkazib berish', href: '/distribution/shipments' },
+      { name: 'Haydovchilar', href: '/distribution/drivers' }
     ]},
   { 
     name:'Moliya', 
@@ -95,10 +117,18 @@ export default function DashboardLayout() {
   
   const [cmdOpen, setCmdOpen] = useState(false);
 
-  const { products } = useWarehouseStore();
-  const { transactions } = useFinanceStore();
-  const alerts = getSystemAlerts(products, transactions);
-  const alertCount = alerts.length;
+  const { notifications, markAsRead, clearAll } = useNotificationStore();
+  const unreadCount = notifications.filter(n => !n.isRead).length;
+
+  // Foydalanuvchi ruxsatiga ko'ra menyuni filtrlash
+  const filteredNavigation = navigation.filter(item => {
+    if (!user || !user.role) return false;
+    const role = user.role.toLowerCase();
+    const perms = ROLE_PERMISSIONS[role] || [];
+    if (perms.includes('*')) return true;
+    if (item.href === '/') return perms.includes('/');
+    return perms.some(p => p !== '/' && (item.href?.startsWith(p) || item.children?.some(c => c.href.startsWith(p))));
+  });
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
@@ -207,7 +237,7 @@ export default function DashboardLayout() {
             {/* Double Chevron Growth Arrow (Elevate logo style representing scale & automation) */}
             <svg 
               className={cn("text-[#20c997] absolute transition-all duration-300 ease-in-out drop-shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]",
-                isCollapsed ?"w-[16px] h-[16px] top-[2px] -right-[6px]" :"w-[22px] h-[22px] top-[9px] -right-[12px]"
+                isCollapsed ?"w-[16px] h-[16px] top-[10px] -right-[10px]" :"w-[22px] h-[22px] top-[14px] -right-[12px]"
               )} 
               viewBox="0 0 24 24" 
               fill="none" 
@@ -224,7 +254,7 @@ export default function DashboardLayout() {
 
         {/* Nav */}
         <nav className={cn("flex-1 space-y-1", isCollapsed ?"overflow-visible" :"overflow-y-auto custom-scrollbar pr-1")}>
-          {navigation.map((item) => {
+          {filteredNavigation.map((item) => {
             const hasChildren = item.children && item.children.length > 0;
             const isOpen = openMenus[item.name] && !isCollapsed;
             const isDirectActive = item.href && (location.pathname === item.href || (item.href !== '/' && location.pathname.startsWith(`${item.href}/`)));
@@ -478,10 +508,10 @@ export default function DashboardLayout() {
               >
                 <Bell className={cn("w-[18px] h-[18px] transition-transform duration-300", showAlerts ? "rotate-12 text-slate-700 dark:text-slate-200" : "group-hover:rotate-12")} strokeWidth={1.6} />
                 {/* Badge showing real alert count */}
-                {alertCount > 0 && (
+                {unreadCount > 0 && (
                   <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-60"></span>
-                    <span className="relative inline-flex rounded-full h-4 w-4 bg-red-500 text-white text-[9px] font-black items-center justify-center">{Math.min(alertCount, 9)}</span>
+                    <span className="relative inline-flex rounded-full h-4 w-4 bg-red-500 text-white text-[9px] font-black items-center justify-center">{Math.min(unreadCount, 9)}</span>
                   </span>
                 )}
               </button>
@@ -494,51 +524,65 @@ export default function DashboardLayout() {
                     <div className="flex items-center gap-2">
                       <Bell className="w-4 h-4 text-slate-600 dark:text-slate-400" strokeWidth={2} />
                       <span className="text-[13px] font-bold text-slate-800 dark:text-slate-200">Ogohlantirishlar</span>
-                      {alertCount > 0 && (
-                        <span className="text-[10px] font-black bg-red-100 dark:bg-red-950/80 text-red-600 dark:text-red-400 px-1.5 py-0.5 rounded-full">{alertCount}</span>
+                      {unreadCount > 0 && (
+                        <span className="text-[10px] font-black bg-red-100 dark:bg-red-950/80 text-red-600 dark:text-red-400 px-1.5 py-0.5 rounded-full">{unreadCount}</span>
                       )}
                     </div>
-                    <button onClick={() => setShowAlerts(false)} className="p-1 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-400 dark:text-slate-500 transition-colors">
-                      <X className="w-3.5 h-3.5" strokeWidth={2.5} />
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button onClick={clearAll} className="text-[10px] font-medium text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">Tozalash</button>
+                      <button onClick={() => setShowAlerts(false)} className="p-1 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-400 dark:text-slate-500 transition-colors">
+                        <X className="w-3.5 h-3.5" strokeWidth={2.5} />
+                      </button>
+                    </div>
                   </div>
 
                   {/* Alert list */}
                   <div className="max-h-80 overflow-y-auto divide-y divide-slate-50 dark:divide-white/5">
-                    {alerts.length === 0 ? (
+                    {notifications.length === 0 ? (
                       <div className="py-10 text-center">
                         <Bell className="w-8 h-8 text-slate-200 dark:text-slate-700 mx-auto mb-2" strokeWidth={1.5} />
                         <p className="text-sm font-medium text-slate-400 dark:text-slate-500">Hech qanday ogohlantirish yo'q</p>
                       </div>
                     ) : (
-                      alerts.map(alert => (
-                        <Link
+                      notifications.map(alert => (
+                        <div
                           key={alert.id}
-                          to={alert.href}
-                          onClick={() => setShowAlerts(false)}
-                          className="flex items-start gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors group"
+                          onClick={() => {
+                            markAsRead(alert.id);
+                            if (alert.link) {
+                              setShowAlerts(false);
+                              navigate(alert.link);
+                            }
+                          }}
+                          className={cn(
+                            "flex items-start gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors group cursor-pointer",
+                            !alert.isRead ? "bg-slate-50/50 dark:bg-white/[0.02]" : "opacity-70"
+                          )}
                         >
                           <div className={cn(
                             "w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5",
                             alert.type === 'error' ? 'bg-red-50 dark:bg-red-950/40 text-red-500 dark:text-red-400' :
                             alert.type === 'warning' ? 'bg-amber-50 dark:bg-amber-950/40 text-amber-500 dark:text-amber-400' :
+                            alert.type === 'success' ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-500 dark:text-emerald-400' :
                             'bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-slate-200'
                           )}>
                             {alert.type === 'error' ? <XCircle className="w-4 h-4" strokeWidth={2} /> :
                              alert.type === 'warning' ? <AlertTriangle className="w-4 h-4" strokeWidth={2} /> :
+                             alert.type === 'success' ? <CheckCircle2 className="w-4 h-4" strokeWidth={2} /> :
                              <Info className="w-4 h-4" strokeWidth={2} />}
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className={cn(
                               "text-[12px] font-bold leading-tight",
-                              alert.type === 'error' ? 'text-red-700 dark:text-red-400' :
-                              alert.type === 'warning' ? 'text-amber-700 dark:text-amber-400' :
-                              'text-slate-800 dark:text-slate-200'
+                              !alert.isRead ? "text-slate-900 dark:text-slate-100" : "text-slate-600 dark:text-slate-400"
                             )}>{alert.title}</p>
-                            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">{alert.body}</p>
+                            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">{alert.description}</p>
+                            <p className="text-[9px] text-slate-400 dark:text-slate-500 mt-1">{new Date(alert.date).toLocaleTimeString('uz-UZ', { hour: '2-digit', minute: '2-digit' })}</p>
                           </div>
-                          <ChevronRight className="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 group-hover:text-slate-500 group-hover:translate-x-0.5 transition-all flex-shrink-0 mt-1" strokeWidth={2} />
-                        </Link>
+                          {!alert.isRead && (
+                            <div className="w-1.5 h-1.5 rounded-full bg-blue-500 flex-shrink-0 mt-2" />
+                          )}
+                        </div>
                       ))
                     )}
                   </div>
@@ -562,7 +606,7 @@ export default function DashboardLayout() {
                 </div>
                 <div className="hidden sm:block text-left">
                   <p className="text-[13px] font-semibold text-slate-800 dark:text-slate-200 leading-tight">{user?.name ||'Admin'}</p>
-                  <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-tight">Administrator</p>
+                  <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-tight capitalize">{user?.role ||'Administrator'}</p>
                 </div>
                 <ChevronDown
                   className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${

@@ -1,56 +1,104 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export interface Distributor {
+export interface Driver {
   id: number;
   name: string;
-  region: string;
   phone: string;
-  status: 'faol' | 'nofaol';
+  vehicle: string;
+  vehicleNumber: string;
+  status: 'band_emas' | 'band' | 'xizmat_safari' | 'dam_olish';
 }
 
-export interface DistributionOrder {
+export interface Shipment {
   id: number;
-  orderNumber: string;
-  distributorId: number;
-  date: string;
-  totalAmount: number;
-  status: 'kutilmoqda' | 'jo_natildi' | 'yetkazib_berildi';
+  shipmentNumber: string;
+  orderId?: number; // CRM Order bilan bog'lash (Mijozga)
+  transferId?: number; // Ombor filiallari bilan bog'lash (Filialga)
+  driverId: number;
+  destination: string; // Mijoz manzili yoki filial nomi
+  status: 'kutmoqda' | 'yolda' | 'yetkazildi' | 'qaytarildi';
+  startDate: string;
+  endDate?: string;
+  totalVolume: string; // Masalan: "1.5 tonna" yoki "10 ta quti"
+  notes?: string;
 }
 
 interface DistributionState {
-  distributors: Distributor[];
-  orders: DistributionOrder[];
+  drivers: Driver[];
+  shipments: Shipment[];
+  addDriver: (d: Omit<Driver, 'id'>) => void;
+  updateDriver: (id: number, d: Partial<Driver>) => void;
+  deleteDriver: (id: number) => void;
+  addShipment: (s: Omit<Shipment, 'id' | 'shipmentNumber'>) => void;
+  updateShipmentStatus: (id: number, status: Shipment['status']) => void;
 }
 
 export const useDistributionStore = create<DistributionState>()(
   persist(
-    () => ({
-      distributors: [
-        { id: 1, name: 'Toshkent Dist', region: 'Toshkent', phone: '+998 90 123 45 67', status: 'faol' },
-        { id: 2, name: 'Vodiy Dist', region: 'Farg\'ona, Andijon, Namangan', phone: '+998 93 234 56 78', status: 'faol' },
-      ] as Distributor[],
-      orders: [
+    (set) => ({
+      drivers: [
         {
           id: 1,
-          orderNumber: 'DIST-2026-001',
-          distributorId: 1,
-          date: '2026-05-28',
-          totalAmount: 12500000,
-          status: 'yetkazib_berildi'
+          name: "Sardor Yo'ldoshev",
+          phone: "+998 90 123 45 67",
+          vehicle: "Isuzu NPR",
+          vehicleNumber: "01 A 777 AA",
+          status: 'band_emas'
         },
         {
           id: 2,
-          orderNumber: 'DIST-2026-002',
-          distributorId: 2,
-          date: '2026-06-01',
-          totalAmount: 34000000,
-          status: 'jo_natildi'
+          name: "Ilhom Karimov",
+          phone: "+998 93 987 65 43",
+          vehicle: "Damas",
+          vehicleNumber: "10 B 123 CD",
+          status: 'band'
         }
-      ] as DistributionOrder[]
+      ] as Driver[],
+      
+      shipments: [
+        {
+          id: 1,
+          shipmentNumber: 'SHP-2026-001',
+          driverId: 2,
+          destination: 'Chilonzor Oq-Tepa (Korzinka)',
+          status: 'yolda',
+          startDate: '2026-06-03',
+          totalVolume: '25 quti'
+        }
+      ] as Shipment[],
+      
+      addDriver: (d) => set((state) => ({
+        drivers: [...state.drivers, { ...d, id: Date.now() }]
+      })),
+      
+      updateDriver: (id, d) => set((state) => ({
+        drivers: state.drivers.map(driver => driver.id === id ? { ...driver, ...d } : driver)
+      })),
+      
+      deleteDriver: (id) => set((state) => ({
+        drivers: state.drivers.filter(driver => driver.id !== id)
+      })),
+      
+      addShipment: (s) => set((state) => {
+        const newId = Date.now();
+        const year = new Date().getFullYear();
+        const shipNum = `SHP-${year}-${String(state.shipments.length + 1).padStart(3, '0')}`;
+        return {
+          shipments: [{ ...s, id: newId, shipmentNumber: shipNum }, ...state.shipments]
+        };
+      }),
+      
+      updateShipmentStatus: (id, status) => set((state) => ({
+        shipments: state.shipments.map(ship => 
+          ship.id === id 
+            ? { ...ship, status, endDate: ['yetkazildi', 'qaytarildi'].includes(status) ? new Date().toISOString().split('T')[0] : ship.endDate } 
+            : ship
+        )
+      }))
     }),
     {
-      name: 'inazorat-distribution-storage',
+      name: 'inazorat-distribution-storage-v2', // v2 to override the previous data structure
     }
   )
 );

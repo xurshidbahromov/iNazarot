@@ -33,6 +33,22 @@ export default function Products() {
     p.category.toLowerCase().includes(search.toLowerCase())
   );
 
+  const handleExport = () => {
+    const data = filtered.map(p => ({
+      "SKU": p.sku || '',
+      "Mahsulot nomi": p.name,
+      "Kategoriya": p.category,
+      "O'lchov birligi": p.unit,
+      "Narxi": p.price,
+      "Qoldiq": p.stock,
+      "Minimal qoldiq": p.minStock,
+      "Quti turi": p.boxType || '',
+      "Qutidagi soni": p.boxQuantity || 0,
+      "Xususiyatlari": p.features || ''
+    }));
+    exportToExcel(data, 'Ombor_qoldiqlari');
+  };
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -127,7 +143,7 @@ export default function Products() {
           <Button
             variant="outline"
             className="rounded-xl h-10 px-4 bg-white dark:bg-white/5 border border-slate-200 dark:border-transparent text-slate-600 dark:text-slate-100 hover:text-slate-900 hover:border-slate-300 hover:shadow-sm dark:hover:bg-white/10 transition-all duration-150 active:scale-95"
-            onClick={() => exportToExcel(products,'Ombor_qoldiqlari')}
+            onClick={handleExport}
           >
             <Download className="w-4 h-4 mr-2 text-slate-400 dark:text-slate-500" strokeWidth={1.6} /> Excel yuklash
           </Button>

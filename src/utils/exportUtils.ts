@@ -77,11 +77,11 @@ export const exportReportToExcel = (reportId: number) => {
   }
   // Distributsiya
   else if (reportDef.category === 'distribution') {
-    data = distState.orders.map(d => ({
-      Buyurtma_No: d.orderNumber,
-      Sana: d.date,
-      Distributor_ID: d.distributorId,
-      Jami_Summa: d.totalAmount,
+    data = distState.shipments.map((d: any) => ({
+      Buyurtma_No: d.shipmentNumber,
+      Sana: d.startDate,
+      Haydovchi_ID: d.driverId,
+      Manzil: d.destination,
       Holat: d.status
     }));
   }
@@ -116,4 +116,26 @@ export const exportReportToExcel = (reportId: number) => {
   // Faylni yuklab olish
   const fileName = `${reportDef.name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.xlsx`;
   XLSX.writeFile(workbook, fileName);
+};
+
+export const exportDataToExcel = (data: Record<string, any>[], fileName: string, sheetName: string = 'Varaq1') => {
+  if (!data || data.length === 0) {
+    alert("Yuklash uchun ma'lumot topilmadi");
+    return;
+  }
+
+  // Excel fayl yaratish
+  const worksheet = XLSX.utils.json_to_sheet(data);
+  
+  // Ustunlar kengligini chiroyli qilish
+  const colWidths = Object.keys(data[0] || {}).map(() => ({ wch: 20 }));
+  worksheet['!cols'] = colWidths;
+
+  const workbook = XLSX.utils.book_new();
+  const safeSheetName = sheetName.replace(/[^\w\s]/gi, '').substring(0, 31).trim() || 'Hisobot';
+  XLSX.utils.book_append_sheet(workbook, worksheet, safeSheetName);
+  
+  // Faylni yuklab olish
+  const fullFileName = `${fileName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.xlsx`;
+  XLSX.writeFile(workbook, fullFileName);
 };

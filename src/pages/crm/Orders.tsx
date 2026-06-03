@@ -1,5 +1,5 @@
 import { useState} from'react';
-import { Plus, Search, ShoppingBag, Clock, Eye, Calendar, DollarSign, Wallet, FileText, Trash2, TrendingUp} from'lucide-react';
+import { Plus, Search, ShoppingBag, Clock, Eye, Calendar, DollarSign, Wallet, FileText, Trash2, TrendingUp, Download} from'lucide-react';
 import { Button} from'../../components/ui/Button';
 import { Input} from'../../components/ui/Input';
 import { Table} from'../../components/ui/Table';
@@ -7,6 +7,7 @@ import { Modal} from'../../components/ui/Modal';
 import { useCRMStore} from'../../store/useCRMStore';
 import type { Order, OrderItem} from'../../store/useCRMStore';
 import { useWarehouseStore} from'../../store/useWarehouseStore';
+import { exportToExcel } from '../../utils/exportToExcel';
 
 const statusMap: Record<string, { label: string; cls: string}> = {
   yangi: { label:'Yangi', cls:'bg-blue-50 dark:bg-blue-950/50 text-blue-700 border-blue-200'},
@@ -145,6 +146,21 @@ export default function Orders() {
     setSelectedOrder(order);
     setIsViewModalOpen(true);};
 
+  const handleExport = () => {
+    const data = filtered.map(o => ({
+      "Buyurtma No": o.orderNumber,
+      "Sana": o.date,
+      "Mijoz": o.clientName,
+      "Jami summa": o.totalAmount,
+      "To'langan": o.paidAmount,
+      "Qarz qoldig'i": o.totalAmount - o.paidAmount,
+      "To'lov holati": paymentStatusMap[o.paymentStatus]?.label || o.paymentStatus,
+      "Buyurtma holati": statusMap[o.status]?.label || o.status,
+      "Izoh": o.notes || '-'
+    }));
+    exportToExcel(data, 'Buyurtmalar_Hisoboti');
+  };
+
   return (
     <div className="space-y-6 pb-8">
       {/* Header */}
@@ -156,12 +172,21 @@ export default function Orders() {
           </h3>
           <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">Mijozlar buyurtmalari, nasiya muddatlari va yetkazib berish jarayonini nazorat qilish.</p>
         </div>
-        <Button className="rounded-xl h-10 px-4 bg-primary-600 hover:bg-primary-700 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.4)]" onClick={() => {
-          setIsAddModalOpen(true);
-          handleAddProductItem(); // Dastlabki bir dona mahsulot qatorini qo'shish
-        }}>
-          <Plus className="w-4 h-4 mr-2" strokeWidth={2} /> Yangi buyurtma
-        </Button>
+        <div className="flex gap-2.5">
+          <Button
+            variant="outline"
+            className="rounded-xl h-10 px-4 bg-white dark:bg-white/5 border border-slate-200 dark:border-transparent text-slate-600 dark:text-slate-100 hover:text-slate-900 hover:border-slate-300 hover:shadow-sm dark:hover:bg-white/10 transition-all duration-150 active:scale-95"
+            onClick={handleExport}
+          >
+            <Download className="w-4 h-4 mr-2 text-slate-400 dark:text-slate-500" strokeWidth={1.6} /> Excel yuklash
+          </Button>
+          <Button className="rounded-xl h-10 px-4 bg-primary-600 hover:bg-primary-700 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.4)] transition-all active:scale-95" onClick={() => {
+            setIsAddModalOpen(true);
+            handleAddProductItem(); // Dastlabki bir dona mahsulot qatorini qo'shish
+          }}>
+            <Plus className="w-4 h-4 mr-2" strokeWidth={2} /> Yangi buyurtma
+          </Button>
+        </div>
       </div>
 
       {/* Stats Cards */}

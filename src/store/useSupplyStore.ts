@@ -15,9 +15,10 @@ export interface Purchase {
   date: string;
   supplier: string;
   total: number;
-  status: string;
+  status: 'qabul_qilindi' | 'kutilmoqda' | 'bekor_qilingan' | string;
   items: number;
-  additionalExpense?: number; // Qo'shimcha xarajatlar, masalan transport
+  additionalExpense?: number;
+  itemsList?: { productId: number; productName: string; quantity: number; price: number }[];
 }
 
 interface SupplyState {
@@ -25,6 +26,7 @@ interface SupplyState {
   purchases: Purchase[];
   addSupplier: (s: Omit<Supplier, 'id'>) => void;
   addPurchase: (p: Omit<Purchase, 'id' | 'date'>) => void;
+  updatePurchaseStatus: (id: number, status: Purchase['status']) => void;
 }
 
 export const useSupplyStore = create<SupplyState>()(
@@ -58,11 +60,14 @@ export const useSupplyStore = create<SupplyState>()(
         suppliers: [...state.suppliers, { ...s, id: Date.now() }]
       })),
       addPurchase: (p) => set((state) => ({
-        purchases: [{ ...p, id: Date.now(), date: new Date().toLocaleDateString('uz-UZ') }, ...state.purchases]
+        purchases: [{ ...p, id: Date.now(), date: new Date().toLocaleDateString('ru-RU') }, ...state.purchases]
       })),
+      updatePurchaseStatus: (id, status) => set((state) => ({
+        purchases: state.purchases.map(p => p.id === id ? { ...p, status } : p)
+      }))
     }),
     {
-      name: 'inazorat-supply-storage-v3',
+      name: 'inazorat-supply-storage-v2',
     }
   )
 );

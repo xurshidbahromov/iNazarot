@@ -26,8 +26,13 @@ import Categories from './pages/crm/Categories';
 import SupplyLayout from './pages/supply/SupplyLayout';
 import Purchases from './pages/supply/Purchases';
 import Suppliers from './pages/supply/Suppliers';
-import Requests from './pages/supply/Requests';
+import SupplyRequests from './pages/supply/Requests';
 import Returns from './pages/supply/Returns';
+
+// Distribution
+import DistributionLayout from './pages/distribution/DistributionLayout';
+import Drivers from './pages/distribution/Drivers';
+import Shipments from './pages/distribution/Shipments';
 
 import WarehouseLayout from './pages/warehouse/WarehouseLayout';
 import Products from './pages/warehouse/Products';
@@ -45,6 +50,11 @@ import Currency from './pages/finance/Currency';
 import POSLayout from './pages/pos/POSLayout';
 import POSLauncher from './pages/pos/POSLauncher';
 import POS from './pages/pos/POS';
+
+import ProductionLayout from './pages/production/ProductionLayout';
+import ProductionOrders from './pages/production/Orders';
+import Formulas from './pages/production/Formulas';
+
 const queryClient = new QueryClient();
 
 import { Toaster } from 'sonner';
@@ -93,15 +103,25 @@ function App() {
                 <Route path="drafts" element={<WarehouseDrafts />} />
                 <Route path="scheduled" element={<WarehouseScheduled />} />
                 <Route path="locations" element={<Locations />} />
-                <Route path="inventory" element={<Inventory />} />
                 <Route path="transfers" element={<Transfers />} />
+                <Route path="inventory" element={<Inventory />} />
               </Route>
               <Route path="/supply" element={<SupplyLayout />}>
-                <Route index element={<Navigate to="purchases" replace />} />
+                <Route index element={<Purchases />} />
                 <Route path="purchases" element={<Purchases />} />
                 <Route path="suppliers" element={<Suppliers />} />
-                <Route path="requests" element={<Requests />} />
+                <Route path="requests" element={<SupplyRequests />} />
                 <Route path="returns" element={<Returns />} />
+              </Route>
+              <Route path="/distribution" element={<DistributionLayout />}>
+                <Route index element={<Shipments />} />
+                <Route path="shipments" element={<Shipments />} />
+                <Route path="drivers" element={<Drivers />} />
+              </Route>
+              <Route path="/production" element={<ProductionLayout />}>
+                <Route index element={<Navigate to="orders" replace />} />
+                <Route path="orders" element={<ProductionOrders />} />
+                <Route path="formulas" element={<Formulas />} />
               </Route>
               <Route path="/finance" element={<FinanceLayout />}>
                 <Route index element={<Navigate to="cashbox" replace />} />
