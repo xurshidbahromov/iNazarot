@@ -4,6 +4,8 @@ import { reports } from '../../data/reportsData';
 import FinanceReport from './components/FinanceReport';
 import CRMReport from './components/CRMReport';
 import WarehouseReport from './components/WarehouseReport';
+import GenericReportTable from './components/GenericReportTable';
+import { exportReportToExcel } from '../../utils/exportUtils';
 
 export default function ReportView() {
   const { id } = useParams();
@@ -23,6 +25,12 @@ export default function ReportView() {
   }
 
   const Icon = report.icon;
+
+  const handleExport = () => {
+    if (report) {
+      exportReportToExcel(report.id);
+    }
+  };
 
   return (
     <div className="max-w-7xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -51,7 +59,10 @@ export default function ReportView() {
         </div>
         
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-white/5 border border-slate-200 dark:border-transparent rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-100 hover:text-slate-900 hover:border-slate-300 hover:shadow-sm transition-all duration-150 active:scale-95">
+          <button 
+            onClick={handleExport}
+            className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-white/5 border border-slate-200 dark:border-transparent rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-100 hover:text-slate-900 hover:border-slate-300 hover:shadow-sm transition-all duration-150 active:scale-95"
+          >
             <Download className="w-4 h-4 text-slate-400 dark:text-slate-500" />
             <span>Eksport (Excel)</span>
           </button>
@@ -112,33 +123,7 @@ export default function ReportView() {
         {[18, 22].includes(Number(id)) && <WarehouseReport reportId={Number(id)} />}
 
         {![1, 2, 3, 6, 18, 22, 28].includes(Number(id)) && (
-          <div className="bg-white/80 dark:bg-white/5 backdrop-blur-sm border-2 border-[#f1f2f4] dark:border-transparent rounded-[20px] overflow-hidden shadow-sm dark:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.4)]">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-slate-50/80 dark:bg-white/[0.02] border-b-2 border-[#f1f2f4] dark:border-white/5">
-                  <th className="px-5 py-4 text-[13px] font-semibold text-slate-500 dark:text-slate-400">Ko'rsatkich</th>
-                  <th className="px-5 py-4 text-[13px] font-semibold text-slate-500 dark:text-slate-400">Qiymat</th>
-                  <th className="px-5 py-4 text-[13px] font-semibold text-slate-500 dark:text-slate-400">O'zgarish</th>
-                  <th className="px-5 py-4 text-[13px] font-semibold text-slate-500 dark:text-slate-400">Izoh</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b border-slate-100 dark:border-transparent hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors">
-                  <td colSpan={4} className="px-6 py-24 text-center">
-                    <div className="flex flex-col items-center justify-center">
-                      <div className={`w-20 h-20 ${report.bg} rounded-full flex items-center justify-center mb-4 transition-transform duration-500 hover:scale-110 hover:rotate-3`}>
-                        <Icon className={`w-10 h-10 ${report.color}`} />
-                      </div>
-                      <h3 className="text-slate-800 dark:text-slate-200 font-bold text-lg mb-2">Ma'lumotlar tayyorlanmoqda</h3>
-                      <p className="text-slate-500 dark:text-slate-400 max-w-md mx-auto text-[15px]">
-                        Bu hisobot ({report.name}) tez orada haqiqiy ma'lumotlar bilan to'ldiriladi.
-                      </p>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <GenericReportTable reportId={Number(id)} />
         )}
       </div>
 

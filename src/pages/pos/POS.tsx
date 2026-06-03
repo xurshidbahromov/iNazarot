@@ -5,6 +5,7 @@ import { Input } from '../../components/ui/Input';
 import { useWarehouseStore } from '../../store/useWarehouseStore';
 import { useFinanceStore } from '../../store/useFinanceStore';
 import { useActivityStore } from '../../store/useActivityStore';
+import { useCRMStore } from '../../store/useCRMStore';
 import { cn } from '../../utils/cn';
 import { printReceipt } from '../../utils/posUtils';
 import POSLockScreen from './POSLockScreen';
@@ -29,10 +30,13 @@ export default function POS() {
   const { products, updateStock } = useWarehouseStore();
   const { addTransaction } = useFinanceStore();
   const { addActivity } = useActivityStore();
+  const { clients, addOrder } = useCRMStore();
   
   const [isLocked, setIsLocked] = useState(true);
   const [search, setSearch] = useState('');
   const [cart, setCart] = useState<CartItem[]>([]);
+  const [selectedClient, setSelectedClient] = useState<typeof clients[0] | null>(null);
+  const [showClientModal, setShowClientModal] = useState(false);
   const [successModal, setSuccessModal] = useState<PaymentSuccessModal>({
     isOpen: false, method: '', total: 0, checkId: '', items: []
   });
@@ -109,6 +113,25 @@ export default function POS() {
       method: method === 'Naqd pul' ? 'Naqd' : 'Karta'
     });
 
+    // CRM da buyurtma yaratish
+    if (selectedClient) {
+      addOrder({
+        clientId: selectedClient.id,
+        clientName: selectedClient.name,
+        products: cart.map(c => ({
+          productId: c.id,
+          name: c.name,
+          quantity: c.quantity,
+          price: c.price
+        })),
+        totalAmount: total,
+        paidAmount: total,
+        paymentStatus: 'paid',
+        status: 'yakunlandi',
+        notes: `POS orqali sotildi (${method})`
+      });
+    }
+
     // Show success modal
     setSuccessModal({
       isOpen: true,
@@ -129,6 +152,7 @@ export default function POS() {
     });
 
     setCart([]);
+    setSelectedClient(null);
   };
 
   const handleClose = () => {
@@ -350,19 +374,61 @@ export default function POS() {
         <div className="w-[420px] xl:w-[460px] flex flex-col bg-white/60 dark:bg-[#0b0f19]/60 backdrop-blur-xl rounded-[2rem] border border-slate-200/60 dark:border-white/5 shadow-[0_8px_30px_rgb(0,0,0,0.02)] overflow-hidden flex-shrink-0 relative">
           
           {/* Customer Selector */}
-          <div className="p-6 pb-4 border-b border-slate-100 dark:border-b dark:border-white/10">
-            <button className="w-full flex items-center justify-between px-5 py-4 bg-slate-50 dark:bg-white/5 rounded-[20px] hover:bg-slate-100 dark:bg-white/[0.06] active:scale-[0.97] active:translate-y-px transition-all duration-150 group">
+          <div className="p-6 pb-4 border-b border-slate-100 dark:border-b dark:border-white/10 relative">
+            <button 
+              onClick={() => setShowClientModal(true)}
+              className="w-full flex items-center justify-between px-5 py-4 bg-slate-50 dark:bg-white/5 rounded-[20px] hover:bg-slate-100 dark:bg-white/[0.06] active:scale-[0.97] active:translate-y-px transition-all duration-150 group"
+            >
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 bg-white dark:bg-white/[0.08] rounded-xl flex items-center justify-center shadow-sm">
                   <User className="w-5 h-5 text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:text-slate-400 transition-colors" strokeWidth={2} />
                 </div>
                 <div className="text-left">
-                  <p className="text-sm font-bold text-slate-700 dark:text-slate-200 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">Oddiy xaridor</p>
+                  <p className="text-sm font-bold text-slate-700 dark:text-slate-200 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
+                    {selectedClient ? selectedClient.name : "Oddiy xaridor"}
+                  </p>
                   <p className="text-xs text-slate-400 dark:text-slate-500 font-medium">Mijozni tanlash</p>
                 </div>
               </div>
-              <ChevronRight className="w-5 h-5 text-slate-300 group-hover:translate-x-1 transition-transform" strokeWidth={2} />
+              {selectedClient ? (
+                <button 
+                  onClick={(e) => { e.stopPropagation(); setSelectedClient(null); }}
+                  className="p-1 rounded-md hover:bg-slate-200 dark:hover:bg-white/10 transition-colors"
+                >
+                  <X className="w-4 h-4 text-slate-400" />
+                </button>
+              ) : (
+                <ChevronRight className="w-5 h-5 text-slate-300 group-hover:translate-x-1 transition-transform" strokeWidth={2} />
+              )}
             </button>
+            
+            {showClientModal && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setShowClientModal(false)} />
+                <div className="absolute top-full mt-2 left-4 right-4 z-50 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 max-h-64 overflow-y-auto">
+                  <div className="p-2">
+                    <div 
+                      onClick={() => { setSelectedClient(null); setShowClientModal(false); }}
+                      className="p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer flex justify-between items-center"
+                    >
+                      <span className="font-bold text-sm text-slate-800 dark:text-slate-200">Oddiy xaridor</span>
+                    </div>
+                    {clients.map(c => (
+                      <div 
+                        key={c.id} 
+                        onClick={() => { setSelectedClient(c); setShowClientModal(false); }}
+                        className="p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer flex justify-between items-center border-t border-slate-100 dark:border-slate-700"
+                      >
+                        <div>
+                          <p className="font-bold text-sm text-slate-800 dark:text-slate-200">{c.name}</p>
+                          <p className="text-xs text-slate-500">{c.phone}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
           </div>
 
           {/* Cart Items */}
