@@ -55,6 +55,11 @@ import ProductionLayout from './pages/production/ProductionLayout';
 import ProductionOrders from './pages/production/Orders';
 import Formulas from './pages/production/Formulas';
 
+import AILayout from './pages/ai/AILayout';
+import CashFlowForecast from './pages/ai/CashFlowForecast';
+import AnomalyRadar from './pages/ai/AnomalyRadar';
+import AICopilot from './pages/ai/AICopilot';
+
 const queryClient = new QueryClient();
 
 import { Toaster } from 'sonner';
@@ -86,6 +91,12 @@ function App() {
 
             <Route element={<DashboardLayout />}>
               <Route path="/" element={<Dashboard />} />
+              <Route path="/ai" element={<AILayout />}>
+                <Route index element={<Navigate to="forecast" replace />} />
+                <Route path="forecast" element={<CashFlowForecast />} />
+                <Route path="anomalies" element={<AnomalyRadar />} />
+                <Route path="copilot" element={<AICopilot />} />
+              </Route>
               <Route path="/pos" element={<POSLauncher />} />
               <Route path="/reports" element={<ReportsLayout />}>
                 <Route index element={<ReportsList />} />

@@ -2,9 +2,10 @@ import { useState, useEffect, useRef } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Users, Package, Settings, ShoppingCart,
-  DollarSign, RefreshCw, Layers, Bell, LogOut, ChevronDown,
-  Search, Command, User, Shield, ChevronRight, HelpCircle, BarChart2,
-  AlertTriangle, Info, XCircle, X, Moon, Sun, Factory, Truck, CheckCircle2 } from 'lucide-react';
+  DollarSign, Bell, LogOut, ChevronDown,
+  Search, Command, User, Shield, ChevronRight, BarChart2,
+  AlertTriangle, Info, XCircle, X, Moon, Sun, CheckCircle2,
+  Sparkles } from 'lucide-react';
 import { cn} from'../utils/cn';
 import { useAuthStore } from '../store/useAuthStore';
 import { useThemeStore } from '../store/useThemeStore';
@@ -16,84 +17,56 @@ import { reports } from '../data/reportsData';
 const ROLE_PERMISSIONS: Record<string, string[]> = {
   admin: ['*'],
   administrator: ['*'],
-  menejer: ['/', '/crm', '/warehouse', '/supply', '/production', '/distribution', '/reports', '/settings', '/pos'],
-  omborchi: ['/', '/warehouse', '/supply', '/production', '/settings'],
-  kasir: ['/', '/finance', '/crm', '/pos', '/settings'],
-  hr: ['/', '/hr', '/settings'],
+  menejer: ['*'],
+  omborchi: ['/', '/warehouse', '/supply', '/settings'],
+  kasir: ['/', '/finance', '/crm', '/pos', '/ai', '/settings'],
+  hr: ['/', '/settings'],
 };
 
 type NavItem = {
   name: string;
   href?: string;
   icon: React.ElementType;
-  badge?: { value: number; color: string};
-  children?: { name: string; href: string; badge?: { value: number; color: string}}[];};
+  badge?: { value: string | number; color: string};
+  children?: { name: string; href: string; badge?: { value: string | number; color: string}}[];};
 
 const navigation: NavItem[] = [
-  { name:'Asosiy', href:'/', icon: LayoutDashboard},
-  { name:'Savdo (POS)', href:'/pos', icon: ShoppingCart},
-  { name:'Hisobotlar', href:'/reports', icon: BarChart2 },
+  { name:'Asosiy Boshqaruv', href:'/', icon: LayoutDashboard},
   { 
-    name:'Mijozlar', 
-    icon: Users,
+    name:'AI Intelligence', 
+    icon: Sparkles,
+    badge: { value: '3 xavf', color:'bg-rose-500/10 text-rose-600 dark:text-rose-400 font-bold border border-rose-500/20'},
     children: [
-      { name:"Mijozlar ro'yxati", href:'/crm/clients'},
-      { name:'Buyurtmalar', href:'/crm/orders'},
-      { name:'Kategoriyalar', href:'/crm/categories'}
-    ]},
-  {
-    name:'Ombor',
-    icon: Package,
-    children: [
-      { name:'Mahsulotlar', href:'/warehouse/products'},
-      { name:'Qoralamalar', href:'/warehouse/drafts', badge: { value: 3, color:'bg-orange-200 text-orange-800'}},
-      { name:'Rejalashtirilgan', href:'/warehouse/scheduled', badge: { value: 8, color:'bg-emerald-200 text-emerald-800'}},
-      { name:'Omborlar', href:'/warehouse/locations'},
-      { name:'Inventarizatsiya', href:'/warehouse/inventory'},
-      { name:"Ichki ko'chirish", href:'/warehouse/transfers'}
+      { name:'Pul Oqimi Prognozi (Forecast)', href:'/ai/forecast'},
+      { name:'Anomaliya & Xavflar Radari', href:'/ai/anomalies'},
+      { name:'AI Financial Copilot', href:'/ai/copilot'}
     ]},
   { 
-    name:"Ta'minot", 
-    icon: RefreshCw,
-    children: [
-      { name:'Xaridlar', href:'/supply/purchases'},
-      { name:'Yetkazib beruvchilar', href:'/supply/suppliers'},
-      { name:"Sotib olish so'rovlari", href:'/supply/requests'},
-      { name:'Qaytarishlar', href:'/supply/returns'}
-    ]},
-  {
-    name: 'Ishlab chiqarish',
-    icon: Factory,
-    children: [
-      { name: 'Jarayonlar', href: '/production/orders' },
-      { name: 'Retseptlar (BOM)', href: '/production/formulas' }
-    ]},
-  {
-    name: 'Logistika',
-    icon: Truck,
-    children: [
-      { name: 'Yetkazib berish', href: '/distribution/shipments' },
-      { name: 'Haydovchilar', href: '/distribution/drivers' }
-    ]},
-  { 
-    name:'Moliya', 
+    name:'Moliya & Kassa', 
     icon: DollarSign,
     children: [
-      { name:'Kassa (Kirim-chiqim)', href:'/finance/cashbox'},
-      { name:'Xarajatlar', href:'/finance/expenses'},
-      { name:'Valyuta', href:'/finance/currency'}
+      { name:'Kassa (Multi-valyuta)', href:'/finance/cashbox'},
+      { name:'Xarajatlar & Smart OCR', href:'/finance/expenses'},
+      { name:'Valyuta kurslari', href:'/finance/currency'}
     ]},
   { 
-    name:'HR', 
-    icon: Layers,
+    name:'Nasiyalar & Mijozlar', 
+    icon: Users,
     children: [
-      { name:'Xodimlar', href:'/hr/employees'},
-      { name:"Bo'limlar", href:'/hr/departments'},
-      { name:'Lavozimlar', href:'/hr/positions'},
-      { name:'Ruxsatlar', href:'/hr/permissions'}
+      { name:"Mijozlar qarzdorligi (Debts)", href:'/crm/clients'},
+      { name:'Buyurtmalar tarixi', href:'/crm/orders'}
     ]},
+  { name:'Kassa Savdosi (POS)', href:'/pos', icon: ShoppingCart},
+  {
+    name:"Aktivlar & Ta'minot",
+    icon: Package,
+    children: [
+      { name:'Ombor zaxiralari (Muzlagan mablag\')', href:'/warehouse/products'},
+      { name:'Kutilayotgan xaridlar (Payables)', href:'/supply/purchases'},
+      { name:'Yetkazib beruvchilar', href:'/supply/suppliers'}
+    ]},
+  { name:'Moliyaviy Hisobotlar', href:'/reports', icon: BarChart2 },
   { name:'Sozlamalar', href:'/settings', icon: Settings},
-  { name:"Qo'llanma", href:'/help', icon: HelpCircle},
 ];
 
 export default function DashboardLayout() {
