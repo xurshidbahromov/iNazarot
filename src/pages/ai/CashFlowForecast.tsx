@@ -17,15 +17,19 @@ import {
   ArrowDownRight,
   ShieldCheck,
   Zap,
-  CheckCircle2
+  CheckCircle2,
+  Send
 } from 'lucide-react';
 import { useAIStore } from '../../store/useAIStore';
+import { useTelegramStore } from '../../store/useTelegramStore';
+import { formatCashGapTelegramMessage } from '../../utils/telegramService';
 import type { DailyCashProjection } from '../../utils/aiFinancialEngine';
 import { Table } from '../../components/ui/Table';
 import { toast } from 'sonner';
 
 export default function CashFlowForecast() {
   const { forecastTimeline, forecastSummary } = useAIStore();
+  const { openAlertModal } = useTelegramStore();
   const [selectedRange, setSelectedRange] = useState<'30' | '14' | '7'>('30');
   const [isFixApplied, setIsFixApplied] = useState(false);
 
@@ -81,13 +85,30 @@ export default function CashFlowForecast() {
             </div>
           </div>
 
-          <button
-            onClick={handleApplyAIFix}
-            className="w-full md:w-auto flex items-center justify-center gap-2 px-4 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-semibold rounded-xl text-xs shadow-sm hover:shadow transition-all duration-150 active:scale-95 flex-shrink-0"
-          >
-            <Zap className="w-4 h-4 text-amber-300" />
-            AI Rejasini Qo'llash (Kassani qutqarish)
-          </button>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full md:w-auto flex-shrink-0">
+            <button
+              onClick={() => openAlertModal({
+                title: "Kassa Uzilishi Xavfi (28-sentabr)",
+                htmlText: formatCashGapTelegramMessage('28-sentabr', '4,200,000', '32,000,000'),
+                type: 'gap',
+                actionLabel: "AI Rejasini Qo'llash",
+                onAction: handleApplyAIFix
+              })}
+              className="flex items-center justify-center gap-2 px-3.5 py-2.5 bg-[#229ED9] hover:bg-[#1e8bc0] text-white font-semibold rounded-xl text-xs shadow-sm hover:shadow transition-all duration-150 active:scale-95"
+              title="Rahbarga Telegram orqali xabar yuborish"
+            >
+              <Send className="w-3.5 h-3.5" />
+              Telegram Alert
+            </button>
+
+            <button
+              onClick={handleApplyAIFix}
+              className="flex items-center justify-center gap-2 px-4 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-semibold rounded-xl text-xs shadow-sm hover:shadow transition-all duration-150 active:scale-95"
+            >
+              <Zap className="w-4 h-4 text-amber-300" />
+              AI Rejasini Qo'llash
+            </button>
+          </div>
         </div>
       ) : (
         <div className="bg-emerald-50/70 dark:bg-emerald-500/10 backdrop-blur-sm p-4 sm:p-5 rounded-[20px] border-2 border-emerald-100 dark:border-transparent shadow-[0_4px_20px_-4px_rgba(16,185,129,0.08)] dark:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.4)] flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all duration-300">
@@ -104,9 +125,22 @@ export default function CashFlowForecast() {
               </p>
             </div>
           </div>
-          <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300 bg-white dark:bg-white/10 px-3 py-1.5 rounded-xl border border-emerald-200 dark:border-emerald-500/20 shadow-sm self-start sm:self-auto">
-            Zaxira: +10.3M UZS
-          </span>
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            <button
+              onClick={() => openAlertModal({
+                title: "Kassa Holati: Barqaror",
+                htmlText: `✅ <b>iNazorat AI — KASSA XAVFI BARTARAF ETILDI!</b>\n\nAI Rejasi qo'llanilgach, 28-sentabr kassa uzilishi to'liq bartaraf etildi.\n\n💰 <b>Yangi prognoz zaxirasi:</b> +10,300,000 UZS\n📈 <b>Kassa xavfsizligi:</b> 100% barqaror.`,
+                type: 'gap'
+              })}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#229ED9]/15 hover:bg-[#229ED9]/25 text-[#0088cc] dark:text-[#229ED9] rounded-xl text-xs font-semibold transition-all active:scale-95 border border-[#229ED9]/30"
+            >
+              <Send className="w-3 h-3" />
+              Telegramga Yuborish
+            </button>
+            <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300 bg-white dark:bg-white/10 px-3 py-1.5 rounded-xl border border-emerald-200 dark:border-emerald-500/20 shadow-sm">
+              Zaxira: +10.3M UZS
+            </span>
+          </div>
         </div>
       )}
 

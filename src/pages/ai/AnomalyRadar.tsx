@@ -3,13 +3,20 @@ import {
   ShieldAlert,
   CheckCircle2,
   Cpu,
-  Check
+  Check,
+  Send
 } from 'lucide-react';
 import { useAIStore } from '../../store/useAIStore';
+import { useTelegramStore } from '../../store/useTelegramStore';
+import {
+  formatAnomalyTelegramMessage,
+  formatDailyDigestTelegramMessage
+} from '../../utils/telegramService';
 import { toast } from 'sonner';
 
 export default function AnomalyRadar() {
   const { anomalies, resolveAnomaly } = useAIStore();
+  const { openAlertModal } = useTelegramStore();
   const [selectedSeverity, setSelectedSeverity] = useState<string>('all');
 
   const filtered = anomalies.filter(a => {
@@ -72,9 +79,23 @@ export default function AnomalyRadar() {
           ))}
         </div>
 
-        <span className="text-xs font-bold text-slate-500">
-          Aniqlangan anomaliyalar: <span className="text-rose-600 font-extrabold">{anomalies.length} ta</span>
-        </span>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => openAlertModal({
+              title: "Kunlik Moliyaviy Dayjest (Executive)",
+              htmlText: formatDailyDigestTelegramMessage(72, "O'rtacha", anomalies.length, "31,850,000"),
+              type: 'digest'
+            })}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#229ED9]/10 hover:bg-[#229ED9]/20 text-[#0088cc] dark:text-[#229ED9] border border-[#229ED9]/30 text-xs font-semibold transition-all active:scale-95"
+            title="Rahbarga kunlik xulosani Telegram orqali yuborish"
+          >
+            <Send className="w-3.5 h-3.5" />
+            Kunlik Dayjest
+          </button>
+          <span className="text-xs font-bold text-slate-500">
+            Aniqlangan: <span className="text-rose-600 font-extrabold">{anomalies.length} ta</span>
+          </span>
+        </div>
       </div>
 
       {/* Anomaly Cards Grid */}
@@ -141,6 +162,27 @@ export default function AnomalyRadar() {
 
             {/* Actions */}
             <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-white/5">
+              <button
+                onClick={() => openAlertModal({
+                  title: `Anomaliya Xabarnomasi: ${anom.description}`,
+                  htmlText: formatAnomalyTelegramMessage(
+                    anom.description,
+                    anom.category,
+                    anom.amount,
+                    anom.historicalAverage,
+                    anom.spikePercentage
+                  ),
+                  type: 'anomaly',
+                  actionLabel: "Tekshirildi deb belgilash",
+                  onAction: () => handleResolve(anom.id, anom.description)
+                })}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-50 dark:bg-sky-500/10 border border-sky-200 dark:border-transparent hover:border-sky-300 hover:shadow-sm dark:hover:bg-sky-500/20 text-xs font-semibold text-sky-700 dark:text-sky-300 transition-all duration-150 active:scale-95"
+                title="Ushbu anomaliya haqida rahbarga Telegram alert yuborish"
+              >
+                <Send className="w-3.5 h-3.5 text-[#229ED9]" strokeWidth={2} />
+                Telegram Alert
+              </button>
+
               <button
                 onClick={() => handleResolve(anom.id, anom.description)}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white dark:bg-white/10 border border-slate-200 dark:border-transparent hover:border-slate-300 hover:shadow-sm dark:hover:bg-white/15 text-xs font-semibold text-slate-700 dark:text-slate-200 transition-all duration-150 active:scale-95"

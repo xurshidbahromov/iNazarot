@@ -59,6 +59,7 @@ import AILayout from './pages/ai/AILayout';
 import CashFlowForecast from './pages/ai/CashFlowForecast';
 import AnomalyRadar from './pages/ai/AnomalyRadar';
 import AICopilot from './pages/ai/AICopilot';
+import { TelegramAlertModal } from './components/ui/TelegramAlertModal';
 
 const queryClient = new QueryClient();
 
@@ -155,6 +156,7 @@ function App() {
       </BrowserRouter>
 
     </QueryClientProvider>
+    <TelegramAlertModal />
     <Toaster 
       position="top-right"
       theme={theme}

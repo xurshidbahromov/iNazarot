@@ -5,11 +5,13 @@ import {
   DollarSign, Bell, LogOut, ChevronDown,
   Search, Command, User, Shield, ChevronRight, BarChart2,
   AlertTriangle, Info, XCircle, X, Moon, Sun, CheckCircle2,
-  Sparkles } from 'lucide-react';
+  Sparkles, Send } from 'lucide-react';
 import { cn} from'../utils/cn';
 import { useAuthStore } from '../store/useAuthStore';
 import { useThemeStore } from '../store/useThemeStore';
 import { useNotificationStore } from '../store/useNotificationStore';
+import { useTelegramStore } from '../store/useTelegramStore';
+import { formatDailyDigestTelegramMessage } from '../utils/telegramService';
 import { CommandPalette} from'../components/CommandPalette';
 import { reports } from '../data/reportsData';
 
@@ -91,6 +93,7 @@ export default function DashboardLayout() {
   const [cmdOpen, setCmdOpen] = useState(false);
 
   const { notifications, markAsRead, clearAll } = useNotificationStore();
+  const { openAlertModal } = useTelegramStore();
   const unreadCount = notifications.filter(n => !n.isRead).length;
 
   // Foydalanuvchi ruxsatiga ko'ra menyuni filtrlash
@@ -473,6 +476,23 @@ export default function DashboardLayout() {
               )}
             </button>
 
+            {/* Telegram Executive Bot Quick Button */}
+            <button
+              onClick={() => openAlertModal({
+                title: "iNazorat AI — Executive Alert & Bot",
+                htmlText: formatDailyDigestTelegramMessage(),
+                type: 'digest'
+              })}
+              className="group relative flex items-center justify-center p-2.5 rounded-xl text-[#229ED9] hover:bg-[#229ED9]/10 dark:hover:bg-[#229ED9]/20 transition-all duration-200 active:scale-95"
+              title="Telegram AI Executive Bot & Smartfon Simulyatori"
+            >
+              <Send className="w-[18px] h-[18px] stroke-[2]" />
+              <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#229ED9] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#229ED9]"></span>
+              </span>
+            </button>
+
             {/* Notification bell */}
             <div className="relative" ref={alertsRef}>
               <button
@@ -558,6 +578,25 @@ export default function DashboardLayout() {
                         </div>
                       ))
                     )}
+                  </div>
+
+                  {/* Executive Bot Footer */}
+                  <div className="p-2.5 px-4 bg-slate-50 dark:bg-white/[0.03] border-t border-slate-100 dark:border-white/5 flex items-center justify-between">
+                    <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Telegram Bot:</span>
+                    <button
+                      onClick={() => {
+                        setShowAlerts(false);
+                        openAlertModal({
+                          title: "iNazorat AI — Executive Alert",
+                          htmlText: formatDailyDigestTelegramMessage(),
+                          type: 'digest'
+                        });
+                      }}
+                      className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#229ED9] hover:underline"
+                    >
+                      <Send className="w-3 h-3" />
+                      Smartfonga uzatish
+                    </button>
                   </div>
                 </div>
               )}

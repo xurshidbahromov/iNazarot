@@ -4,8 +4,6 @@ import {
   Send,
   Smartphone,
   Settings,
-  CheckCircle2,
-  AlertTriangle,
   Zap,
   Sparkles,
   ExternalLink,

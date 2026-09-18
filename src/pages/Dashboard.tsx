@@ -2,7 +2,7 @@ import { useState } from 'react';
 import {
   TrendingUp, TrendingDown, DollarSign, Users, ShoppingCart, Package,
   Activity, ArrowRight, LayoutDashboard, Download, Sparkles, Brain,
-  CheckCircle2, AlertTriangle, Info, RefreshCw, ChevronRight, X
+  CheckCircle2, AlertTriangle, Info, RefreshCw, ChevronRight, X, Send
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { 
@@ -13,6 +13,8 @@ import { useCRMStore } from '../store/useCRMStore';
 import { useWarehouseStore } from '../store/useWarehouseStore';
 import { useHRStore } from '../store/useHRStore';
 import { useActivityStore } from '../store/useActivityStore';
+import { useTelegramStore } from '../store/useTelegramStore';
+import { formatDailyDigestTelegramMessage } from '../utils/telegramService';
 import { exportToCSV } from '../utils/posUtils';
 import { formatDistanceToNow } from 'date-fns/formatDistanceToNow';
 import { uz } from 'date-fns/locale/uz';
@@ -24,6 +26,7 @@ export default function Dashboard() {
   const { products } = useWarehouseStore();
   const { employees } = useHRStore();
   const { logs } = useActivityStore();
+  const { openAlertModal } = useTelegramStore();
 
   const [selectedGoal, setSelectedGoal] = useState<BusinessGoal>('general');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -385,14 +388,28 @@ export default function Dashboard() {
                 <div className="text-xs text-slate-500 dark:text-slate-400">
                   30 kunlik kassa prognozi, Z-score anomaliyalar va AI Financial Copilot bilan chuqurroq tanishing:
                 </div>
-                <Link
-                  to="/ai/forecast"
-                  className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white text-xs font-bold transition-all shadow-sm flex-shrink-0"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-                  AI Financial Intelligence Markazi
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => openAlertModal({
+                      title: "Kunlik Moliyaviy Dayjest (Executive)",
+                      htmlText: formatDailyDigestTelegramMessage(),
+                      type: 'digest'
+                    })}
+                    className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#229ED9]/15 hover:bg-[#229ED9]/25 text-[#0088cc] dark:text-[#229ED9] border border-[#229ED9]/30 text-xs font-bold transition-all shadow-sm active:scale-95 flex-shrink-0"
+                    title="Telegram orqali rahbarga kunlik dayjest yuborish"
+                  >
+                    <Send className="w-3.5 h-3.5" />
+                    Telegram Alert
+                  </button>
+                  <Link
+                    to="/ai/forecast"
+                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white text-xs font-bold transition-all shadow-sm flex-shrink-0"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                    AI Intelligence Markazi
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
