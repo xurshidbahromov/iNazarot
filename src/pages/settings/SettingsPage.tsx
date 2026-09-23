@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import {
   Globe, Shield, Wallet, Bell, Smartphone, Box, Package, Save,
   Building, Mail, Phone, MapPin, Settings, Send, Bot, Eye, EyeOff,
-  Sparkles, CheckCircle2, AlertTriangle, RefreshCw
+  Sparkles, CheckCircle2, AlertTriangle, RefreshCw, Zap
 } from 'lucide-react';
 import { cn } from '../../utils/cn';
 import { useTelegramStore } from '../../store/useTelegramStore';
@@ -20,7 +20,7 @@ const categories = [
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('general');
-  const { settings, updateSettings, openAlertModal, sendAlertToTelegram, isSending } = useTelegramStore();
+  const { settings, updateSettings, openAlertModal, sendAlertToTelegram, autoDetectChatId, isSending } = useTelegramStore();
   
   const [botToken, setBotToken] = useState(settings.botToken);
   const [chatId, setChatId] = useState(settings.chatId);
@@ -38,6 +38,13 @@ export default function SettingsPage() {
     setAlertOnAnomaly(settings.alertOnAnomaly);
     setAlertOnDailyDigest(settings.alertOnDailyDigest);
   }, [settings]);
+
+  const handleAutoDetect = async () => {
+    const detected = await autoDetectChatId();
+    if (detected) {
+      setChatId(detected);
+    }
+  };
 
   const handleSaveTelegram = () => {
     updateSettings({
@@ -258,19 +265,39 @@ export default function SettingsPage() {
 
                 {/* Chat ID */}
                 <div className="space-y-1.5">
-                  <label className="text-[13px] font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2">
-                    <Send className="w-4 h-4 text-[#229ED9]" strokeWidth={1.8} />
-                    Telegram Chat ID / Guruh ID
+                  <label className="text-[13px] font-semibold text-slate-700 dark:text-slate-300 flex items-center justify-between">
+                    <span className="flex items-center gap-2">
+                      <Send className="w-4 h-4 text-[#229ED9]" strokeWidth={1.8} />
+                      Telegram Chat ID
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleAutoDetect}
+                      className="text-emerald-600 dark:text-emerald-400 hover:underline text-xs font-bold flex items-center gap-1"
+                    >
+                      <Zap className="w-3.5 h-3.5 text-amber-400" />
+                      Avtomatik aniqlash
+                    </button>
                   </label>
-                  <input
-                    type="text"
-                    value={chatId}
-                    onChange={(e) => setChatId(e.target.value)}
-                    placeholder="Masalan: 123456789 yoki -10012345678"
-                    className="w-full h-11 px-4 font-mono bg-white dark:bg-white/[0.08] border border-slate-200 dark:border-transparent rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all text-slate-900 dark:text-slate-100 shadow-sm"
-                  />
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={chatId}
+                      onChange={(e) => setChatId(e.target.value)}
+                      placeholder="Masalan: 2064830631"
+                      className="flex-1 h-11 px-4 font-mono bg-white dark:bg-white/[0.08] border border-slate-200 dark:border-transparent rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all text-slate-900 dark:text-slate-100 shadow-sm"
+                    />
+                    <a
+                      href="https://t.me/inazorat_ai_test_bot"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="h-11 px-3.5 flex items-center justify-center gap-1 bg-[#229ED9] hover:bg-[#1e8bc0] text-white font-bold text-xs rounded-xl shadow-sm transition-all flex-shrink-0"
+                    >
+                      Botga o'tish ↗
+                    </a>
+                  </div>
                   <p className="text-[11px] text-slate-400 dark:text-slate-500">
-                    O'z ID raqamingizni <b>@userinfobot</b> orqali olishingiz mumkin.
+                    Botga <b>/start</b> bosgach, "Avtomatik aniqlash" tugmasini bosing yoki Chat ID ni kiriting.
                   </p>
                 </div>
               </div>

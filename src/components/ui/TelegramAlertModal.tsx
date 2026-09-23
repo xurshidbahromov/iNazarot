@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   X,
   Send,
@@ -25,6 +25,7 @@ export function TelegramAlertModal() {
     settings,
     updateSettings,
     sendAlertToTelegram,
+    autoDetectChatId,
     isSending
   } = useTelegramStore();
 
@@ -33,6 +34,18 @@ export function TelegramAlertModal() {
   const [botToken, setBotToken] = useState(settings.botToken);
   const [chatId, setChatId] = useState(settings.chatId);
   const [isCopied, setIsCopied] = useState(false);
+
+  useEffect(() => {
+    setBotToken(settings.botToken);
+    setChatId(settings.chatId);
+  }, [settings]);
+
+  const handleAutoDetect = async () => {
+    const id = await autoDetectChatId();
+    if (id) {
+      setChatId(id);
+    }
+  };
 
   if (!isModalOpen) return null;
 
@@ -266,16 +279,44 @@ export function TelegramAlertModal() {
           ) : (
             /* Tab 2: Bot API Configuration */
             <div className="space-y-5 text-left max-w-lg mx-auto">
-              <div className="p-4 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-xs text-sky-900 dark:text-sky-300 space-y-1">
-                <p className="font-bold flex items-center gap-1.5">
-                  <Info className="w-4 h-4 text-sky-600 dark:text-sky-400" />
-                  Haqiqiy Telegram Bot ulash tartibi:
-                </p>
-                <ol className="list-decimal list-inside space-y-0.5 text-[11px] text-sky-800/90 dark:text-sky-300/90 pl-1">
-                  <li>Telegramda <b>@BotFather</b> orqali yangi bot oching va <b>Bot Token</b> oling.</li>
-                  <li>O'z Telegram <b>Chat ID</b>'ingizni bilish uchun <b>@userinfobot</b> ga kiring.</li>
-                  <li>Quyidagi maydonlarga kiriting va "Saqlash" tugmasini bosing.</li>
-                </ol>
+              {/* Bot Info & Quick Connect */}
+              <div className="p-4 rounded-2xl bg-[#229ED9]/10 border border-[#229ED9]/20 text-xs text-sky-900 dark:text-sky-300 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Bot className="w-5 h-5 text-[#229ED9]" />
+                    <div>
+                      <h5 className="font-bold text-slate-900 dark:text-slate-100">iNazorat AI Bot ulangan!</h5>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400">@inazorat_ai_test_bot</p>
+                    </div>
+                  </div>
+                  <a
+                    href="https://t.me/inazorat_ai_test_bot"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-[#229ED9] hover:bg-[#1e8bc0] text-white font-bold text-xs shadow-sm transition-all active:scale-95"
+                  >
+                    Botga o'tish ↗
+                  </a>
+                </div>
+
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-1">
+                  <a
+                    href="https://t.me/inazorat_ai_test_bot"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex-1 text-center py-2 px-3 rounded-xl bg-white dark:bg-white/10 border border-slate-200 dark:border-transparent font-semibold text-xs text-slate-700 dark:text-slate-200 hover:border-slate-300 transition-all"
+                  >
+                    1. Botga kirib <b>/start</b> bosing
+                  </a>
+                  <button
+                    type="button"
+                    onClick={handleAutoDetect}
+                    className="py-2 px-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-sm transition-all active:scale-95 flex items-center justify-center gap-1.5"
+                  >
+                    <Zap className="w-3.5 h-3.5 text-amber-300" />
+                    2. Chat ID ni aniqlash
+                  </button>
+                </div>
               </div>
 
               <div className="space-y-4">
@@ -300,7 +341,7 @@ export function TelegramAlertModal() {
                     type="text"
                     value={chatId}
                     onChange={(e) => setChatId(e.target.value)}
-                    placeholder="Masalan: 123456789 yoki -100123456789"
+                    placeholder="Masalan: 2064830631"
                     className="w-full h-11 px-4 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-transparent rounded-xl text-xs font-mono text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#20c997]"
                   />
                 </div>

@@ -4,7 +4,8 @@ import {
   type TelegramSettings,
   DEFAULT_TELEGRAM_SETTINGS,
   sendTelegramMessage,
-  formatCashGapTelegramMessage
+  formatCashGapTelegramMessage,
+  getLatestChatId
 } from '../utils/telegramService';
 import { toast } from 'sonner';
 
@@ -25,6 +26,7 @@ interface TelegramState {
   openAlertModal: (data?: Partial<AlertModalData>) => void;
   closeAlertModal: () => void;
   sendAlertToTelegram: (customText?: string) => Promise<boolean>;
+  autoDetectChatId: () => Promise<string | null>;
 }
 
 const DEFAULT_MODAL_DATA: AlertModalData = {
@@ -100,10 +102,35 @@ export const useTelegramStore = create<TelegramState>()(
           return false;
         }
       },
+
+      autoDetectChatId: async () => {
+        const { settings, updateSettings } = get();
+        const res = await getLatestChatId(settings.botToken);
+        if (res.success && res.chatId) {
+          updateSettings({ chatId: res.chatId });
+          toast.success(`Ulandi: ${res.senderName} (Chat ID: ${res.chatId}) 📲`);
+          return res.chatId;
+        } else {
+          toast.error(res.message || "Chat ID aniqlanmadi.");
+          return null;
+        }
+      },
     }),
     {
       name: 'inazorat_telegram_store',
       partialize: (state) => ({ settings: state.settings }),
+      merge: (persistedState, currentState) => {
+        const persisted = (persistedState as { settings?: Partial<TelegramSettings> } | undefined)?.settings;
+        return {
+          ...currentState,
+          settings: {
+            ...currentState.settings,
+            ...(persisted || {}),
+            botToken: (persisted?.botToken && persisted.botToken.trim()) || DEFAULT_TELEGRAM_SETTINGS.botToken,
+            chatId: (persisted?.chatId && persisted.chatId.trim()) || DEFAULT_TELEGRAM_SETTINGS.chatId,
+          }
+        };
+      }
     }
   )
 );

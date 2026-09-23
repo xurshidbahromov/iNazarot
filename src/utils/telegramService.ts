@@ -14,13 +14,65 @@ export interface TelegramSettings {
 }
 
 export const DEFAULT_TELEGRAM_SETTINGS: TelegramSettings = {
-  botToken: '',
-  chatId: '',
+  botToken: '8907672296:AAGPrCJsttAnj0YitLATRh6M1QyzTkn2tsU',
+  chatId: '2064830631',
   isEnabled: true,
   alertOnCashGap: true,
   alertOnAnomaly: true,
   alertOnDailyDigest: true,
 };
+
+export const OFFICIAL_BOT_USERNAME = 'inazorat_ai_test_bot';
+
+/**
+ * Automatically inspects the bot's getUpdates feed to find the latest
+ * user who sent /start or messaged the bot, returning their chat_id.
+ */
+export async function getLatestChatId(
+  token: string
+): Promise<{ success: boolean; chatId?: string; senderName?: string; message?: string }> {
+  const cleanToken = token.trim();
+  if (!cleanToken) {
+    return { success: false, message: "Bot token kiritilmagan." };
+  }
+
+  try {
+    const response = await fetch(`https://api.telegram.org/bot${cleanToken}/getUpdates`);
+    const data = await response.json();
+
+    if (!data.ok) {
+      return { success: false, message: data.description || "Telegram API xatoligi yuz berdi." };
+    }
+
+    if (!data.result || data.result.length === 0) {
+      return {
+        success: false,
+        message: "Botga hali hech kim /start bosmagan. Iltimos, avval @inazorat_ai_test_bot ga kirib Start tugmasini bosing."
+      };
+    }
+
+    // Find the newest message with chat info
+    for (let i = data.result.length - 1; i >= 0; i--) {
+      const update = data.result[i];
+      const msg = update.message || update.edited_message || update.channel_post || update.my_chat_member;
+      const chat = msg?.chat;
+      const from = msg?.from;
+
+      if (chat?.id) {
+        return {
+          success: true,
+          chatId: String(chat.id),
+          senderName: from?.first_name || from?.username || chat?.title || 'Foydalanuvchi'
+        };
+      }
+    }
+
+    return { success: false, message: "Chat ID aniqlanmadi." };
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : String(err);
+    return { success: false, message: `Tarmoq xatosi: ${errorMsg}` };
+  }
+}
 
 const STORAGE_KEY = 'inazorat_telegram_settings';
 
@@ -28,7 +80,13 @@ export function getStoredTelegramSettings(): TelegramSettings {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
-      return { ...DEFAULT_TELEGRAM_SETTINGS, ...JSON.parse(raw) };
+      const parsed = JSON.parse(raw);
+      return {
+        ...DEFAULT_TELEGRAM_SETTINGS,
+        ...parsed,
+        botToken: parsed.botToken || DEFAULT_TELEGRAM_SETTINGS.botToken,
+        chatId: parsed.chatId || DEFAULT_TELEGRAM_SETTINGS.chatId,
+      };
     }
   } catch (e) {
     console.error('Error reading telegram settings:', e);
