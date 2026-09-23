@@ -4,8 +4,9 @@ import { cn } from '../../utils/cn';
 import { useAIStore } from '../../store/useAIStore';
 
 const tabs = [
+  { name: 'AML Alert Prioritization', href: '/ai/aml', icon: ShieldAlert },
   { name: 'Pul Oqimi Prognozi (Cash Flow)', href: '/ai/forecast', icon: TrendingUp },
-  { name: 'Anomaliyalar & Xavflar Radari', href: '/ai/anomalies', icon: ShieldAlert },
+  { name: 'Anomaliyalar & Xavflar Radari', href: '/ai/anomalies', icon: Sparkles },
   { name: 'AI Financial Copilot (Maslahatchi)', href: '/ai/copilot', icon: Bot },
 ];
 

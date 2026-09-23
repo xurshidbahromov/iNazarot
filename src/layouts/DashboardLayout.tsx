@@ -39,6 +39,7 @@ const navigation: NavItem[] = [
     icon: Sparkles,
     badge: { value: '3 xavf', color:'bg-rose-500/10 text-rose-600 dark:text-rose-400 font-bold border border-rose-500/20'},
     children: [
+      { name:'AML FinMonitoring (WIUT 2026)', href:'/ai/aml', badge: { value: '0.6246', color: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/20'}},
       { name:'Pul Oqimi Prognozi (Forecast)', href:'/ai/forecast'},
       { name:'Anomaliya & Xavflar Radari', href:'/ai/anomalies'},
       { name:'AI Financial Copilot', href:'/ai/copilot'}

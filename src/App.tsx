@@ -59,6 +59,7 @@ import AILayout from './pages/ai/AILayout';
 import CashFlowForecast from './pages/ai/CashFlowForecast';
 import AnomalyRadar from './pages/ai/AnomalyRadar';
 import AICopilot from './pages/ai/AICopilot';
+import AMLMonitoring from './pages/ai/AMLMonitoring';
 import { TelegramAlertModal } from './components/ui/TelegramAlertModal';
 
 const queryClient = new QueryClient();
@@ -93,7 +94,8 @@ function App() {
             <Route element={<DashboardLayout />}>
               <Route path="/" element={<Dashboard />} />
               <Route path="/ai" element={<AILayout />}>
-                <Route index element={<Navigate to="forecast" replace />} />
+                <Route index element={<Navigate to="aml" replace />} />
+                <Route path="aml" element={<AMLMonitoring />} />
                 <Route path="forecast" element={<CashFlowForecast />} />
                 <Route path="anomalies" element={<AnomalyRadar />} />
                 <Route path="copilot" element={<AICopilot />} />
