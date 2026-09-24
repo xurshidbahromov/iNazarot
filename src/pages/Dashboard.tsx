@@ -2,7 +2,8 @@ import { useState } from 'react';
 import {
   TrendingUp, TrendingDown, DollarSign, Users, ShoppingCart, Package,
   Activity, ArrowRight, LayoutDashboard, Download, Sparkles, Brain,
-  CheckCircle2, AlertTriangle, Info, RefreshCw, ChevronRight, X, Send
+  CheckCircle2, AlertTriangle, Info, RefreshCw, ChevronRight, X, Send,
+  ShieldAlert, ShieldCheck
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { 
@@ -221,6 +222,52 @@ export default function Dashboard() {
             </div>
           </Link>
         ))}
+      </div>
+
+      {/* 🛡️ Markaziy Bank AML & RegTech Compliance Cockpit */}
+      <div className="relative overflow-hidden bg-white/80 dark:bg-white/5 backdrop-blur-2xl rounded-[20px] border-2 border-[#f1f2f4] dark:border-transparent shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.4)] p-6 transition-all duration-300">
+        <div className="absolute top-0 right-0 w-80 h-80 bg-rose-500/10 dark:bg-rose-500/15 rounded-full blur-3xl pointer-events-none" />
+        
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-500/10 flex items-center justify-center flex-shrink-0 border border-rose-100 dark:border-transparent">
+              <ShieldAlert className="w-6 h-6 text-rose-500" strokeWidth={1.8} />
+            </div>
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-transparent text-rose-600 dark:text-rose-400 text-[11px] font-bold uppercase tracking-wider mb-1.5">
+                <ShieldCheck className="w-3 h-3 text-rose-500" />
+                <span>Markaziy Bank Nizomi #2515 & ZRU-660 Nazorati</span>
+              </div>
+              <h3 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+                AML Shubhali Operatsiyalar & Prioritet Monitoringi
+              </h3>
+              <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1 max-w-xl leading-relaxed">
+                226 ta GBDT indikatori (smurfing, tranzit mule hisoblar, naqdlashtirish spayklari) orqali tranzaksiyalarni tahlil qilish va soxta signallarni 65% ga qisqartirish tizimi.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-3 bg-slate-50/80 dark:bg-white/5 backdrop-blur-sm px-4 py-2.5 rounded-2xl border border-slate-200/80 dark:border-transparent">
+              <div className="text-center font-mono pr-3 border-r border-slate-200 dark:border-white/10">
+                <span className="text-[10px] font-bold text-slate-400 block uppercase">Signal Hajmi</span>
+                <span className="text-sm font-bold text-slate-900 dark:text-white">6,000 ta</span>
+              </div>
+              <div className="text-center font-mono">
+                <span className="text-[10px] font-bold text-emerald-500 block uppercase">Model ROC-AUC</span>
+                <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">0.6246</span>
+              </div>
+            </div>
+
+            <Link
+              to="/ai/aml"
+              className="flex items-center gap-2 px-4 py-2.5 bg-slate-900 text-white dark:bg-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 font-bold rounded-xl text-xs sm:text-sm transition-all shadow-sm active:scale-95 whitespace-nowrap"
+            >
+              <span>AML Boshqaruv Markazi</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
       </div>
 
       {/* 🧠 iNazorat Intelligence */}

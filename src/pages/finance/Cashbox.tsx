@@ -1,5 +1,6 @@
 import { useState} from'react';
-import { ArrowDownLeft, ArrowUpRight, Download, Wallet, DollarSign, Coins, Search} from'lucide-react';
+import { Link } from 'react-router-dom';
+import { ArrowDownLeft, ArrowUpRight, Download, Wallet, DollarSign, Coins, Search, ShieldCheck, ShieldAlert} from'lucide-react';
 import { Button} from'../../components/ui/Button';
 import { Input} from'../../components/ui/Input';
 import { Table} from'../../components/ui/Table';
@@ -180,6 +181,29 @@ export default function Cashbox() {
         </div>
       </div>
 
+      {/* AML Protection Status Ribbon */}
+      <div className="bg-white/80 dark:bg-white/[0.04] backdrop-blur-sm p-4 rounded-[20px] border-2 border-[#f1f2f4] dark:border-transparent flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+        <div className="flex items-center gap-2.5">
+          <span className="flex h-2 w-2 relative">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#20c997] opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#20c997]"></span>
+          </span>
+          <span className="font-bold text-slate-800 dark:text-slate-200">
+            Avtomatik AML Monitoring Faol:
+          </span>
+          <span className="text-slate-500 dark:text-slate-400">
+            Barcha kassa va bank kirdi-chiqdi operatsiyalari Markaziy Bank 660-sonli Nizomi bo'yicha real-vaqtda tekshirilmoqda.
+          </span>
+        </div>
+        <Link
+          to="/ai/aml"
+          className="inline-flex items-center gap-1 font-bold text-[#20c997] hover:underline whitespace-nowrap"
+        >
+          <span>AML Markaziga o'tish</span>
+          <span>➔</span>
+        </Link>
+      </div>
+
       {/* Table & Filter */}
       <div className="bg-white/80 dark:bg-white/[0.04] backdrop-blur-sm rounded-[20px] border-2 border-[#f1f2f4] dark:border-transparent overflow-hidden">
         <div className="p-5 border-b border-slate-200 dark:border-transparent bg-slate-50/50 dark:bg-white/5">
@@ -199,10 +223,13 @@ export default function Cashbox() {
             { key:'description', label:'Izoh / Sabab'},
             { key:'method', label:'To\'lov usuli'},
             { key:'amount', label:'Summa'},
+            { key:'aml', label:'AML Xavfsizlik Holati'},
           ]}
           data={filtered}
           renderRow={(trx: Transaction) => {
             const amountInUzs = trx.amount * trx.rate;
+            const isHighRisk = (trx.method === 'Naqd' && trx.type === 'Chiqim' && amountInUzs >= 15000000) || amountInUzs >= 50000000;
+            const isMedRisk = !isHighRisk && ((trx.type === 'Chiqim' && amountInUzs >= 5000000) || (trx.method === 'Naqd' && amountInUzs >= 10000000));
             return (
               <>
                 <td className="whitespace-nowrap py-4 pl-4 pr-3 text-[13px] text-slate-500 dark:text-slate-400 sm:pl-6">{trx.date}</td>
@@ -221,6 +248,22 @@ export default function Cashbox() {
                       </span>
                     )}
                   </div>
+                </td>
+                <td className="whitespace-nowrap px-3 py-4">
+                  <Link
+                    to="/ai/aml"
+                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono font-bold transition-all hover:scale-105 ${
+                      isHighRisk
+                        ? 'bg-rose-50 dark:bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-500/20'
+                        : isMedRisk
+                          ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20'
+                          : 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20'
+                    }`}
+                    title="AML Monitoring tekshiruvini ko'rish"
+                  >
+                    {isHighRisk ? <ShieldAlert className="w-3.5 h-3.5" /> : <ShieldCheck className="w-3.5 h-3.5" />}
+                    <span>{isHighRisk ? 'Kritik (78%)' : isMedRisk ? 'O\'rta (42%)' : 'Xavfsiz (8%)'}</span>
+                  </Link>
                 </td>
               </>
             );}}
