@@ -21,7 +21,14 @@ import {
   Scale,
   DollarSign,
   Moon,
-  TrendingUp
+  Sun,
+  TrendingUp,
+  Banknote,
+  Building2,
+  CreditCard,
+  Globe,
+  ArrowUpRight,
+  ArrowDownLeft
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -59,7 +66,7 @@ export default function AMLMonitoring() {
   const [isStrModalOpen, setIsStrModalOpen] = useState(false);
   const [featureCategory, setFeatureCategory] = useState<string>('All');
 
-  // ⚡ Live What-If AML Risk Simulator State
+  // Live What-If AML Risk Simulator State
   const [simAmount, setSimAmount] = useState<number>(2.4);
   const [simChannel, setSimChannel] = useState<'naqd' | 'bank_otkazmasi' | 'karta' | 'xalqaro'>('naqd');
   const [simBurst15m, setSimBurst15m] = useState<number>(4);
@@ -276,8 +283,8 @@ export default function AMLMonitoring() {
         <nav className="flex items-center gap-1.5 overflow-x-auto custom-scrollbar">
           {[
             { id: 'triage', label: 'Prioritetli Signallar & Tergov', icon: ShieldAlert },
-            { id: 'simulator', label: '⚡ AML Simulyator & ROI', icon: Sliders },
-            { id: 'rules', label: '🏛️ MB 2515 Qoidalar Matritsasi', icon: Scale },
+            { id: 'simulator', label: 'AML Simulyator & ROI', icon: Sliders },
+            { id: 'rules', label: 'MB 2515 Qoidalar Matritsasi', icon: Scale },
             { id: 'eda', label: 'Tranzaksiya Xulqi & EDA', icon: Database },
             { id: 'models', label: 'Model Benchmarking & ROC-AUC', icon: Cpu },
             { id: 'features', label: 'Top 25 AML Xususiyatlari', icon: BarChart3 },
@@ -512,77 +519,126 @@ export default function AMLMonitoring() {
               </div>
 
               <div className="space-y-4">
-                {/* Channel & Direction Selector */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="bg-slate-50/70 dark:bg-white/5 p-4 rounded-2xl border border-slate-200/80 dark:border-white/5 space-y-2">
-                    <label className="text-xs font-semibold text-slate-800 dark:text-slate-200 block">
+                {/* Channel Selector: 4 tactile cards */}
+                <div className="bg-slate-50/70 dark:bg-white/5 p-4 rounded-2xl border border-slate-200/80 dark:border-white/5 space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-semibold text-slate-800 dark:text-slate-200">
                       Tranzaksiya Kanali:
                     </label>
-                    <select
-                      value={simChannel}
-                      onChange={(e) => setSimChannel(e.target.value as any)}
-                      className="w-full text-xs rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-2.5 font-medium text-slate-900 dark:text-white focus:outline-none focus:border-[#20c997]"
-                    >
-                      <option value="naqd">Naqd Pul (ATM / Kassa Spayki)</option>
-                      <option value="bank_otkazmasi">Bank O'tkazmasi (Tranzit Wire)</option>
-                      <option value="karta">Karta (P2P O'tkazma)</option>
-                      <option value="xalqaro">Xalqaro (Cross-Border Transfer)</option>
-                    </select>
+                    <span className="text-[10px] font-mono uppercase text-slate-400">
+                      O'zbekiston Bank Tizimi
+                    </span>
                   </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    {[
+                      { id: 'naqd', label: 'Naqd Pul', desc: 'ATM / Kassa', icon: Banknote },
+                      { id: 'bank_otkazmasi', label: 'Bank Wire', desc: 'Tranzit Hisob', icon: Building2 },
+                      { id: 'karta', label: 'P2P Karta', desc: 'HUMO / Uzcard', icon: CreditCard },
+                      { id: 'xalqaro', label: 'Xalqaro', desc: 'SWIFT / Transfer', icon: Globe },
+                    ].map((item) => {
+                      const Icon = item.icon;
+                      const isSelected = simChannel === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => setSimChannel(item.id as any)}
+                          className={`p-3 rounded-xl border text-left transition-all flex flex-col justify-between ${
+                            isSelected
+                              ? 'bg-white dark:bg-white/10 border-[#20c997] shadow-sm ring-1 ring-[#20c997]/30 text-slate-900 dark:text-white'
+                              : 'bg-white/50 dark:bg-white/[0.02] border-slate-200/80 dark:border-white/5 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-white/10'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between w-full mb-1.5">
+                            <Icon className={`w-4 h-4 ${isSelected ? 'text-[#20c997]' : 'text-slate-400'}`} />
+                            {isSelected && (
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#20c997]" />
+                            )}
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold leading-tight">{item.label}</p>
+                            <p className="text-[10px] text-slate-400 mt-0.5 truncate">{item.desc}</p>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
 
-                  <div className="bg-slate-50/70 dark:bg-white/5 p-4 rounded-2xl border border-slate-200/80 dark:border-white/5 space-y-2">
-                    <label className="text-xs font-semibold text-slate-800 dark:text-slate-200 block">
+                {/* 2-Column: Direction & Time Mode */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {/* Flow Direction Segmented */}
+                  <div className="bg-slate-50/70 dark:bg-white/5 p-3.5 rounded-2xl border border-slate-200/80 dark:border-white/5 space-y-2">
+                    <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 block">
                       Mablag' Harakat Yo'nalishi:
-                    </label>
-                    <div className="grid grid-cols-2 gap-2">
+                    </span>
+                    <div className="grid grid-cols-2 gap-1.5 bg-slate-200/50 dark:bg-white/5 p-1 rounded-xl">
                       <button
                         type="button"
                         onClick={() => setSimDirection('chiqim')}
-                        className={`py-2 px-3 rounded-xl text-xs font-bold transition-all ${
+                        className={`py-1.5 px-2.5 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
                           simDirection === 'chiqim'
                             ? 'bg-rose-500 text-white shadow-sm'
-                            : 'bg-white dark:bg-white/10 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-transparent'
+                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                         }`}
                       >
-                        Chiqim (Outflow)
+                        <ArrowUpRight className="w-3.5 h-3.5" />
+                        <span>Chiqim (Outflow)</span>
                       </button>
                       <button
                         type="button"
                         onClick={() => setSimDirection('kirim')}
-                        className={`py-2 px-3 rounded-xl text-xs font-bold transition-all ${
+                        className={`py-1.5 px-2.5 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
                           simDirection === 'kirim'
                             ? 'bg-emerald-500 text-white shadow-sm'
-                            : 'bg-white dark:bg-white/10 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-transparent'
+                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                         }`}
                       >
-                        Kirim (Inflow)
+                        <ArrowDownLeft className="w-3.5 h-3.5" />
+                        <span>Kirim (Inflow)</span>
                       </button>
                     </div>
                   </div>
-                </div>
 
-                {/* Day / Night Time Toggle */}
-                <div className="bg-slate-50/70 dark:bg-white/5 p-4 rounded-2xl border border-slate-200/80 dark:border-white/5 flex items-center justify-between">
-                  <div>
-                    <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 block">
-                      Operatsiya Vaqti (Nocturnal Anomaly):
-                    </span>
-                    <p className="text-[10px] text-slate-400">
-                      Tungi soatlar (01:00 - 05:00) da amalga oshirilgan operatsiyalar
-                    </p>
+                  {/* Day / Night Segmented */}
+                  <div className="bg-slate-50/70 dark:bg-white/5 p-3.5 rounded-2xl border border-slate-200/80 dark:border-white/5 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
+                        Operatsiya Vaqti:
+                      </span>
+                      {simIsNight && (
+                        <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 rounded bg-indigo-500/10 text-indigo-500 font-bold">
+                          Nocturnal
+                        </span>
+                      )}
+                    </div>
+                    <div className="grid grid-cols-2 gap-1.5 bg-slate-200/50 dark:bg-white/5 p-1 rounded-xl">
+                      <button
+                        type="button"
+                        onClick={() => setSimIsNight(false)}
+                        className={`py-1.5 px-2.5 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
+                          !simIsNight
+                            ? 'bg-white dark:bg-white/15 text-slate-900 dark:text-white shadow-sm'
+                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                        }`}
+                      >
+                        <Sun className="w-3.5 h-3.5 text-amber-500" />
+                        <span>Kunduzgi (14:00)</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSimIsNight(true)}
+                        className={`py-1.5 px-2.5 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
+                          simIsNight
+                            ? 'bg-indigo-600 text-white shadow-sm'
+                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                        }`}
+                      >
+                        <Moon className="w-3.5 h-3.5" />
+                        <span>Tungi (02:00)</span>
+                      </button>
+                    </div>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => setSimIsNight(!simIsNight)}
-                    className={`py-1.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
-                      simIsNight
-                        ? 'bg-indigo-600 text-white shadow-sm'
-                        : 'bg-white dark:bg-white/10 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-transparent'
-                    }`}
-                  >
-                    <Moon className="w-3.5 h-3.5" />
-                    <span>{simIsNight ? "Tungi 02:00" : "Kunduzgi 14:00"}</span>
-                  </button>
                 </div>
 
                 {/* Amount Z-Score Slider */}
@@ -678,91 +734,117 @@ export default function AMLMonitoring() {
                   </span>
                 </div>
 
-                {/* Big Gauge Card */}
-                <div className={`mt-5 p-6 rounded-2xl border text-center transition-all ${
-                  simRiskProbability >= 0.70
-                    ? 'bg-rose-50/80 dark:bg-rose-950/20 border-rose-200 dark:border-rose-500/30'
-                    : simRiskProbability >= 0.40
-                      ? 'bg-amber-50/80 dark:bg-amber-950/20 border-amber-200 dark:border-amber-500/30'
-                      : 'bg-emerald-50/80 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-500/30'
-                }`}>
-                  <p className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                {/* Refined Precision Risk Gauge Card */}
+                <div className="mt-4 p-5 rounded-2xl bg-slate-50/70 dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/10 text-center space-y-3">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block">
                     Bashorat Qilingan Eskalatsiya Ehtimolligi
-                  </p>
-                  <div className={`text-5xl font-mono font-black my-2 ${
-                    simRiskProbability >= 0.70
-                      ? 'text-rose-600 dark:text-rose-400'
-                      : simRiskProbability >= 0.40
-                        ? 'text-amber-600 dark:text-amber-400'
-                        : 'text-emerald-600 dark:text-emerald-400'
-                  }`}>
-                    {(simRiskProbability * 100).toFixed(1)}%
-                  </div>
-
-                  <div className="w-full bg-slate-200 dark:bg-white/10 rounded-full h-3 overflow-hidden my-3">
-                    <div
-                      className={`h-full rounded-full transition-all duration-300 ${
-                        simRiskProbability >= 0.70
-                          ? 'bg-rose-500'
-                          : simRiskProbability >= 0.40
-                            ? 'bg-amber-500'
-                            : 'bg-emerald-500'
-                      }`}
-                      style={{ width: `${Math.round(simRiskProbability * 100)}%` }}
-                    />
-                  </div>
-
-                  <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
-                    simRiskProbability >= 0.70
-                      ? 'bg-rose-100 dark:bg-rose-500/20 text-rose-700 dark:text-rose-300'
-                      : simRiskProbability >= 0.40
-                        ? 'bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300'
-                        : 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300'
-                  }`}>
-                    {simRiskProbability >= 0.70 ? "Kritik Xavf (Tier 1) — Eskalatsiya" :
-                     simRiskProbability >= 0.40 ? "O'rta Xavf (Tier 2) — Qo'shimcha Audit" :
-                     "Past Xavf (Tier 3) — Odatiy Tijoriy Faoliyat"}
                   </span>
+
+                  <div className="flex items-baseline justify-center gap-1">
+                    <span className={`text-5xl font-mono font-black tracking-tight ${
+                      simRiskProbability >= 0.70
+                        ? 'text-rose-600 dark:text-rose-400'
+                        : simRiskProbability >= 0.40
+                          ? 'text-amber-500 dark:text-amber-400'
+                          : 'text-emerald-600 dark:text-emerald-400'
+                    }`}>
+                      {(simRiskProbability * 100).toFixed(1)}
+                    </span>
+                    <span className="text-xl font-mono font-bold text-slate-400">%</span>
+                  </div>
+
+                  {/* Segmented Risk Meter (Past / O'rta / Kritik) */}
+                  <div className="space-y-1.5 pt-1">
+                    <div className="grid grid-cols-3 gap-1.5 h-2">
+                      <div className={`rounded-full transition-all duration-300 ${
+                        simRiskProbability < 0.40 ? 'bg-emerald-500 shadow-sm ring-2 ring-emerald-500/20' : 'bg-slate-200 dark:bg-white/10'
+                      }`} />
+                      <div className={`rounded-full transition-all duration-300 ${
+                        simRiskProbability >= 0.40 && simRiskProbability < 0.70 ? 'bg-amber-500 shadow-sm ring-2 ring-amber-500/20' : 'bg-slate-200 dark:bg-white/10'
+                      }`} />
+                      <div className={`rounded-full transition-all duration-300 ${
+                        simRiskProbability >= 0.70 ? 'bg-rose-500 shadow-sm ring-2 ring-rose-500/20' : 'bg-slate-200 dark:bg-white/10'
+                      }`} />
+                    </div>
+                    <div className="flex justify-between text-[10px] font-medium text-slate-400">
+                      <span>Past (&lt;40%)</span>
+                      <span>O'rta (40-70%)</span>
+                      <span>Kritik (&ge;70%)</span>
+                    </div>
+                  </div>
+
+                  {/* Tier Status Badge */}
+                  <div className="pt-2">
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border ${
+                      simRiskProbability >= 0.70
+                        ? 'bg-rose-50 dark:bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-500/30'
+                        : simRiskProbability >= 0.40
+                          ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-500/30'
+                          : 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-500/30'
+                    }`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${
+                        simRiskProbability >= 0.70 ? 'bg-rose-500' : simRiskProbability >= 0.40 ? 'bg-amber-500' : 'bg-emerald-500'
+                      }`} />
+                      {simRiskProbability >= 0.70 ? "Tier 1 · Kritik Xavf (Eskalatsiya)" :
+                       simRiskProbability >= 0.40 ? "Tier 2 · O'rta Xavf (Qo'shimcha Audit)" :
+                       "Tier 3 · Past Xavf (Odatiy Tijoriy Faoliyat)"}
+                    </span>
+                  </div>
                 </div>
 
                 {/* Triggered Legal Rules List */}
-                <div className="mt-5 space-y-2">
+                <div className="mt-4 space-y-2">
                   <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
-                    Tetiklangan Qonuniy Indikatorlar (Central Bank):
+                    Tetiklangan Qonuniy Mezonlar (Central Bank):
                   </span>
                   <div className="space-y-1.5 text-xs">
                     {simChannel === 'naqd' && simDirection === 'chiqim' && (
-                      <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/80 dark:border-white/5 flex items-center gap-2 text-rose-600 dark:text-rose-400">
+                      <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center gap-2 text-rose-600 dark:text-rose-400">
                         <AlertTriangle className="w-4 h-4 flex-shrink-0" />
-                        <span>MB 660-Nizom: Katta hajmdagi naqdlashtirish spayki.</span>
+                        <div>
+                          <span className="font-mono font-bold mr-1.5">[MB-660]</span>
+                          <span>Katta hajmdagi naqdlashtirish spayki aniqlandi.</span>
+                        </div>
                       </div>
                     )}
 
                     {simBurst15m >= 3 && (
-                      <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/80 dark:border-white/5 flex items-center gap-2 text-amber-600 dark:text-amber-400">
+                      <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center gap-2 text-amber-600 dark:text-amber-400">
                         <Clock className="w-4 h-4 flex-shrink-0" />
-                        <span>MB 2515-Nizom: 15 daqiqada {simBurst15m} ta mikro-o'tkazma (Smurfing/Structuring).</span>
+                        <div>
+                          <span className="font-mono font-bold mr-1.5">[MB-2515]</span>
+                          <span>15 daqiqada {simBurst15m} ta mikro-o'tkazma (Smurfing/Structuring).</span>
+                        </div>
                       </div>
                     )}
 
                     {simTurnover >= 80 && (
-                      <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/80 dark:border-white/5 flex items-center gap-2 text-purple-600 dark:text-purple-400">
+                      <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center gap-2 text-purple-600 dark:text-purple-400">
                         <TrendingUp className="w-4 h-4 flex-shrink-0" />
-                        <span>Tranzit (Mule) hisob: Kirgan mablag'ning {simTurnover}% qismi 24 soatda chiqarilgan.</span>
+                        <div>
+                          <span className="font-mono font-bold mr-1.5">[FATF R.10]</span>
+                          <span>Tranzit (Mule) hisob: Mablag'ning {simTurnover}% qismi 24 soatda chiqarilgan.</span>
+                        </div>
                       </div>
                     )}
 
                     {simIsNight && (
-                      <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/80 dark:border-white/5 flex items-center gap-2 text-indigo-600 dark:text-indigo-400">
+                      <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center gap-2 text-indigo-600 dark:text-indigo-400">
                         <Moon className="w-4 h-4 flex-shrink-0" />
-                        <span>Nocturnal Anomaly: Tungi g'ayritabiiy soatlarda (01:00-05:00) faollik klasteri.</span>
+                        <div>
+                          <span className="font-mono font-bold mr-1.5">[Vaqt Anomaliyasi]</span>
+                          <span>Tungi soatlarda (01:00-05:00) g'ayritabiiy operatsiya klasteri.</span>
+                        </div>
                       </div>
                     )}
 
                     {simRiskProbability < 0.40 && (
-                      <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/80 dark:border-white/5 flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                      <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
                         <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
-                        <span>Muntazam oylik aylanma yoki oddiy tijoriy daromad modeli tasdiqlandi.</span>
+                        <div>
+                          <span className="font-mono font-bold mr-1.5">[Xavfsiz]</span>
+                          <span>Muntazam oylik aylanma yoki oddiy tijoriy daromad modeli tasdiqlandi.</span>
+                        </div>
                       </div>
                     )}
                   </div>
@@ -934,36 +1016,66 @@ export default function AMLMonitoring() {
               {centralBankRulesData.map((rule) => (
                 <div
                   key={rule.id}
-                  className="p-5 rounded-2xl bg-slate-50/70 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 space-y-3 hover:border-purple-300 dark:hover:border-purple-500/30 transition-all"
+                  className="p-5 rounded-2xl bg-slate-50/70 dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/10 space-y-4 hover:border-purple-300 dark:hover:border-purple-500/30 transition-all flex flex-col justify-between"
                 >
-                  <div className="flex items-center justify-between">
-                    <span className="px-2.5 py-0.5 rounded-md text-[11px] font-mono font-bold bg-purple-100 dark:bg-purple-500/20 text-purple-700 dark:text-purple-300">
-                      {rule.id}
-                    </span>
-                    <span className="text-[10px] uppercase font-bold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-500/10 px-2 py-0.5 rounded-md border border-rose-100 dark:border-transparent">
-                      {rule.riskWeight}
-                    </span>
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-2.5">
+                      <span className="px-2.5 py-1 rounded-lg text-xs font-mono font-bold bg-purple-50 dark:bg-purple-500/10 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-500/20">
+                        {rule.id}
+                      </span>
+                      <span className="inline-flex items-center gap-1.5 text-[10px] uppercase font-bold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-500/10 px-2.5 py-1 rounded-lg border border-rose-200/60 dark:border-rose-500/20">
+                        <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+                        {rule.riskWeight}
+                      </span>
+                    </div>
+
+                    <h4 className="text-sm font-bold text-slate-900 dark:text-white leading-snug">
+                      {rule.name}
+                    </h4>
                   </div>
 
-                  <h4 className="text-sm font-bold text-slate-900 dark:text-white">
-                    {rule.name}
-                  </h4>
+                  {/* 2x2 Specification Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+                    <div className="p-3 rounded-xl bg-white dark:bg-white/5 border border-slate-200/60 dark:border-white/5 space-y-1">
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block">
+                        Chegara & Mezon
+                      </span>
+                      <span className="font-mono text-slate-900 dark:text-white font-semibold text-xs block">
+                        {rule.threshold}
+                      </span>
+                    </div>
 
-                  <div className="space-y-2 text-xs text-slate-600 dark:text-slate-300">
-                    <div className="flex items-start gap-2">
-                      <span className="text-slate-400 font-semibold min-w-[110px]">Chegara / Shart:</span>
-                      <span className="font-mono text-slate-900 dark:text-white font-medium">{rule.threshold}</span>
+                    <div className="p-3 rounded-xl bg-white dark:bg-white/5 border border-slate-200/60 dark:border-white/5 space-y-1">
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block">
+                        Qonuniy Asos
+                      </span>
+                      <span className="text-purple-600 dark:text-purple-400 font-semibold text-xs block">
+                        {rule.legalBasis}
+                      </span>
                     </div>
-                    <div className="flex items-start gap-2">
-                      <span className="text-slate-400 font-semibold min-w-[110px]">Qonuniy Asos:</span>
-                      <span className="text-purple-600 dark:text-purple-400 font-medium">{rule.legalBasis}</span>
+
+                    <div className="p-3 rounded-xl bg-white dark:bg-white/5 border border-slate-200/60 dark:border-white/5 space-y-1 sm:col-span-2">
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block">
+                        Bog'langan ML Xususiyatlar
+                      </span>
+                      <div className="flex flex-wrap gap-1.5 pt-0.5">
+                        {rule.mlFeatureMapping.split(',').map((feat, idx) => (
+                          <span
+                            key={idx}
+                            className="px-2 py-0.5 rounded-md font-mono text-[11px] font-medium bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-500/20"
+                          >
+                            {feat.trim()}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                    <div className="flex items-start gap-2">
-                      <span className="text-slate-400 font-semibold min-w-[110px]">ML Xususiyatlar:</span>
-                      <span className="font-mono text-emerald-600 dark:text-emerald-400 font-medium">{rule.mlFeatureMapping}</span>
-                    </div>
-                    <div className="flex items-start gap-2 pt-2 border-t border-slate-200/60 dark:border-white/5">
-                      <span className="text-rose-500 font-semibold min-w-[110px]">Sanksiya Xavfi:</span>
+                  </div>
+
+                  {/* Penalty Risk Callout */}
+                  <div className="p-3 rounded-xl bg-rose-50/60 dark:bg-rose-950/20 border border-rose-200/60 dark:border-rose-500/20 flex items-start gap-2.5 text-xs">
+                    <AlertTriangle className="w-4 h-4 text-rose-500 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <span className="font-semibold text-rose-700 dark:text-rose-300 mr-1.5">Sanksiya Xavfi:</span>
                       <span className="text-rose-600 dark:text-rose-400 text-[11px]">{rule.penaltyRisk}</span>
                     </div>
                   </div>
@@ -1112,7 +1224,7 @@ export default function AMLMonitoring() {
                     <Line type="monotone" dataKey="tpr_lgb" stroke="#10b981" name={`LightGBM (${modelMetricsData.lightgbmAUC.toFixed(4)})`} dot={false} strokeWidth={1.5} />
                     <Line type="monotone" dataKey="tpr_cat" stroke="#f59e0b" name={`CatBoost (${modelMetricsData.catboostAUC.toFixed(4)})`} dot={false} strokeWidth={1.5} />
                     <Line type="monotone" dataKey="tpr_xgb" stroke="#8b5cf6" name={`XGBoost (${modelMetricsData.xgboostAUC.toFixed(4)})`} dot={false} strokeWidth={1.8} />
-                    <Line type="monotone" dataKey="tpr_ensemble" stroke="#ef4444" name={`★ gitcore Ensemble (${modelMetricsData.ensembleAUC.toFixed(4)})`} dot={false} strokeWidth={2.8} />
+                    <Line type="monotone" dataKey="tpr_ensemble" stroke="#ef4444" name={`gitcore Ensemble (${modelMetricsData.ensembleAUC.toFixed(4)})`} dot={false} strokeWidth={2.8} />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -1379,7 +1491,7 @@ export default function AMLMonitoring() {
         </div>
       )}
 
-      {/* 📄 OFFICIAL CENTRAL BANK STR (SUSPICIOUS TRANSACTION REPORT) MODAL */}
+      {/* OFFICIAL CENTRAL BANK STR (SUSPICIOUS TRANSACTION REPORT) MODAL */}
       {isStrModalOpen && activeSignal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md overflow-y-auto animate-fadeIn">
           <div className="bg-white dark:bg-[#0c1222] border-2 border-slate-300 dark:border-white/10 rounded-[24px] max-w-3xl w-full p-6 sm:p-8 shadow-2xl relative space-y-6 my-8 print:border-none print:shadow-none print:p-0">
